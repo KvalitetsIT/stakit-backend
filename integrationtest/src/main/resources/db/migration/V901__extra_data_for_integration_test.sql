@@ -1,1 +1,1 @@
-insert into hello_table(name) values('Some Name');
+--insert into hello_table(name) values('Some Name');
