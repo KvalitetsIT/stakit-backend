@@ -1,34 +1,31 @@
 package dk.kvalitetsit.stakit.controller;
 
-import dk.kvalitetsit.stakit.service.HelloService;
-import dk.kvalitetsit.stakit.service.model.HelloServiceInput;
+import dk.kvalitetsit.stakit.service.StatusUpdateService;
+import dk.kvalitetsit.stakit.service.model.Status;
+import dk.kvalitetsit.stakit.service.model.UpdateServiceInput;
 import org.openapitools.api.StaKitApi;
+import org.openapitools.model.StatusUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class StakitController implements StaKitApi {
     private static final Logger logger = LoggerFactory.getLogger(StakitController.class);
-    private final HelloService helloService;
+    private final StatusUpdateService statusUpdateService;
 
-    public StakitController(HelloService helloService) {
-        this.helloService = helloService;
+    public StakitController(StatusUpdateService statusUpdateService) {
+        this.statusUpdateService = statusUpdateService;
     }
 
     @Override
-    public ResponseEntity<org.openapitools.model.HelloResponse> v1HelloPost(org.openapitools.model.HelloRequest helloRequest) {
-        logger.debug("Enter POST stakit.");
+    public ResponseEntity<Void> v1StatusPost(StatusUpdate statusUpdate) {
+        logger.debug("Updating or creating status");
 
-        var serviceInput = new HelloServiceInput(helloRequest.getName());
+        statusUpdateService.updateStatus(new UpdateServiceInput(statusUpdate.getService(), statusUpdate.getServiceName(), Status.valueOf(Status.class, statusUpdate.getStatus().toString()), statusUpdate.getStatusTime(), statusUpdate.getMessage()));
 
-        var serviceResponse = helloService.helloServiceBusinessLogic(serviceInput);
-
-        var helloResponse = new org.openapitools.model.HelloResponse();
-        helloResponse.setName(serviceResponse.name());
-        helloResponse.setNow(serviceResponse.now().toOffsetDateTime());
-
-        return ResponseEntity.ok(helloResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

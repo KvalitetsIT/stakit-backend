@@ -1,50 +1,48 @@
 package dk.kvalitetsit.stakit.controller;
 
-import dk.kvalitetsit.stakit.service.HelloService;
-import dk.kvalitetsit.stakit.service.model.HelloServiceInput;
-import dk.kvalitetsit.stakit.service.model.HelloServiceOutput;
+import dk.kvalitetsit.stakit.service.StatusUpdateService;
+import dk.kvalitetsit.stakit.service.model.Status;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.openapitools.model.HelloRequest;
+import org.openapitools.model.StatusUpdate;
 
-import java.time.ZonedDateTime;
-import java.util.UUID;
+import java.time.OffsetDateTime;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 
 public class StakitControllerTest {
     private StakitController stakitController;
-    private HelloService helloService;
+    private StatusUpdateService statusUpdateService;
 
     @Before
     public void setup() {
-        helloService = Mockito.mock(HelloService.class);
+        statusUpdateService = Mockito.mock(StatusUpdateService.class);
 
-        stakitController = new StakitController(helloService);
+        stakitController = new StakitController(statusUpdateService);
     }
 
     @Test
     public void testCallController() {
-        var input = new HelloRequest();
-        input.setName(UUID.randomUUID().toString());
+        var input = new StatusUpdate();
+        input.setService("service_id");
+        input.setStatus(StatusUpdate.StatusEnum.OK);
+        input.setStatusTime(OffsetDateTime.now());
+        input.setMessage("Everything is OK.");
 
-        var expectedDate = ZonedDateTime.now();
-        Mockito.when(helloService.helloServiceBusinessLogic(Mockito.any())).then(a -> new HelloServiceOutput(a.getArgument(0, HelloServiceInput.class).name(), expectedDate));
-
-        var result = stakitController.v1HelloPost(input);
+        var result = stakitController.v1StatusPost(input);
 
         assertNotNull(result);
-        assertEquals(input.getName(), result.getBody().getName());
-        assertEquals(expectedDate.toOffsetDateTime(), result.getBody().getNow());
 
-        var inputArgumentCaptor = ArgumentCaptor.forClass(HelloServiceInput.class);
-        Mockito.verify(helloService, times(1)).helloServiceBusinessLogic(inputArgumentCaptor.capture());
+        Mockito.verify(statusUpdateService, times(1)).updateStatus(Mockito.argThat(x -> {
+            assertEquals(input.getMessage(), x.message());
+            assertEquals(input.getService(), x.service());
+            assertEquals(input.getStatusTime(), x.statusDateTime());
+            assertEquals(Status.OK, x.status());
 
-        assertNotNull(inputArgumentCaptor.getValue());
-        assertEquals(input.getName(), inputArgumentCaptor.getValue().name());
+            return true;
+        }));
     }
 }

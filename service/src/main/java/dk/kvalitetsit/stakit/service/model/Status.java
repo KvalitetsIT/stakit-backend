@@ -1,4 +1,6 @@
 package dk.kvalitetsit.stakit.service.model;
 
-public record HelloServiceInput(String name) {
+public enum Status {
+    OK,
+    NOT_OK
 }

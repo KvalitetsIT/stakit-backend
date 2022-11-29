@@ -1,7 +1,9 @@
 package dk.kvalitetsit.stakit.configuration;
 
-import dk.kvalitetsit.stakit.dao.HelloDao;
-import dk.kvalitetsit.stakit.dao.HelloDaoImpl;
+import dk.kvalitetsit.stakit.dao.StatusConfigurationDao;
+import dk.kvalitetsit.stakit.dao.StatusConfigurationDaoImpl;
+import dk.kvalitetsit.stakit.dao.StatusDao;
+import dk.kvalitetsit.stakit.dao.StatusDaoImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +16,13 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class DatabaseConfiguration {
     @Bean
-    public HelloDao helloDao(DataSource dataSource) {
-        return new HelloDaoImpl(dataSource);
+    public StatusDao statusDao(DataSource dataSource) {
+        return new StatusDaoImpl(dataSource);
+    }
+
+    @Bean
+    public StatusConfigurationDao statusConfigurationDao(DataSource dataSource) {
+        return new StatusConfigurationDaoImpl(dataSource);
     }
 
     @Bean

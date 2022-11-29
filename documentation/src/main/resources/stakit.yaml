@@ -26,26 +26,22 @@ servers:
           - 8080
         default: 8080
 paths:
-  /v1/hello:
+  /v1/status:
     post:
       tags:
         - StaKit
-      summary: Call the thugs service
-      description: Post your name and get some hugs or meet some thugs.
+      summary: Update status
+      description: Used to update status of a service from one of the adapters.
       requestBody:
         description: Your name
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/helloRequest'
+              $ref: '#/components/schemas/status-update'
       responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/helloResponse'
+        '201':
+          description: The
 
 components:
   responses:
@@ -74,12 +70,31 @@ components:
           type: string
           nullable: true
 
-    helloRequest:
+    status-update:
       type: object
       required:
-        - name
+        - service
+        - status
+        - status-time
+        - service-name
       properties:
-        name:
-          description: Your name
+        service:
+          description: The service to update. If the service is not created it will be created. It is recommended to use a hashed value of for instance the service name being monitored.
           type: string
-          example: "John Doe"
+          example: "4fa59cef25fbcab4155e6eb5201a27ce1eb010408e4550b1313f1126"
+        service-name:
+          description: The name of the service to update.
+          type: string
+          example: "My Cool Service"
+        status:
+          description: Status of service
+          type: string
+          enum: [OK, NOT_OK]
+        status-time:
+          description: Date/time for the status
+          type: string
+          format: date-time
+        message:
+          description: Optional message for the status update.
+          type: string
+          example: "Service can not connect to database."
