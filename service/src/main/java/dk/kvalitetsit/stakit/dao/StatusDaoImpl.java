@@ -23,13 +23,13 @@ public class StatusDaoImpl implements StatusDao {
     public void insertUpdate(StatusEntity statusEntity) {
         logger.info("Inserting or updating entry in database.");
 
-        var sql = "insert status(service, status, status_time, message) values(:service, :status, :statusTime, :message)";
+        var sql = "insert status(status, status_time, message, status_configuration_id) values(:status, :statusTime, :message, :statusConfigurationId)";
 
         var parameterMap = new HashMap<String, Object>();
-        parameterMap.put("service", statusEntity.service());
         parameterMap.put("status", statusEntity.status());
         parameterMap.put("statusTime", Timestamp.from(statusEntity.statusTime().toInstant()));
         parameterMap.put("message", statusEntity.message());
+        parameterMap.put("statusConfigurationId", statusEntity.statusConfigurationId());
 
         template.update(sql, parameterMap);
     }

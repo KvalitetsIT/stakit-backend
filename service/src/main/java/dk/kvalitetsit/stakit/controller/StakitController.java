@@ -7,6 +7,7 @@ import org.openapitools.api.StaKitApi;
 import org.openapitools.model.StatusUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,8 +24,8 @@ public class StakitController implements StaKitApi {
     public ResponseEntity<Void> v1StatusPost(StatusUpdate statusUpdate) {
         logger.debug("Updating or creating status");
 
-        statusUpdateService.updateStatus(new UpdateServiceInput(statusUpdate.getService(), Status.valueOf(Status.class, statusUpdate.getStatus().toString()), statusUpdate.getStatusTime(), statusUpdate.getMessage()));
+        statusUpdateService.updateStatus(new UpdateServiceInput(statusUpdate.getService(), statusUpdate.getServiceName(), Status.valueOf(Status.class, statusUpdate.getStatus().toString()), statusUpdate.getStatusTime(), statusUpdate.getMessage()));
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

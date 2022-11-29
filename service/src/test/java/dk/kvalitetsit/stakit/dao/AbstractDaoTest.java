@@ -4,6 +4,7 @@ import dk.kvalitetsit.stakit.configuration.TestConfiguration;
 import dk.kvalitetsit.stakit.configuration.DatabaseConfiguration;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,5 +41,7 @@ abstract public class AbstractDaoTest {
             initialized = new Object();
         }
     }
+
+
 }
 
