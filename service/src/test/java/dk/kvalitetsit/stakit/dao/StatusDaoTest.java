@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -19,7 +18,7 @@ public class StatusDaoTest extends AbstractDaoTest {
 
     @Test
     public void testInsert() {
-        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name", false);
+        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false);
 
         var input = StatusEntity.createInstance(statusConfigurationId,  "OK", OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS), "SOME MESSAGE");
 

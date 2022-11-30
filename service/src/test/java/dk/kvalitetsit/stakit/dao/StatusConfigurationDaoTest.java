@@ -16,8 +16,9 @@ public class StatusConfigurationDaoTest extends AbstractDaoTest {
     private TestDataHelper testDataHelper;
 
     @Test
-    public void testInsert() {
-        var input = StatusConfigurationEntity.createInstance("Service", "service name", true);
+    public void testInsertWithGroup() {
+        var groupId = testDataHelper.createGroup("group-name");
+        var input = StatusConfigurationEntity.createInstance("Service", "service name", true, groupId);
 
         statusConfigurationDao.insert(input);
 
@@ -28,6 +29,23 @@ public class StatusConfigurationDaoTest extends AbstractDaoTest {
         assertEquals(input.serviceName(), entity.serviceName());
         assertEquals(input.ignoreServiceName(), entity.ignoreServiceName());
         assertNotNull(result.get(0).id());
+        assertEquals(groupId, result.get(0).groupConfigurationId().longValue());
+    }
+
+    @Test
+    public void testInsertWithoutGroup() {
+        var input = StatusConfigurationEntity.createInstance("Service", "service name", true, null);
+
+        statusConfigurationDao.insert(input);
+
+        var result = statusConfigurationDao.findAll();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        var entity = result.get(0);
+        assertEquals(input.serviceName(), entity.serviceName());
+        assertEquals(input.ignoreServiceName(), entity.ignoreServiceName());
+        assertNotNull(result.get(0).id());
+        assertNull(result.get(0).groupConfigurationId());
     }
 
     @Test

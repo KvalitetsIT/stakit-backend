@@ -32,11 +32,11 @@ public class StatusUpdateServiceImplTest {
     public void testStatusConfigurationNotFound() {
         var input = new UpdateServiceInput(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Status.NOT_OK, OffsetDateTime.now(), "Some message");
 
-        Mockito.when(statusConfigurationDao.insert(StatusConfigurationEntity.createInstance(input.service(), input.serviceName(), false))).thenReturn(10L);
+        Mockito.when(statusConfigurationDao.insert(StatusConfigurationEntity.createInstance(input.service(), input.serviceName(), false, null))).thenReturn(10L);
 
         statusUpdateService.updateStatus(input);
 
-        Mockito.verify(statusConfigurationDao, times(1)).insert(StatusConfigurationEntity.createInstance(input.service(), input.serviceName(), false));
+        Mockito.verify(statusConfigurationDao, times(1)).insert(StatusConfigurationEntity.createInstance(input.service(), input.serviceName(), false, null));
         Mockito.verify(statusDao, times(1)).insertUpdate(StatusEntity.createInstance(10L, "NOT_OK", input.statusDateTime(), input.message()));
 
         Mockito.verifyNoMoreInteractions(statusConfigurationDao, statusDao);
@@ -46,12 +46,12 @@ public class StatusUpdateServiceImplTest {
     public void testStatusConfigurationFound() {
         var input = new UpdateServiceInput(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Status.NOT_OK, OffsetDateTime.now(), "Some message");
 
-        Mockito.when(statusConfigurationDao.insert(StatusConfigurationEntity.createInstance(input.service(), input.serviceName(), false))).thenThrow(DuplicateKeyException.class);
-        Mockito.when(statusConfigurationDao.findByService(input.service())).thenReturn(new StatusConfigurationEntity(10L, "service-name", "service", true));
+        Mockito.when(statusConfigurationDao.insert(StatusConfigurationEntity.createInstance(input.service(), input.serviceName(), false, null))).thenThrow(DuplicateKeyException.class);
+        Mockito.when(statusConfigurationDao.findByService(input.service())).thenReturn(new StatusConfigurationEntity(10L, "service-name", "service", true, null));
 
         statusUpdateService.updateStatus(input);
 
-        Mockito.verify(statusConfigurationDao, times(1)).insert(StatusConfigurationEntity.createInstance(input.service(), input.serviceName(), false));
+        Mockito.verify(statusConfigurationDao, times(1)).insert(StatusConfigurationEntity.createInstance(input.service(), input.serviceName(), false, null));
         Mockito.verify(statusConfigurationDao, times(1)).findByService(input.service());
         Mockito.verify(statusDao, times(1)).insertUpdate(StatusEntity.createInstance(10L, "NOT_OK", input.statusDateTime(), input.message()));
 

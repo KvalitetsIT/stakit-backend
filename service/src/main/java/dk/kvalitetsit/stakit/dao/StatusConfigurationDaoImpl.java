@@ -1,7 +1,6 @@
 package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.StatusConfigurationEntity;
-import dk.kvalitetsit.stakit.dao.model.ServiceConfigurationEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.DataClassRowMapper;
@@ -26,12 +25,13 @@ public class StatusConfigurationDaoImpl implements StatusConfigurationDao {
     public long insert(StatusConfigurationEntity statusConfigurationEntity) {
         logger.info("Inserting or updating entry in database.");
 
-        var sql = "insert status_configuration(service, service_name, ignore_service_name) values(:service, :service_name, :ignore_service_name)";
+        var sql = "insert status_configuration(service, service_name, ignore_service_name, group_configuration_id) values(:service, :service_name, :ignore_service_name, :group_configuration_id)";
 
         var parameterMap = new HashMap<String, Object>();
         parameterMap.put("service", statusConfigurationEntity.service());
         parameterMap.put("service_name", statusConfigurationEntity.serviceName());
         parameterMap.put("ignore_service_name", statusConfigurationEntity.ignoreServiceName());
+        parameterMap.put("group_configuration_id", statusConfigurationEntity.groupConfigurationId());
 
         var keyHolder = new GeneratedKeyHolder();
         template.update(sql, new MapSqlParameterSource(parameterMap), keyHolder);

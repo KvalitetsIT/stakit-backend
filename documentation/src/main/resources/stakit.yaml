@@ -43,6 +43,20 @@ paths:
         '201':
           description: The
 
+  /v1/status-grouped:
+    get:
+      tags:
+        - StaKit
+      summary: Get status for all components
+      description: Used to get status for all services grouped.
+      responses:
+        '200':
+          description: Status for all services grouped.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/status-grouped'
+
 components:
   responses:
     '400':
@@ -98,3 +112,50 @@ components:
           description: Optional message for the status update.
           type: string
           example: "Service can not connect to database."
+
+    status-grouped:
+      type: object
+      required:
+        - status
+      properties:
+        status-group:
+          description: The service to update. If the service is not created it will be created. It is recommended to use a hashed value of for instance the service name being monitored.
+          type: array
+          items:
+            $ref: "#/components/schemas/group"
+
+    group:
+      type: object
+      required:
+        - group-name
+      properties:
+        group-name:
+          description: Name of the group.
+          type: string
+          example: "My Cool Group Of Services"
+          maxLength: 100
+        status:
+          description: The service to update. If the service is not created it will be created. It is recommended to use a hashed value of for instance the service name being monitored.
+          type: array
+          items:
+            $ref: "#/components/schemas/status"
+
+    status:
+      type: object
+      properties:
+        service-name:
+          description: The name of the service to update.
+          type: string
+          example: "My Cool Service"
+        status:
+          description: Status of service
+          type: string
+          enum: [OK, NOT_OK]
+#        status-time:
+#          description: Date/time for the status
+#          type: string
+#          format: date-time
+#        message:
+#          description: Optional message for the status update.
+#          type: string
+#          example: "Service can not connect to database."

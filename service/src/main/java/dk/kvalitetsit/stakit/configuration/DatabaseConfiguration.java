@@ -1,9 +1,6 @@
 package dk.kvalitetsit.stakit.configuration;
 
-import dk.kvalitetsit.stakit.dao.StatusConfigurationDao;
-import dk.kvalitetsit.stakit.dao.StatusConfigurationDaoImpl;
-import dk.kvalitetsit.stakit.dao.StatusDao;
-import dk.kvalitetsit.stakit.dao.StatusDaoImpl;
+import dk.kvalitetsit.stakit.dao.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +20,16 @@ public class DatabaseConfiguration {
     @Bean
     public StatusConfigurationDao statusConfigurationDao(DataSource dataSource) {
         return new StatusConfigurationDaoImpl(dataSource);
+    }
+
+    @Bean
+    public GroupConfigurationDao groupDao(DataSource dataSource) {
+        return new GroupConfigurationDaoImpl(dataSource);
+    }
+
+    @Bean
+    public GroupedStatusDaoImpl groupedStatusDao(DataSource dataSource) {
+        return new GroupedStatusDaoImpl(dataSource);
     }
 
     @Bean
