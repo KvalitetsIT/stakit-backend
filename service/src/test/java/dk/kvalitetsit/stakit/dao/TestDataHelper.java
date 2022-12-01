@@ -6,6 +6,7 @@ import dk.kvalitetsit.stakit.dao.entity.StatusEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 public class TestDataHelper {
     @Autowired
@@ -30,6 +31,6 @@ public class TestDataHelper {
     }
 
     long createGroup(String groupName) {
-        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupName));
+        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(UUID.randomUUID(), groupName, 10));
     }
 }

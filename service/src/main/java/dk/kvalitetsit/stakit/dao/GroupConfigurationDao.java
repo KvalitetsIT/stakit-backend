@@ -8,4 +8,6 @@ public interface GroupConfigurationDao {
     long insert(GroupConfigurationEntity groupConfigurationEntity);
 
     List<GroupConfigurationEntity> findAll();
+
+    boolean update(GroupConfigurationEntity groupConfigurationEntity);
 }

@@ -1,7 +1,9 @@
 package dk.kvalitetsit.stakit.dao.entity;
 
-public record GroupConfigurationEntity(Long id, String groupName) {
-    public static GroupConfigurationEntity createInstance(String groupName) {
-        return new GroupConfigurationEntity(null, groupName);
+import java.util.UUID;
+
+public record GroupConfigurationEntity(Long id, UUID uuid, String groupName, int displayOrder) {
+    public static GroupConfigurationEntity createInstance(UUID uuid, String groupName, int displayOrder) {
+        return new GroupConfigurationEntity(null, uuid, groupName, displayOrder);
     }
 }
