@@ -207,7 +207,7 @@ components:
           maxLength: 50
         display-order:
           description: Order the group should be displayed on screen. From low to high.
-          type: int
+          type: integer
           maximum: 100
           minimum: 0
 
@@ -223,7 +223,7 @@ components:
           maxLength: 50
         display-order:
           description: Order the group should be displayed on screen. From low to high.
-          type: int
+          type: integer
           maximum: 100
           minimum: 0
 
