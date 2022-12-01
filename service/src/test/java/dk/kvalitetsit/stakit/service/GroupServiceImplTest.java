@@ -34,13 +34,13 @@ public class GroupServiceImplTest {
         assertNotNull(result);
         assertEquals(2, result.size());
 
-        assertEquals(groupOne.groupName(), result.get(0).name());
+        assertEquals(groupOne.name(), result.get(0).name());
         assertEquals(groupOne.uuid(), result.get(0).uuid());
-        assertEquals(groupOne.groupName(), result.get(0).name());
+        assertEquals(groupOne.name(), result.get(0).name());
         assertEquals(groupOne.displayOrder(), result.get(0).displayOrder());
 
         assertEquals(groupTwo.uuid(), result.get(1).uuid());
-        assertEquals(groupTwo.groupName(), result.get(1).name());
+        assertEquals(groupTwo.name(), result.get(1).name());
         assertEquals(groupTwo.displayOrder(), result.get(1).displayOrder());
     }
 

@@ -13,13 +13,13 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class DatabaseConfiguration {
     @Bean
-    public StatusDao statusDao(DataSource dataSource) {
-        return new StatusDaoImpl(dataSource);
+    public ServiceStatusDao statusDao(DataSource dataSource) {
+        return new ServiceStatusDaoImpl(dataSource);
     }
 
     @Bean
-    public StatusConfigurationDao statusConfigurationDao(DataSource dataSource) {
-        return new StatusConfigurationDaoImpl(dataSource);
+    public ServiceConfigurationDao statusConfigurationDao(DataSource dataSource) {
+        return new ServiceConfigurationDaoImpl(dataSource);
     }
 
     @Bean
