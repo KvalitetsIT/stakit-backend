@@ -1,12 +1,10 @@
 package dk.kvalitetsit.stakit.configuration;
 
+import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
 import dk.kvalitetsit.stakit.dao.GroupedStatusDao;
 import dk.kvalitetsit.stakit.dao.StatusConfigurationDao;
 import dk.kvalitetsit.stakit.dao.StatusDao;
-import dk.kvalitetsit.stakit.service.StatusGroupService;
-import dk.kvalitetsit.stakit.service.StatusGroupServiceImpl;
-import dk.kvalitetsit.stakit.service.StatusUpdateService;
-import dk.kvalitetsit.stakit.service.StatusUpdateServiceImpl;
+import dk.kvalitetsit.stakit.service.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,5 +18,10 @@ public class StakitConfiguration {
     @Bean
     public StatusGroupService statusGroupService(GroupedStatusDao groupedStatusDao) {
         return new StatusGroupServiceImpl(groupedStatusDao);
+    }
+
+    @Bean
+    public GroupService groupService(GroupConfigurationDao groupConfigurationDao) {
+        return new GroupServiceImpl(groupConfigurationDao);
     }
 }

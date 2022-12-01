@@ -14,7 +14,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
-public class StatusGroupServiceImplTestEntity {
+public class StatusGroupServiceImplTest {
     private StatusGroupServiceImpl statusGroupServiceImpl;
     private GroupedStatusDao groupStatusDao;
 

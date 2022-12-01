@@ -43,6 +43,62 @@ paths:
         '201':
           description: The
 
+  /v1/group:
+    post:
+      tags:
+        - StaKit
+      summary: Create new group
+      description: Used to create a new group
+      requestBody:
+        description: The group to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/group-update'
+      responses:
+        '201':
+          description: The group is created.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The location of the created resource.
+    get:
+      tags:
+        - StaKit
+      summary: Get all groups.
+      description: Used to get a list of all groups.
+      responses:
+        '200':
+          description: List of all groups.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/group'
+
+  /v1/group/{uuid}:
+    put:
+      tags:
+        - StaKit
+      summary: Used to update a group.
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      requestBody:
+        description: The updated group.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/group-update'
+      responses:
+        '200':
+          description: The group have been updated with success.
+        '404':
+          description: The group does not exists.
+
   /v1/status-grouped:
     get:
       tags:
@@ -65,6 +121,16 @@ components:
       description: "Unauthorized. This could be because: <br> * The calling system has not been properly authenticated."
     '403':
       description: "Forbidden. This could be because: <br> * The requested information does not belong the organisation of the user <br> * The calling user does not have the required roles"
+  parameters:
+    uuid:
+      name: uuid
+      in: path
+      description: The uuid for the resource in question.
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 50edcf81-d36f-4246-a4af-168ba37fd57b
   schemas:
     helloResponse:
       type: object
@@ -122,9 +188,47 @@ components:
           description: The service to update. If the service is not created it will be created. It is recommended to use a hashed value of for instance the service name being monitored.
           type: array
           items:
-            $ref: "#/components/schemas/group"
+            $ref: "#/components/schemas/grouped"
 
     group:
+      type: object
+      required:
+        - id
+        - name
+        - display-order
+      properties:
+        id:
+          description: Group name
+          type: string
+          format: uuid
+        name:
+          description: Group name
+          type: string
+          maxLength: 50
+        display-order:
+          description: Order the group should be displayed on screen. From low to high.
+          type: int
+          maximum: 100
+          minimum: 0
+
+    group-update:
+      type: object
+      required:
+        - name
+        - display-order
+      properties:
+        name:
+          description: Group name
+          type: string
+          maxLength: 50
+        display-order:
+          description: Order the group should be displayed on screen. From low to high.
+          type: int
+          maximum: 100
+          minimum: 0
+
+
+    grouped:
       type: object
       required:
         - group-name
