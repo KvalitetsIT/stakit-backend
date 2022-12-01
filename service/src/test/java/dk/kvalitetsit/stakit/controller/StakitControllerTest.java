@@ -10,7 +10,7 @@ import dk.kvalitetsit.stakit.service.model.StatusGrouped;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openapitools.model.GroupUpdate;
+import org.openapitools.model.GroupInput;
 import org.openapitools.model.StatusUpdate;
 
 import java.time.OffsetDateTime;
@@ -74,7 +74,7 @@ public class StakitControllerTest {
 
         Mockito.when(statusGroupService.getStatusGrouped()).thenReturn(serviceResponse);
 
-        var result = stakitController.v1StatusGroupedGet();
+        var result = stakitController.v1ServiceStatusGroupedGet();
 
         assertNotNull(result);
         assertNotNull(result.getBody());
@@ -86,18 +86,18 @@ public class StakitControllerTest {
         var statusGroup = statusGroupList.get(0);
         assertEquals(groupOne.groupName(), statusGroup.getGroupName());
 
-        assertEquals(groupOne.status().get(0).statusName(), statusGroup.getStatus().get(0).getServiceName());
-        assertEquals(org.openapitools.model.Status.StatusEnum.OK, statusGroup.getStatus().get(0).getStatus());
+        assertEquals(groupOne.status().get(0).statusName(), statusGroup.getServices().get(0).getServiceName());
+        assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());
 
         // Assert second one
         statusGroup = statusGroupList.get(1);
         assertEquals(groupTwo.groupName(), statusGroup.getGroupName());
 
-        assertEquals(groupTwo.status().get(0).statusName(), statusGroup.getStatus().get(0).getServiceName());
-        assertEquals(org.openapitools.model.Status.StatusEnum.OK, statusGroup.getStatus().get(0).getStatus());
+        assertEquals(groupTwo.status().get(0).statusName(), statusGroup.getServices().get(0).getServiceName());
+        assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());
 
-        assertEquals(groupTwo.status().get(1).statusName(), statusGroup.getStatus().get(1).getServiceName());
-        assertEquals(org.openapitools.model.Status.StatusEnum.NOT_OK, statusGroup.getStatus().get(1).getStatus());
+        assertEquals(groupTwo.status().get(1).statusName(), statusGroup.getServices().get(1).getServiceName());
+        assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.NOT_OK, statusGroup.getServices().get(1).getStatus());
     }
 
     @Test
@@ -107,7 +107,7 @@ public class StakitControllerTest {
 
         Mockito.when(groupService.getGroups()).thenReturn(Arrays.asList(groupOne, groupTwo));
 
-        var result = stakitController.v1GroupGet();
+        var result = stakitController.v1GroupsGet();
         assertNotNull(result);
         assertEquals(200, result.getStatusCode().value());
 
@@ -125,7 +125,7 @@ public class StakitControllerTest {
 
     @Test
     public void testInsertGroup() {
-        var input = new GroupUpdate();
+        var input = new GroupInput();
         input.setName("name");
         input.setDisplayOrder(10);
 
@@ -133,7 +133,7 @@ public class StakitControllerTest {
 
         Mockito.when(groupService.createGroup(Group.createInstance(input.getName(), input.getDisplayOrder()))).thenReturn(expectedUuid);
 
-        var result = stakitController.v1GroupPost(input);
+        var result = stakitController.v1GroupsPost(input);
         assertNotNull(result);
         assertEquals(201, result.getStatusCode().value());
     }
@@ -141,7 +141,7 @@ public class StakitControllerTest {
     @Test
     public void testUpdateGroup() {
         var uuid = UUID.randomUUID();
-        var input = new GroupUpdate();
+        var input = new GroupInput();
         input.setName("name");
         input.setDisplayOrder(10);
 
@@ -149,7 +149,7 @@ public class StakitControllerTest {
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(true);
 
-        var result = stakitController.v1GroupUuidPut(uuid, input);
+        var result = stakitController.v1GroupsUuidPut(uuid, input);
         assertNotNull(result);
         assertEquals(200, result.getStatusCodeValue());
 
@@ -159,7 +159,7 @@ public class StakitControllerTest {
     @Test
     public void testUpdateGroupNotFound() {
         var uuid = UUID.randomUUID();
-        var input = new GroupUpdate();
+        var input = new GroupInput();
         input.setName("name");
         input.setDisplayOrder(10);
 
@@ -167,7 +167,7 @@ public class StakitControllerTest {
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(false);
 
-        var result = stakitController.v1GroupUuidPut(uuid, input);
+        var result = stakitController.v1GroupsUuidPut(uuid, input);
         assertNotNull(result);
         assertEquals(404, result.getStatusCodeValue());
 

@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.StaKitApi;
-import org.openapitools.client.model.Status;
+import org.openapitools.client.model.ServiceStatus;
 import org.openapitools.client.model.StatusUpdate;
 
 import java.time.OffsetDateTime;
@@ -36,7 +36,7 @@ public class StatusFrontIT extends AbstractIntegrationTest {
         statusUpdate.status(StatusUpdate.StatusEnum.OK);
         statusUpdate.setStatusTime(OffsetDateTime.now());
 
-        var result = helloApi.v1StatusGroupedGet();
+        var result = helloApi.v1ServiceStatusGroupedGet();
 
         assertNotNull(result);
         assertNotNull(result.getStatusGroup());
@@ -45,10 +45,10 @@ public class StatusFrontIT extends AbstractIntegrationTest {
         var group = result.getStatusGroup().get(0);
         assertEquals("Default", group.getGroupName());
 
-        assertNotNull(group.getStatus());
-        assertTrue(group.getStatus().size() >= 1);
+        assertNotNull(group.getServices());
+        assertTrue(group.getServices().size() >= 1);
 
-        assertEquals(1L, group.getStatus().stream().filter(x -> x.getServiceName().equals(statusUpdate.getServiceName())).count());
-        assertEquals(Status.StatusEnum.NOT_OK, group.getStatus().stream().filter(x -> x.getServiceName().equals(statusUpdate.getServiceName())).findAny().get().getStatus());
+        assertEquals(1L, group.getServices().stream().filter(x -> x.getServiceName().equals(statusUpdate.getServiceName())).count());
+        assertEquals(ServiceStatus.StatusEnum.NOT_OK, group.getServices().stream().filter(x -> x.getServiceName().equals(statusUpdate.getServiceName())).findAny().get().getStatus());
     }
 }

@@ -1,7 +1,7 @@
 package dk.kvalitetsit.stakit.configuration;
 
-import dk.kvalitetsit.stakit.dao.StatusDao;
-import dk.kvalitetsit.stakit.dao.StatusDaoImpl;
+import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
+import dk.kvalitetsit.stakit.dao.ServiceStatusDaoImpl;
 import dk.kvalitetsit.stakit.dao.TestDataHelper;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -14,10 +14,10 @@ import javax.sql.DataSource;
 public class TestConfiguration {
     // Configure beans used for test
 
-    @Bean
-    public StatusDao helloDao(DataSource dataSource) {
-        return new StatusDaoImpl(dataSource);
-    }
+//    @Bean
+//    public ServiceStatusDao helloDao(DataSource dataSource) {
+//        return new ServiceStatusDaoImpl(dataSource);
+//    }
 
     @Bean
     public TestDataHelper testDataHelper() {

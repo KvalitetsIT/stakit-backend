@@ -35,21 +35,21 @@ public class StakitController implements StaKitApi {
     }
 
     @Override
-    public ResponseEntity<List<Group>> v1GroupGet() {
+    public ResponseEntity<List<Group>> v1GroupsGet() {
         var groups = groupService.getGroups();
 
         return ResponseEntity.ok(GroupMapper.mapGetGroups(groups));
     }
 
     @Override
-    public ResponseEntity<Void> v1GroupPost(GroupUpdate groupUpdate) {
+    public ResponseEntity<Void> v1GroupsPost(GroupInput groupUpdate) {
         var resource = groupService.createGroup(GroupMapper.mapCreateGroup(groupUpdate));
 
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", resource.toString()).build(); // TODO Jeg skal nok være en rigtig URL.
     }
 
     @Override
-    public ResponseEntity<Void> v1GroupUuidPut(UUID uuid, GroupUpdate groupUpdate) {
+    public ResponseEntity<Void> v1GroupsUuidPut(UUID uuid, GroupInput groupUpdate) {
         var updated = groupService.updateGroup(GroupMapper.mapUpdateGroup(uuid, groupUpdate));
 
         if(updated) {
@@ -61,7 +61,7 @@ public class StakitController implements StaKitApi {
     }
 
     @Override
-    public ResponseEntity<StatusGrouped> v1StatusGroupedGet() {
+    public ResponseEntity<StatusGrouped> v1ServiceStatusGroupedGet() {
         logger.debug("Reading status");
 
         var groupStatus = statusGroupService.getStatusGrouped();
@@ -76,16 +76,14 @@ public class StakitController implements StaKitApi {
     private Grouped mapGroup(dk.kvalitetsit.stakit.service.model.StatusGrouped statusGrouped) {
         var group = new Grouped();
         group.setGroupName(statusGrouped.groupName());
-        group.setStatus(new ArrayList<>());
+        group.setServices(new ArrayList<>());
 
         statusGrouped.status().forEach(x -> {
-            var s = new org.openapitools.model.Status();
+            var s = new org.openapitools.model.ServiceStatus();
             s.setServiceName(x.statusName());
-            s.setStatus(org.openapitools.model.Status.StatusEnum.fromValue(x.status().toString()));
-//            s.setStatusTime(); TODO Set later
-//            s.setMessage();
+            s.setStatus(org.openapitools.model.ServiceStatus.StatusEnum.fromValue(x.status().toString()));
 
-            group.addStatusItem(s);
+            group.addServicesItem(s);
         });
 
         return group;

@@ -24,7 +24,7 @@ public class GroupConfigurationDaoTest extends AbstractDaoTest {
         var result = groupConfigurationDao.findAll();
         assertEquals(1, result.size());
         assertEquals(input.uuid(), result.get(0).uuid());
-        assertEquals(input.groupName(), result.get(0).groupName());
+        assertEquals(input.name(), result.get(0).name());
         assertEquals(id, result.get(0).id().longValue());
         assertEquals(input.displayOrder(), result.get(0).displayOrder());
     }

@@ -33,6 +33,6 @@ public class GroupServiceImpl implements GroupService {
     public List<Group> getGroups() {
         var dbResult = groupConfigurationDao.findAll();
 
-        return dbResult.stream().map(x -> new Group(x.uuid(), x.groupName(), x.displayOrder())).collect(Collectors.toList());
+        return dbResult.stream().map(x -> new Group(x.uuid(), x.name(), x.displayOrder())).collect(Collectors.toList());
     }
 }

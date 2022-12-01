@@ -1,18 +1,18 @@
 package dk.kvalitetsit.stakit.controller.mapper;
 
 import dk.kvalitetsit.stakit.service.model.Group;
-import org.openapitools.model.GroupUpdate;
+import org.openapitools.model.GroupInput;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class GroupMapper {
-    public static Group mapCreateGroup(GroupUpdate from) {
+    public static Group mapCreateGroup(GroupInput from) {
         return Group.createInstance(from.getName(), from.getDisplayOrder());
     }
 
-    public static Group mapUpdateGroup(UUID uuid, GroupUpdate from) {
+    public static Group mapUpdateGroup(UUID uuid, GroupInput from) {
         return new Group(uuid, from.getName(), from.getDisplayOrder());
     }
 

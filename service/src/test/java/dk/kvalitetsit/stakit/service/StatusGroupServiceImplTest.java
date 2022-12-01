@@ -2,7 +2,7 @@ package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.GroupedStatusDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupedStatus;
-import dk.kvalitetsit.stakit.dao.entity.StatusEntity;
+import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
 import dk.kvalitetsit.stakit.service.model.Status;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class StatusGroupServiceImplTest {
         assertEquals(groupThree.serviceName(), secondGroupResult.status().get(1).statusName());
     }
 
-    private StatusEntity createStatusEntity(String status, String message) {
-        return new StatusEntity(1L, 1L, "OK", OffsetDateTime.now(), null);
+    private ServiceStatusEntity createStatusEntity(String status, String message) {
+        return new ServiceStatusEntity(1L, 1L, "OK", OffsetDateTime.now(), null);
     }
 }
