@@ -6,8 +6,12 @@ info:
   contact:
     email: development@kvalitetitsit.dk
 tags:
+  - name: adapter
+    description: API's used by the status adapters.
+  - name: group-management
+    description: API's used to manage the groups.
   - name: StaKit
-    description: StaKit related API's
+    description: API's to get data for frontend.
 
 servers:
   - url: '{protocol}://{environment}:{port}'
@@ -29,7 +33,7 @@ paths:
   /v1/status:
     post:
       tags:
-        - StaKit
+        - adapter
       summary: Update status
       description: Used to update status of a service from one of the adapters.
       requestBody:
@@ -46,7 +50,7 @@ paths:
   /v1/groups:
     post:
       tags:
-        - StaKit
+        - group-management
       summary: Create new group
       description: Used to create a new group
       requestBody:
@@ -66,7 +70,7 @@ paths:
               description: The location of the created resource.
     get:
       tags:
-        - StaKit
+        - group-management
       summary: Get all groups.
       description: Used to get a list of all groups.
       responses:
@@ -82,7 +86,7 @@ paths:
   /v1/groups/{uuid}:
     put:
       tags:
-        - StaKit
+        - group-management
       summary: Used to update a group.
       parameters:
         - $ref: '#/components/parameters/uuid'
