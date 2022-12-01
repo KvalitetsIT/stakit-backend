@@ -3,6 +3,7 @@ package dk.kvalitetsit.stakit.integrationtest;
 import org.junit.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
+import org.openapitools.client.api.AdapterApi;
 import org.openapitools.client.api.StaKitApi;
 import org.openapitools.client.model.ServiceStatus;
 import org.openapitools.client.model.StatusUpdate;
@@ -12,15 +13,17 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class StatusFrontIT extends AbstractIntegrationTest {
+public class StaKitIT extends AbstractIntegrationTest {
 
-    private final StaKitApi helloApi;
+    private final StaKitApi staKitApi;
+    private final AdapterApi adapterApi;
 
-    public StatusFrontIT() {
+    public StaKitIT() {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
 
-        helloApi = new StaKitApi(apiClient);
+        staKitApi = new StaKitApi(apiClient);
+        adapterApi = new AdapterApi(apiClient);
     }
 
     @Test
@@ -31,12 +34,12 @@ public class StatusFrontIT extends AbstractIntegrationTest {
         statusUpdate.setStatus(StatusUpdate.StatusEnum.NOT_OK);
         statusUpdate.setStatusTime(OffsetDateTime.now());
 
-        helloApi.v1StatusPost(statusUpdate);
+        adapterApi.v1StatusPost(statusUpdate);
 
         statusUpdate.status(StatusUpdate.StatusEnum.OK);
         statusUpdate.setStatusTime(OffsetDateTime.now());
 
-        var result = helloApi.v1ServiceStatusGroupedGet();
+        var result = staKitApi.v1ServiceStatusGroupedGet();
 
         assertNotNull(result);
         assertNotNull(result.getStatusGroup());

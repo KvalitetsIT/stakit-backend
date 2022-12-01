@@ -3,7 +3,7 @@ package dk.kvalitetsit.stakit.integrationtest;
 import org.junit.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
-import org.openapitools.client.api.StaKitApi;
+import org.openapitools.client.api.AdapterApi;
 import org.openapitools.client.model.StatusUpdate;
 import org.springframework.http.HttpStatus;
 
@@ -11,15 +11,15 @@ import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StatusUpdateIT extends AbstractIntegrationTest {
+public class AdapterIT extends AbstractIntegrationTest {
 
-    private final StaKitApi helloApi;
+    private final AdapterApi adapterApi;
 
-    public StatusUpdateIT() {
+    public AdapterIT() {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
 
-        helloApi = new StaKitApi(apiClient);
+        adapterApi = new AdapterApi(apiClient);
     }
 
     @Test
@@ -33,7 +33,7 @@ public class StatusUpdateIT extends AbstractIntegrationTest {
         input.setMessage("Everything is OK.");
 
         // Fails if HTTP status code is not OK. // TODO Consider asserting expected status code.
-        var result = helloApi.v1StatusPostWithHttpInfo(input);
+        var result = adapterApi.v1StatusPostWithHttpInfo(input);
         assertEquals(HttpStatus.CREATED.value(), result.getStatusCode());
     }
 }
