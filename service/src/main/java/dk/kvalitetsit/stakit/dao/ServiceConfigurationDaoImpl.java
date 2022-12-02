@@ -25,13 +25,14 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
     public long insert(ServiceConfigurationEntity serviceConfigurationEntity) {
         logger.info("Inserting or updating entry in database.");
 
-        var sql = "insert service_configuration(service, name, ignore_service_name, group_configuration_id) values(:service, :service_name, :ignore_service_name, :group_configuration_id)";
+        var sql = "insert service_configuration(service, uuid, name, ignore_service_name, group_configuration_id) values(:service, :uuid, :service_name, :ignore_service_name, :group_configuration_id)";
 
         var parameterMap = new HashMap<String, Object>();
         parameterMap.put("service", serviceConfigurationEntity.service());
         parameterMap.put("service_name", serviceConfigurationEntity.name());
         parameterMap.put("ignore_service_name", serviceConfigurationEntity.ignoreServiceName());
         parameterMap.put("group_configuration_id", serviceConfigurationEntity.groupConfigurationId());
+        parameterMap.put("uuid", serviceConfigurationEntity.uuid().toString());
 
         var keyHolder = new GeneratedKeyHolder();
         template.update(sql, new MapSqlParameterSource(parameterMap), keyHolder);

@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import java.util.UUID;
+
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,7 +20,7 @@ public class ServiceConfigurationDaoTest extends AbstractDaoTest {
     @Test
     public void testInsertWithGroup() {
         var groupId = testDataHelper.createGroup("group-name");
-        var input = ServiceConfigurationEntity.createInstance("Service", "service name", true, groupId);
+        var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(), "service name", true, groupId);
 
         serviceConfigurationDao.insert(input);
 
@@ -34,7 +36,7 @@ public class ServiceConfigurationDaoTest extends AbstractDaoTest {
 
     @Test
     public void testInsertWithoutGroup() {
-        var input = ServiceConfigurationEntity.createInstance("Service", "service name", true, null);
+        var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(),"service name", true, null);
 
         serviceConfigurationDao.insert(input);
 
