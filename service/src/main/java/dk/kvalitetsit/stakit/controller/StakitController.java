@@ -1,6 +1,7 @@
 package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.service.StatusGroupService;
+import dk.kvalitetsit.stakit.session.PublicApi;
 import org.openapitools.api.StaKitApi;
 import org.openapitools.model.Grouped;
 import org.openapitools.model.StatusGrouped;
@@ -24,6 +25,7 @@ public class StakitController implements StaKitApi {
     }
 
     @Override
+    @PublicApi
     public ResponseEntity<StatusGrouped> v1ServiceStatusGroupedGet() {
         logger.debug("Reading status");
 

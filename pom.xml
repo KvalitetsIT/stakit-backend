@@ -43,6 +43,7 @@
 		<spring-prometheus-app-info-version>1.2.0</spring-prometheus-app-info-version>
 		<spring-request-id-logger-version>1.2.1</spring-request-id-logger-version>
 		<jacoco-version>0.8.8</jacoco-version>
+		<jsonwebtoken-version>0.11.5</jsonwebtoken-version>
 	</properties>
 
 	<dependencies>
@@ -128,6 +129,24 @@
 				<version>2.1.1</version>
 			</dependency>
 
+			<!-- JSON Web Token stuff -->
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-api</artifactId>
+				<version>${jsonwebtoken-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-impl</artifactId>
+				<version>${jsonwebtoken-version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-jackson</artifactId>
+				<version>${jsonwebtoken-version}</version>
+				<scope>runtime</scope>
+			</dependency>
 
 			<!-- Test dependencies - test containers -->
 			<dependency>
