@@ -39,10 +39,11 @@ public class ServiceManagementServiceImplTest {
 
         var result = serviceManagementService.getService(serviceUuid);
         assertNotNull(result);
-        assertEquals(serviceConfigurationEntity.name(), result.name());
-        assertEquals(serviceConfigurationEntity.service(), result.serviceIdentifier());
-        assertEquals(serviceConfigurationEntity.groupUuid(), result.group());
-        assertEquals(serviceConfigurationEntity.ignoreServiceName(), result.ignoreServiceName());
+        assertTrue(result.isPresent());
+        assertEquals(serviceConfigurationEntity.name(), result.get().name());
+        assertEquals(serviceConfigurationEntity.service(), result.get().serviceIdentifier());
+        assertEquals(serviceConfigurationEntity.groupUuid(), result.get().group());
+        assertEquals(serviceConfigurationEntity.ignoreServiceName(), result.get().ignoreServiceName());
 
         Mockito.verify(serviceConfigurationDao, times(1)).findByUuidWithGroupUuid(serviceUuid);
     }
@@ -54,7 +55,8 @@ public class ServiceManagementServiceImplTest {
         Mockito.when(serviceConfigurationDao.findByUuidWithGroupUuid(serviceUuid)).thenReturn(Optional.empty());
 
         var result = serviceManagementService.getService(serviceUuid);
-        assertNull(result);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
 
         Mockito.verify(serviceConfigurationDao, times(1)).findByUuidWithGroupUuid(serviceUuid);
     }

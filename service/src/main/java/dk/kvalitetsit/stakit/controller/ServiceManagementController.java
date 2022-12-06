@@ -1,12 +1,10 @@
 package dk.kvalitetsit.stakit.controller;
 
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundExceptionAbstract;
 import dk.kvalitetsit.stakit.controller.mapper.ServiceManagementMapper;
 import dk.kvalitetsit.stakit.service.ServiceManagementService;
 import org.openapitools.api.ServiceManagementApi;
-import org.openapitools.model.Service;
-import org.openapitools.model.ServiceCreate;
-import org.openapitools.model.ServiceUpdate;
-import org.openapitools.model.Services;
+import org.openapitools.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,10 +15,10 @@ import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "http://localhost") // TODO Jeg skal nok fjernes igen.
-public class ServiceManageController implements ServiceManagementApi {
+public class ServiceManagementController implements ServiceManagementApi {
     private final ServiceManagementService serviceManagementService;
 
-    public ServiceManageController(ServiceManagementService serviceManagementService) {
+    public ServiceManagementController(ServiceManagementService serviceManagementService) {
         this.serviceManagementService = serviceManagementService;
     }
 
@@ -31,23 +29,28 @@ public class ServiceManageController implements ServiceManagementApi {
     }
 
     @Override
-    public ResponseEntity<Void> v1ServicesPost(ServiceCreate serviceCreate) {
+    public ResponseEntity<CreateResponse> v1ServicesPost(ServiceCreate serviceCreate) {
         var serviceUuid = serviceManagementService.createService(ServiceManagementMapper.mapCreate(serviceCreate));
 
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location", serviceUuid.toString()).build(); // TODO Jeg skal nok være en rigtig URL.
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", serviceUuid.toString()).body(new CreateResponse().uuid(serviceUuid)); // TODO Jeg skal nok være en rigtig URL.
     }
 
     @Override
     public ResponseEntity<Service> v1ServicesUuidGet(UUID uuid) {
         var service  = serviceManagementService.getService(uuid);
 
-        return service == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(ServiceManagementMapper.mapService(service));
+        return ResponseEntity.ok(service.map(ServiceManagementMapper::mapService)
+                .orElseThrow(() -> new ResourceNotFoundExceptionAbstract("Service with uuid %s not found".formatted(uuid))));
     }
 
     @Override
     public ResponseEntity<Void> v1ServicesUuidPut(UUID uuid, ServiceUpdate serviceUpdate) {
         boolean updated = serviceManagementService.updateService(uuid, ServiceManagementMapper.mapUpdate(serviceUpdate));
 
-        return updated ? ResponseEntity.status(201).build() : ResponseEntity.notFound().build();
+        if(!updated) {
+            throw new ResourceNotFoundExceptionAbstract("Service with uuid %s not found".formatted(uuid));
+        }
+
+        return ResponseEntity.status(201).build();
     }
 }

@@ -1,5 +1,6 @@
 package dk.kvalitetsit.stakit.controller;
 
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundExceptionAbstract;
 import dk.kvalitetsit.stakit.service.ServiceManagementService;
 import dk.kvalitetsit.stakit.service.model.Service;
 import org.junit.Before;
@@ -11,21 +12,21 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
 public class ServiceManagementControllerTest {
     private ServiceManagementService serviceManagementService;
-    private ServiceManageController serviceManagementController;
+    private ServiceManagementController serviceManagementController;
 
     @Before
     public void setup() {
         serviceManagementService = Mockito.mock(ServiceManagementService.class);
-        serviceManagementController = new ServiceManageController(serviceManagementService);
+        serviceManagementController = new ServiceManagementController(serviceManagementService);
     }
 
     @Test
@@ -78,7 +79,7 @@ public class ServiceManagementControllerTest {
         var serviceUuid = UUID.randomUUID();
         var service = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID());
 
-        Mockito.when(serviceManagementService.getService(serviceUuid)).thenReturn(service);
+        Mockito.when(serviceManagementService.getService(serviceUuid)).thenReturn(Optional.of(service));
 
         var response = serviceManagementController.v1ServicesUuidGet(serviceUuid);
         assertNotNull(response);
@@ -98,17 +99,16 @@ public class ServiceManagementControllerTest {
     @Test
     public void testGetServiceNotFound() {
         var serviceUuid = UUID.randomUUID();
-        var service = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID());
 
-        Mockito.when(serviceManagementService.getService(serviceUuid)).thenReturn(null);
+        Mockito.when(serviceManagementService.getService(serviceUuid)).thenReturn(Optional.empty());
 
-        var response = serviceManagementController.v1ServicesUuidGet(serviceUuid);
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        var expectedException = assertThrows(ResourceNotFoundExceptionAbstract.class, () -> serviceManagementController.v1ServicesUuidGet(serviceUuid));
+        assertNotNull(expectedException);
+        assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());
+        assertEquals("Service with uuid %s not found".formatted(serviceUuid), expectedException.getMessage());
 
         Mockito.verify(serviceManagementService, times(1)).getService(serviceUuid);
     }
-
 
     @Test
     public void testUpdateServiceNotFound() {
@@ -121,9 +121,10 @@ public class ServiceManagementControllerTest {
 
         Mockito.when(serviceManagementService.updateService(Mockito.eq(serviceUuid), Mockito.any())).thenReturn(false);
 
-        var response = serviceManagementController.v1ServicesUuidPut(serviceUuid, serviceUpdate);
-        assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        var expectedException = assertThrows(ResourceNotFoundExceptionAbstract.class, () ->serviceManagementController.v1ServicesUuidPut(serviceUuid, serviceUpdate));
+        assertNotNull(expectedException);
+        assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());
+        assertEquals("Service with uuid %s not found".formatted(serviceUuid), expectedException.getMessage());
 
         Mockito.verify(serviceManagementService, times(1)).updateService(Mockito.eq(serviceUuid), Mockito.argThat(x -> {
             assertEquals(serviceUpdate.getServiceIdentifier(), x.serviceIdentifier());
@@ -168,11 +169,15 @@ public class ServiceManagementControllerTest {
         serviceCreate.setIgnoreServiceName(true);
         serviceCreate.setGroup(UUID.randomUUID());
 
-        Mockito.when(serviceManagementService.createService(Mockito.any())).thenReturn(UUID.randomUUID());
+        var expectedUuid = UUID.randomUUID();
+
+        Mockito.when(serviceManagementService.createService(Mockito.any())).thenReturn(expectedUuid);
 
         var response = serviceManagementController.v1ServicesPost(serviceCreate);
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(expectedUuid.toString(), response.getHeaders().get("Location").stream().findFirst().get());
+        assertEquals(expectedUuid, response.getBody().getUuid());
 
         Mockito.verify(serviceManagementService, times(1)).createService(Mockito.argThat(x -> {
             assertEquals(serviceCreate.getServiceIdentifier(), x.serviceIdentifier());

@@ -29,11 +29,12 @@ public class GroupIT extends AbstractIntegrationTest {
         var response = groupManagementApi.v1GroupsPostWithHttpInfo(groupUpdate);
         assertEquals(201, response.getStatusCode());
 
-        var uuid = response.getHeaders().get("Location").get(0);
+        var uuid = response.getData().getUuid();
+        assertEquals(uuid.toString(), response.getHeaders().get("Location").get(0));
 
         groupUpdate.setDisplayOrder(10);
         groupUpdate.setName("name updated");
-        groupManagementApi.v1GroupsUuidPut(UUID.fromString(uuid), groupUpdate);
+        groupManagementApi.v1GroupsUuidPut(uuid, groupUpdate);
 
         var result = groupManagementApi.v1GroupsGet();
         assertNotNull(result);

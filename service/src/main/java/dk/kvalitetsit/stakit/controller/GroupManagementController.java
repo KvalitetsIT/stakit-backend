@@ -1,8 +1,10 @@
 package dk.kvalitetsit.stakit.controller;
 
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundExceptionAbstract;
 import dk.kvalitetsit.stakit.controller.mapper.GroupMapper;
 import dk.kvalitetsit.stakit.service.GroupService;
 import org.openapitools.api.GroupManagementApi;
+import org.openapitools.model.CreateResponse;
 import org.openapitools.model.Group;
 import org.openapitools.model.GroupInput;
 import org.slf4j.Logger;
@@ -33,21 +35,20 @@ public class GroupManagementController implements GroupManagementApi {
     }
 
     @Override
-    public ResponseEntity<Void> v1GroupsPost(GroupInput groupUpdate) {
+    public ResponseEntity<CreateResponse> v1GroupsPost(GroupInput groupUpdate) {
         var resource = groupService.createGroup(GroupMapper.mapCreateGroup(groupUpdate));
 
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location", resource.toString()).build(); // TODO Jeg skal nok være en rigtig URL.
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", resource.toString()).body(new CreateResponse().uuid(resource)); // TODO Jeg skal nok være en rigtig URL.
     }
 
     @Override
     public ResponseEntity<Void> v1GroupsUuidPut(UUID uuid, GroupInput groupUpdate) {
         var updated = groupService.updateGroup(GroupMapper.mapUpdateGroup(uuid, groupUpdate));
 
-        if(updated) {
-            return ResponseEntity.status(HttpStatus.OK).build();
+        if(!updated) {
+            throw new ResourceNotFoundExceptionAbstract("Group with uuid %s not found".formatted(uuid));
         }
-        else {
-            return ResponseEntity.notFound().build();
-        }
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

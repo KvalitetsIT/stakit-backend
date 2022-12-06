@@ -70,6 +70,10 @@ paths:
               schema:
                 type: string
               description: The location of the created resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-response'
     get:
       tags:
         - group-management
@@ -100,10 +104,14 @@ paths:
             schema:
               $ref: '#/components/schemas/group-input'
       responses:
-        '200':
+        '201':
           description: The group have been updated with success.
         '404':
           description: The group does not exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic_error'
 
   /v1/services:
     get:
@@ -135,6 +143,16 @@ paths:
       responses:
         '201':
           description: The service was created.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The location of the created resource.
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-response'
 
   /v1/services/{uuid}:
     get:
@@ -153,6 +171,10 @@ paths:
                 $ref: '#/components/schemas/service'
         '404':
           description: The service was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic_error'
 
     put:
       tags:
@@ -171,6 +193,12 @@ paths:
       responses:
         '201':
           description: The service was created.
+        '404':
+          description: The service was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic_error'
 
   /v1/service-status-grouped:
     get:
@@ -431,3 +459,39 @@ components:
           description: Group the service belongs to.
           type: string
           format: uuid
+
+    create-response:
+      type: object
+      required:
+        - uuid
+      properties:
+        uuid:
+          description: UUID of the created resource
+          type: string
+          format: uuid
+
+    basic_error:
+      type: object
+      required:
+        - error
+        - path
+        - status
+        - status_text
+        - timestamp
+      properties:
+        error:
+          description: Error message.
+          type: string
+        path:
+          description: Path
+          type: string
+        status:
+          description: HTTP status code
+          type: integer
+        status_text:
+          description: HTTP status text
+          type: string
+        timestamp:
+          description: Time of error
+          type: string
+          format: date-time

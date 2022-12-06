@@ -3,11 +3,14 @@ package dk.kvalitetsit.stakit.integrationtest;
 import org.junit.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
+import org.openapitools.client.JSON;
 import org.openapitools.client.api.GroupManagementApi;
 import org.openapitools.client.api.ServiceManagementApi;
+import org.openapitools.client.model.BasicError;
 import org.openapitools.client.model.GroupInput;
 import org.openapitools.client.model.ServiceCreate;
 import org.openapitools.client.model.ServiceUpdate;
+import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
@@ -26,25 +29,41 @@ public class ServiceManagementIT extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testGetNotFound() {
+        var uuid = UUID.randomUUID();
+        var expectedException = assertThrows(ApiException.class, () -> serviceManagementApi.v1ServicesUuidGetWithHttpInfo(uuid));
+        assertEquals(404, expectedException.getCode());
+
+        var body = JSON.getGson().fromJson(expectedException.getResponseBody(), BasicError.class);
+        assertNotNull(body);
+        assertEquals(404, body.getStatus());
+        assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), body.getStatusText());
+        assertEquals("/v1/services/%s".formatted(uuid), body.getPath());
+        assertEquals("Service with uuid %s not found".formatted(uuid), body.getError());
+        assertNotNull(body.getTimestamp());
+    }
+
+    @Test
     public void testCreateServiceAndReadByUuid() throws ApiException {
         var groupInput = new GroupInput();
         groupInput.setName("group");
-        groupInput.setDisplayOrder(10);;
+        groupInput.setDisplayOrder(10);
 
         var groupResult = groupManagementApi.v1GroupsPostWithHttpInfo(groupInput);
-        var groupUuid = groupResult.getHeaders().get("Location").stream().findFirst().orElseThrow(RuntimeException::new);
+        var groupUuid = groupResult.getData().getUuid();
 
         var input = new ServiceCreate();
         input.setServiceIdentifier("service");
         input.setName("name");
         input.setIgnoreServiceName(true);
-        input.setGroup(UUID.fromString(groupUuid));
+        input.setGroup(groupUuid);
 
         var serviceResult = serviceManagementApi.v1ServicesPostWithHttpInfo(input);
         assertEquals(201, serviceResult.getStatusCode());
-        var serviceUuid = serviceResult.getHeaders().get("Location").stream().findFirst().orElseThrow(RuntimeException::new);
+        var serviceUuid = serviceResult.getData().getUuid();
+        assertEquals(serviceUuid.toString(), serviceResult.getHeaders().get("Location").get(0));
 
-        var result = serviceManagementApi.v1ServicesUuidGet(UUID.fromString(serviceUuid));
+        var result = serviceManagementApi.v1ServicesUuidGet(serviceUuid);
         assertNotNull(result);
         assertEquals(input.getGroup(), result.getGroup());
         assertEquals(input.getServiceIdentifier(), result.getServiceIdentifier());
@@ -56,10 +75,10 @@ public class ServiceManagementIT extends AbstractIntegrationTest {
     public void testUpdateAndGetAll() throws ApiException {
         var groupInput = new GroupInput();
         groupInput.setName("group");
-        groupInput.setDisplayOrder(10);;
+        groupInput.setDisplayOrder(10);
 
         var groupResult = groupManagementApi.v1GroupsPostWithHttpInfo(groupInput);
-        var groupUuid = groupResult.getHeaders().get("Location").stream().findFirst().orElseThrow(RuntimeException::new);
+        var groupUuid = groupResult.getData().getUuid();
 
         var input = new ServiceCreate();
         input.setServiceIdentifier(UUID.randomUUID().toString());
@@ -68,25 +87,46 @@ public class ServiceManagementIT extends AbstractIntegrationTest {
 
         var serviceResult = serviceManagementApi.v1ServicesPostWithHttpInfo(input);
         assertEquals(201, serviceResult.getStatusCode());
-        var serviceUuid = serviceResult.getHeaders().get("Location").stream().findFirst().orElseThrow(RuntimeException::new);
+        var serviceUuid = serviceResult.getData().getUuid();
+        assertEquals(serviceUuid.toString(), serviceResult.getHeaders().get("Location").get(0));
 
         var serviceUpdate = new ServiceUpdate();
         serviceUpdate.setServiceIdentifier("service updated");
         serviceUpdate.setName("name updated");
         serviceUpdate.setIgnoreServiceName(false);
-        serviceUpdate.setGroup(UUID.fromString(groupUuid));
+        serviceUpdate.setGroup(groupUuid);
 
-        var updateResult = serviceManagementApi.v1ServicesUuidPutWithHttpInfo(UUID.fromString(serviceUuid), serviceUpdate);
+        var updateResult = serviceManagementApi.v1ServicesUuidPutWithHttpInfo(serviceUuid, serviceUpdate);
         assertEquals(201, updateResult.getStatusCode());
 
         var getAllResult = serviceManagementApi.v1ServicesGet();
         assertNotNull(getAllResult);
 
-        var service = getAllResult.stream().filter(x -> x.getUuid().equals(UUID.fromString(serviceUuid))).findFirst().orElseThrow(RuntimeException::new);
-        assertEquals(UUID.fromString(serviceUuid), service.getUuid());
+        var service = getAllResult.stream().filter(x -> x.getUuid().equals(serviceUuid)).findFirst().orElseThrow(RuntimeException::new);
+        assertEquals(serviceUuid, service.getUuid());
         assertEquals(serviceUpdate.getServiceIdentifier(), service.getServiceIdentifier());
         assertEquals(serviceUpdate.getGroup(), service.getGroup());
         assertEquals(serviceUpdate.getIgnoreServiceName(), service.getIgnoreServiceName());
         assertEquals(serviceUpdate.getName(), service.getName());
+    }
+
+    @Test
+    public void testPutNotFound() {
+        var uuid = UUID.randomUUID();
+        var input = new ServiceUpdate();
+        input.setServiceIdentifier("id");
+        input.setName("name");
+        input.setIgnoreServiceName(true);
+
+        var expectedException = assertThrows(ApiException.class, () -> serviceManagementApi.v1ServicesUuidPut(uuid, input));
+        assertEquals(404, expectedException.getCode());
+
+        var body = JSON.getGson().fromJson(expectedException.getResponseBody(), BasicError.class);
+        assertNotNull(body);
+        assertEquals(404, body.getStatus());
+        assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), body.getStatusText());
+        assertEquals("/v1/services/%s".formatted(uuid), body.getPath());
+        assertEquals("Service with uuid %s not found".formatted(uuid), body.getError());
+        assertNotNull(body.getTimestamp());
     }
 }
