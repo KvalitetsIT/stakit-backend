@@ -28,10 +28,10 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
     }
 
     @Override
-    public Service getService(UUID uuid) {
+    public Optional<Service> getService(UUID uuid) {
         var service = serviceConfigurationDao.findByUuidWithGroupUuid(uuid);
 
-        return service.map(ServiceMapper::mapEntityToService).orElse(null);
+        return service.map(ServiceMapper::mapEntityToService);
     }
 
     @Override

@@ -1,25 +1,20 @@
 package dk.kvalitetsit.stakit.controller;
 
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundExceptionAbstract;
 import dk.kvalitetsit.stakit.service.GroupService;
-import dk.kvalitetsit.stakit.service.StatusGroupService;
-import dk.kvalitetsit.stakit.service.StatusUpdateService;
 import dk.kvalitetsit.stakit.service.model.Group;
-import dk.kvalitetsit.stakit.service.model.Status;
-import dk.kvalitetsit.stakit.service.model.StatusElement;
-import dk.kvalitetsit.stakit.service.model.StatusGrouped;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.GroupInput;
-import org.openapitools.model.StatusUpdate;
+import org.springframework.http.HttpStatus;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 
 public class GroupManagementControllerTest {
@@ -70,6 +65,8 @@ public class GroupManagementControllerTest {
         var result = groupManagementController.v1GroupsPost(input);
         assertNotNull(result);
         assertEquals(201, result.getStatusCode().value());
+        assertEquals(expectedUuid.toString(), result.getHeaders().get("location").stream().findFirst().get());
+        assertEquals(expectedUuid, result.getBody().getUuid());
     }
 
     @Test
@@ -101,9 +98,10 @@ public class GroupManagementControllerTest {
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(false);
 
-        var result = groupManagementController.v1GroupsUuidPut(uuid, input);
-        assertNotNull(result);
-        assertEquals(404, result.getStatusCodeValue());
+        var expectedException = assertThrows(ResourceNotFoundExceptionAbstract.class, () ->groupManagementController.v1GroupsUuidPut(uuid, input));
+        assertNotNull(expectedException);
+        assertEquals("Group with uuid %s not found".formatted(uuid), expectedException.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());
 
         Mockito.verify(groupService, times(1)).updateGroup(serviceInput);
     }
