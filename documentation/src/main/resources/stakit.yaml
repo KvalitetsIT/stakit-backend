@@ -10,6 +10,8 @@ tags:
     description: API's used by the status adapters.
   - name: group-management
     description: API's used to manage the groups.
+  - name: service-management
+    description: API's used to manage services.
   - name: StaKit
     description: API's to get data for frontend.
 
@@ -102,6 +104,73 @@ paths:
           description: The group have been updated with success.
         '404':
           description: The group does not exists.
+
+  /v1/services:
+    get:
+      tags:
+        - service-management
+      summary: Services GET API
+      description: API to get all services.
+      responses:
+        '200':
+          description: List of all services.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/services'
+    post:
+      tags:
+        - service-management
+      summary: Services POST API
+      description: API to create a service
+      requestBody:
+        description: Service to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/service-create'
+      responses:
+        '201':
+          description: The service was created.
+
+  /v1/services/{uuid}:
+    get:
+      tags:
+        - service-management
+      summary: Services POST API
+      description: API to get a single service
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        '200':
+          description: The service for the given uuid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/service'
+        '404':
+          description: The service was not found.
+
+    put:
+      tags:
+        - service-management
+      summary: Services PUT API
+      description: API to update a service
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      requestBody:
+        description: Service to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/service-update'
+      responses:
+        '201':
+          description: The service was created.
 
   /v1/service-status-grouped:
     get:
@@ -258,3 +327,107 @@ components:
           description: Status of service.
           type: string
           enum: [OK, NOT_OK]
+
+    service:
+      type: object
+      required:
+        - service
+        - name
+        - ignore_service_name
+      properties:
+        service_identifier:
+          description: Unique identifier of thr service.
+          type: string
+          example: "4fa59cef25fbcab4155e6eb5201a27ce1eb010408e4550b1313f1126"
+          maxLength: 100
+        name:
+          description: The name of the service.
+          type: string
+          example: "My Cool Service"
+          maxLength: 100
+        ignore_service_name:
+          description: False if the service name from the status update adapter should be used.
+          type: boolean
+        group:
+          description: Group the service belongs to.
+          type: string
+          format: uuid
+
+    services:
+      type: object
+      required:
+        - uuid
+        - service
+        - name
+        - ignore_service_name
+      properties:
+        uuid:
+          description: Service UUID.
+          type: string
+          format: uuid
+        service_identifier:
+          description: Unique identifier of thr service.
+          type: string
+          example: "4fa59cef25fbcab4155e6eb5201a27ce1eb010408e4550b1313f1126"
+          maxLength: 100
+        name:
+          description: The name of the service.
+          type: string
+          example: "My Cool Service"
+          maxLength: 100
+        ignore_service_name:
+          description: False if the service name from the status update adapter should be used.
+          type: boolean
+        group:
+          description: Group the service belongs to.
+          type: string
+          format: uuid
+
+    service-create:
+      type: object
+      required:
+        - name
+        - ignore_service_name
+      properties:
+        service_identifier:
+          description: Unique identifier of thr service. If not present it is automatically generated.
+          type: string
+          example: "4fa59cef25fbcab4155e6eb5201a27ce1eb010408e4550b1313f1126"
+          maxLength: 100
+        name:
+          description: The name of the service.
+          type: string
+          example: "My Cool Service"
+          maxLength: 100
+        ignore_service_name:
+          description: False if the service name from the status update adapter should be used.
+          type: boolean
+        group:
+          description: Group the service belongs to.
+          type: string
+          format: uuid
+
+    service-update:
+      type: object
+      required:
+        - name
+        - service_identifier
+        - ignore_service_name
+      properties:
+        service_identifier:
+          description: Unique identifier of thr service. If not present it is automatically generated.
+          type: string
+          example: "4fa59cef25fbcab4155e6eb5201a27ce1eb010408e4550b1313f1126"
+          maxLength: 100
+        name:
+          description: The name of the service.
+          type: string
+          example: "My Cool Service"
+          maxLength: 100
+        ignore_service_name:
+          description: False if the service name from the status update adapter should be used.
+          type: boolean
+        group:
+          description: Group the service belongs to.
+          type: string
+          format: uuid

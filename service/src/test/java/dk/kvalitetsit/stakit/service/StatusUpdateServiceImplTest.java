@@ -14,6 +14,7 @@ import org.springframework.dao.DuplicateKeyException;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
 public class StatusUpdateServiceImplTest {
@@ -32,11 +33,19 @@ public class StatusUpdateServiceImplTest {
     public void testStatusConfigurationNotFound() {
         var input = new UpdateServiceInput(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Status.NOT_OK, OffsetDateTime.now(), "Some message");
 
-        Mockito.when(serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), input.serviceName(), false, null))).thenReturn(10L);
+        Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenReturn(10L);
 
         statusUpdateService.updateStatus(input);
 
-        Mockito.verify(serviceConfigurationDao, times(1)).insert(ServiceConfigurationEntity.createInstance(input.service(), input.serviceName(), false, null));
+        Mockito.verify(serviceConfigurationDao, times(1)).insert(Mockito.argThat(x -> {
+            assertEquals(input.service(), x.service());
+            assertEquals(input.serviceName(), x.name());
+            assertFalse(x.ignoreServiceName());
+            assertNull(x.groupConfigurationId());
+            assertNotNull(x.uuid());
+
+            return true;
+        }));
         Mockito.verify(serviceStatusDao, times(1)).insertUpdate(ServiceStatusEntity.createInstance(10L, "NOT_OK", input.statusDateTime(), input.message()));
 
         Mockito.verifyNoMoreInteractions(serviceConfigurationDao, serviceStatusDao);
@@ -46,16 +55,24 @@ public class StatusUpdateServiceImplTest {
     public void testStatusConfigurationFound() {
         var input = new UpdateServiceInput(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Status.NOT_OK, OffsetDateTime.now(), "Some message");
 
-        Mockito.when(serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), input.serviceName(), false, null))).thenThrow(DuplicateKeyException.class);
-        Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, "service-name", "service", true, null));
+        Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenThrow(DuplicateKeyException.class);
+        Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null));
 
         statusUpdateService.updateStatus(input);
 
-        Mockito.verify(serviceConfigurationDao, times(1)).insert(ServiceConfigurationEntity.createInstance(input.service(), input.serviceName(), false, null));
+        Mockito.verify(serviceConfigurationDao, times(1)).insert(Mockito.argThat(x -> {
+            assertEquals(input.service(), x.service());
+            assertEquals(input.serviceName(), x.name());
+            assertFalse(x.ignoreServiceName());
+            assertNull(x.groupConfigurationId());
+            assertNotNull(x.uuid());
+
+            return true;
+        }));
+
         Mockito.verify(serviceConfigurationDao, times(1)).findByService(input.service());
         Mockito.verify(serviceStatusDao, times(1)).insertUpdate(ServiceStatusEntity.createInstance(10L, "NOT_OK", input.statusDateTime(), input.message()));
 
         Mockito.verifyNoMoreInteractions(serviceConfigurationDao, serviceStatusDao);
     }
-
 }
