@@ -3,6 +3,7 @@ CREATE TABLE group_configuration (
   uuid varchar(36) not null,
   name varchar(50) NOT NULL,
   display_order int(3) not null,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  UNIQUE KEY (uuid)
 )
 ;

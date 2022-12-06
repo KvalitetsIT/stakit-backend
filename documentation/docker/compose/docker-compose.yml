@@ -32,6 +32,7 @@ services:
        condition: service_healthy
      ports: 
       - 8080:8080
+      - 8081:8081
    documenatation-and-test:
      image: kvalitetsit/stakit-backend-documentation:latest
      environment:

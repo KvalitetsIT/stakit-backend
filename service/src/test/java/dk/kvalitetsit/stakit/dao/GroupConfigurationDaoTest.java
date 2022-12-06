@@ -48,4 +48,29 @@ public class GroupConfigurationDaoTest extends AbstractDaoTest {
         var result = groupConfigurationDao.update(groupUpdate);
         assertFalse(result);
     }
+
+    @Test
+    public void testFindByUuid() {
+        var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10);
+
+        var groupId = groupConfigurationDao.insert(group);
+
+        var result = groupConfigurationDao.findByUuid(group.uuid());
+        assertNotNull(result);
+        assertTrue(result.isPresent());
+
+        assertEquals(groupId, result.get().id());
+        assertEquals(group.name(), result.get().name());
+        assertEquals(group.uuid(), result.get().uuid());
+        assertEquals(group.displayOrder(), result.get().displayOrder());
+    }
+
+    @Test
+    public void testFindByUuidNotFound() {
+        var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10);
+
+        var result = groupConfigurationDao.findByUuid(group.uuid());
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
 }

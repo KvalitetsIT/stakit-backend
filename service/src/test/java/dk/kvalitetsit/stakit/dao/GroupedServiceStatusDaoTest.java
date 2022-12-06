@@ -24,7 +24,7 @@ public class GroupedServiceStatusDaoTest extends AbstractDaoTest {
 
     @Test
     public void testGetGrouped() {
-        var groupOne = testDataHelper.createGroup("Group One");
+        var groupOne = testDataHelper.createGroup("Group One", UUID.randomUUID());
 
         var serviceConfigurationOne = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service One", false, groupOne);
         var serviceConfigurationTwo = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Two", false, groupOne);

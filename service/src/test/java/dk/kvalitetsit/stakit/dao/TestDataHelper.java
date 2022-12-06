@@ -26,11 +26,15 @@ public class TestDataHelper {
         return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, UUID.randomUUID(), serviceName, ignoreServiceName, groupConfigurationId));
     }
 
+    long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName, Long groupConfigurationId, UUID serviceUuid) {
+        return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, serviceUuid, serviceName, ignoreServiceName, groupConfigurationId));
+    }
+
     void createService(long statusConfigurationId, String status, OffsetDateTime statusTime)  {
         serviceStatusDao.insertUpdate(ServiceStatusEntity.createInstance(statusConfigurationId, status, statusTime, null));
     }
 
-    long createGroup(String groupName) {
-        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(UUID.randomUUID(), groupName, 10));
+    long createGroup(String groupName, UUID groupUuid) {
+        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupUuid, groupName, 10));
     }
 }

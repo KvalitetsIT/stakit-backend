@@ -24,4 +24,9 @@ public class StakitConfiguration {
     public GroupService groupService(GroupConfigurationDao groupConfigurationDao) {
         return new GroupServiceImpl(groupConfigurationDao);
     }
+
+    @Bean
+    public ServiceManagementService serviceManagementService(ServiceConfigurationDao serviceConfigurationDao, GroupConfigurationDao groupConfigurationDao) {
+        return new ServiceManagementServiceImpl(serviceConfigurationDao, groupConfigurationDao);
+    }
 }
