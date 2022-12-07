@@ -12,6 +12,8 @@ tags:
     description: API's used to manage the groups.
   - name: service-management
     description: API's used to manage services.
+  - name: announcements
+    description: API's to create, update, delete and read announcements.
   - name: StaKit
     description: API's to get data for frontend.
 
@@ -204,6 +206,72 @@ paths:
       responses:
         '201':
           description: The service was created.
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
+
+
+  /v1/announcements:
+    post:
+      tags:
+        - announcements
+      summary: Announcements PUT API
+      description: API to create an announcement.
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      requestBody:
+        description: Announcement to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/announcement-create'
+      responses:
+        '201':
+          description: The announcement was created.
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
+
+  /v1/announcements/{uuid}:
+    get:
+      tags:
+        - announcements
+      summary: Announcements GET API.
+      description: API to get a single announcement.
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        '200':
+          description: The announcement for the given uuid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/announcement'
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
+
+    put:
+      tags:
+        - announcements
+      summary: Announcements PUT API
+      description: API to update an announcement.
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      requestBody:
+        description: Announcement to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/announcement-update'
+      responses:
+        '201':
+          description: The announcement was updated.
         '404':
           $ref: '#/components/responses/404'
         '401':

@@ -28,8 +28,13 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    public GroupedStatusDaoImpl groupedStatusDao(DataSource dataSource) {
+    public GroupedStatusDao groupedStatusDao(DataSource dataSource) {
         return new GroupedStatusDaoImpl(dataSource);
+    }
+
+    @Bean
+    public AnnouncementDao announcementDao(DataSource dataSource) {
+        return new AnnouncementDaoImpl(dataSource);
     }
 
     @Bean
