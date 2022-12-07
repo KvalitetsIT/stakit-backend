@@ -1,6 +1,6 @@
 package dk.kvalitetsit.stakit.configuration;
 
-import dk.kvalitetsit.stakit.controller.exception.ForbiddenException;
+import dk.kvalitetsit.stakit.controller.exception.UnauthorizedException;
 import dk.kvalitetsit.stakit.controller.interceptor.ApiAccessInterceptor;
 import dk.kvalitetsit.stakit.session.PublicApi;
 import dk.kvalitetsit.stakit.session.UserContextService;
@@ -37,7 +37,7 @@ public class ApiAccessInterceptorTest {
         Mockito.doReturn(this.getClass()).when(handlerMethod).getBeanType();
         Mockito.when(userContextService.hasValidAuthorizationToken()).thenReturn(false);
 
-        assertThrows(ForbiddenException.class, () -> apiAccessInterceptor.preHandle(request, response, handlerMethod));
+        assertThrows(UnauthorizedException.class, () -> apiAccessInterceptor.preHandle(request, response, handlerMethod));
     }
 
     @Test

@@ -1,6 +1,6 @@
 package dk.kvalitetsit.stakit.controller.interceptor;
 
-import dk.kvalitetsit.stakit.controller.exception.ForbiddenException;
+import dk.kvalitetsit.stakit.controller.exception.UnauthorizedException;
 import dk.kvalitetsit.stakit.session.PublicApi;
 import dk.kvalitetsit.stakit.session.UserContextService;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class ApiAccessInterceptor implements HandlerInterceptor {
 
     private void validateAuthorizationToken() {
         if (!userContextService.hasValidAuthorizationToken()) {
-            throw new ForbiddenException("Invalid authorization token");
+            throw new UnauthorizedException("Invalid authorization token");
         }
     }
 

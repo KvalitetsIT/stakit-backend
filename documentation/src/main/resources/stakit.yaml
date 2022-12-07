@@ -15,6 +15,9 @@ tags:
   - name: StaKit
     description: API's to get data for frontend.
 
+security:
+  - bearerAuth: []
+
 servers:
   - url: '{protocol}://{environment}:{port}'
     variables:
@@ -36,6 +39,8 @@ paths:
     post:
       tags:
         - adapter
+      security:
+        - apiKeyAuth: []
       summary: Update status
       description: Used to update status of a service from one of the adapters.
       requestBody:
@@ -48,6 +53,8 @@ paths:
       responses:
         '201':
           description: The status update was accepted.
+        '401':
+          $ref: '#/components/responses/401'
 
   /v1/groups:
     post:
@@ -74,6 +81,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/create-response'
+        '401':
+          $ref: '#/components/responses/401'
+
     get:
       tags:
         - group-management
@@ -88,6 +98,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/group'
+        '401':
+          $ref: '#/components/responses/401'
 
   /v1/groups/{uuid}:
     put:
@@ -107,11 +119,9 @@ paths:
         '201':
           description: The group have been updated with success.
         '404':
-          description: The group does not exists.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/basic_error'
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
 
   /v1/services:
     get:
@@ -128,6 +138,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/services'
+        '401':
+          $ref: '#/components/responses/401'
     post:
       tags:
         - service-management
@@ -148,11 +160,12 @@ paths:
               schema:
                 type: string
               description: The location of the created resource.
-
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/create-response'
+        '401':
+          $ref: '#/components/responses/401'
 
   /v1/services/{uuid}:
     get:
@@ -170,11 +183,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/service'
         '404':
-          description: The service was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/basic_error'
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
 
     put:
       tags:
@@ -194,16 +205,15 @@ paths:
         '201':
           description: The service was created.
         '404':
-          description: The service was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/basic_error'
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
 
   /v1/service-status-grouped:
     get:
       tags:
         - StaKit
+      security: []
       summary: Get status for all services
       description: Used to get status for all services. They are grouped by the configured group. Returned in the order they should be displayed.
       responses:
@@ -215,13 +225,31 @@ paths:
                 $ref: '#/components/schemas/status-grouped'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
   responses:
     '400':
       description: "Bad Request. This could be because: * One of the required parameters/properties are missing or is empty <br> * Length of input is exceeding maximum length <br> (See a possible detailed error message in the in the response.)"
     '401':
-      description: "Unauthorized. This could be because: <br> * The calling system has not been properly authenticated."
-    '403':
-      description: "Forbidden. This could be because: <br> * The requested information does not belong the organisation of the user <br> * The calling user does not have the required roles"
+      description: "Unauthorized. No or invalid authorization was provided."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/basic-error'
+    '404':
+      description: "Not Found. The requested resource was not found."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/basic-error'
+
   parameters:
     uuid:
       name: uuid
@@ -470,7 +498,7 @@ components:
           type: string
           format: uuid
 
-    basic_error:
+    basic-error:
       type: object
       required:
         - error
