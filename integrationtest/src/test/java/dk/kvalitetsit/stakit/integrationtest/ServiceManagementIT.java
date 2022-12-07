@@ -12,6 +12,10 @@ import org.openapitools.client.model.ServiceCreate;
 import org.openapitools.client.model.ServiceUpdate;
 import org.springframework.http.HttpStatus;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,9 +24,10 @@ public class ServiceManagementIT extends AbstractIntegrationTest {
     private final GroupManagementApi groupManagementApi;
     private final ServiceManagementApi serviceManagementApi;
 
-    public ServiceManagementIT() {
+    public ServiceManagementIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
+        apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());
 
         groupManagementApi = new GroupManagementApi(apiClient);
         serviceManagementApi = new ServiceManagementApi(apiClient);

@@ -3,6 +3,7 @@ package dk.kvalitetsit.stakit.controller;
 import dk.kvalitetsit.stakit.service.StatusUpdateService;
 import dk.kvalitetsit.stakit.service.model.Status;
 import dk.kvalitetsit.stakit.service.model.UpdateServiceInput;
+import dk.kvalitetsit.stakit.session.PublicApi;
 import org.openapitools.api.AdapterApi;
 import org.openapitools.model.StatusUpdate;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ public class AdapterController implements AdapterApi {
     }
     
     @Override
+    @PublicApi
     public ResponseEntity<Void> v1StatusPost(StatusUpdate statusUpdate) {
         logger.debug("Updating or creating status");
 

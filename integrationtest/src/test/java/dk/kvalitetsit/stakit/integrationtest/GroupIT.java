@@ -6,16 +6,20 @@ import org.openapitools.client.ApiException;
 import org.openapitools.client.api.GroupManagementApi;
 import org.openapitools.client.model.GroupInput;
 
-import java.util.UUID;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GroupIT extends AbstractIntegrationTest {
     private final GroupManagementApi groupManagementApi;
 
-    public GroupIT() {
+    public GroupIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
+        apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());
 
         groupManagementApi = new GroupManagementApi(apiClient);
     }
