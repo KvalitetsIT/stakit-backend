@@ -3,6 +3,7 @@ package dk.kvalitetsit.stakit.session;
 import dk.kvalitetsit.stakit.session.exception.InvalidTokenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,11 +21,11 @@ public class ApiAccessInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         logger.debug("Validating access for endpoint {}", request.getServletPath());
-//        if (!(handler instanceof HandlerMethod handlerMethod)) { // TODO Hvorfor?
-//            return true; // Results in a 404 not found
-//        }
+        if (!(handler instanceof HandlerMethod handlerMethod) || handlerMethod.getBeanType().equals(BasicErrorController.class)) {
+            return true; // Show 404 instead of 403 on URL's that does exist.
+        }
 
-        if (isPublicEndpoint((HandlerMethod) handler)) {
+        if (isPublicEndpoint(handlerMethod)) {
             return true;
         }
 
