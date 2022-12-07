@@ -1,6 +1,8 @@
-package dk.kvalitetsit.stakit.session;
+package dk.kvalitetsit.stakit.controller.interceptor;
 
-import dk.kvalitetsit.stakit.session.exception.InvalidTokenException;
+import dk.kvalitetsit.stakit.controller.exception.ForbiddenException;
+import dk.kvalitetsit.stakit.session.PublicApi;
+import dk.kvalitetsit.stakit.session.UserContextService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
@@ -11,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ApiAccessInterceptor implements HandlerInterceptor {
-    private static Logger logger = LoggerFactory.getLogger(ApiAccessInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApiAccessInterceptor.class);
     private final UserContextService userContextService;
 
     public ApiAccessInterceptor(UserContextService userContextService) {
@@ -37,7 +39,7 @@ public class ApiAccessInterceptor implements HandlerInterceptor {
 
     private void validateAuthorizationToken() {
         if (!userContextService.hasValidAuthorizationToken()) {
-            throw new InvalidTokenException("Invalid authorization token");
+            throw new ForbiddenException("Invalid authorization token");
         }
     }
 

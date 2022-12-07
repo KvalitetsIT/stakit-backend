@@ -1,6 +1,9 @@
-package dk.kvalitetsit.stakit.session;
+package dk.kvalitetsit.stakit.configuration;
 
-import dk.kvalitetsit.stakit.session.exception.InvalidTokenException;
+import dk.kvalitetsit.stakit.controller.exception.ForbiddenException;
+import dk.kvalitetsit.stakit.controller.interceptor.ApiAccessInterceptor;
+import dk.kvalitetsit.stakit.session.PublicApi;
+import dk.kvalitetsit.stakit.session.UserContextService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -31,14 +34,16 @@ public class ApiAccessInterceptorTest {
     @Test
     public void testPreHandleWithoutPublicApiReturnsThrowsException() throws NoSuchMethodException {
         Mockito.when(handlerMethod.getMethod()).thenReturn(this.getClass().getMethod("methodWithoutAnnotations"));
+        Mockito.doReturn(this.getClass()).when(handlerMethod).getBeanType();
         Mockito.when(userContextService.hasValidAuthorizationToken()).thenReturn(false);
 
-        assertThrows(InvalidTokenException.class, () -> apiAccessInterceptor.preHandle(request, response, handlerMethod));
+        assertThrows(ForbiddenException.class, () -> apiAccessInterceptor.preHandle(request, response, handlerMethod));
     }
 
     @Test
     public void testPreHandlePublicApiReturnsTrue() throws Exception {
         Mockito.when(handlerMethod.getMethod()).thenReturn(this.getClass().getMethod("methodWithPublicEndpointAnnotation"));
+        Mockito.doReturn(this.getClass()).when(handlerMethod).getBeanType();
         Mockito.when(userContextService.hasValidAuthorizationToken()).thenReturn(false);
 
         boolean result = apiAccessInterceptor.preHandle(request, response, handlerMethod);
@@ -50,6 +55,7 @@ public class ApiAccessInterceptorTest {
     @Test
     public void preHandle_WithoutPublicAnnotationValidTokenAndKnownUser_ReturnsTrue() throws Exception {
         Mockito.when(handlerMethod.getMethod()).thenReturn(this.getClass().getMethod("methodWithoutAnnotations"));
+        Mockito.doReturn(this.getClass()).when(handlerMethod).getBeanType();
         Mockito.when(userContextService.hasValidAuthorizationToken()).thenReturn(true);
 
         boolean result = apiAccessInterceptor.preHandle(request, response, handlerMethod);

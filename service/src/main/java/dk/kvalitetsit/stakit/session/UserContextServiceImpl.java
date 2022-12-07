@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 public class UserContextServiceImpl implements UserContextService {
-    private static Logger logger = LoggerFactory.getLogger(UserContextServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserContextServiceImpl.class);
     private final HttpServletRequest request;
     private final Optional<Token> authorizationToken;
 

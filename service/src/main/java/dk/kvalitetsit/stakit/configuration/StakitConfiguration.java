@@ -5,7 +5,7 @@ import dk.kvalitetsit.stakit.dao.GroupedStatusDao;
 import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
 import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
 import dk.kvalitetsit.stakit.service.*;
-import dk.kvalitetsit.stakit.session.ApiAccessInterceptor;
+import dk.kvalitetsit.stakit.controller.interceptor.ApiAccessInterceptor;
 import dk.kvalitetsit.stakit.session.UserContextService;
 import dk.kvalitetsit.stakit.session.UserContextServiceImpl;
 import org.springframework.context.annotation.Bean;
