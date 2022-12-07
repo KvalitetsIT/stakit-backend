@@ -1,4 +1,4 @@
-FROM swaggerapi/swagger-ui:v4.12.0
+FROM swaggerapi/swagger-ui:v4.15.5
 
 COPY /maven/*.yaml /usr/share/nginx/html/
 
