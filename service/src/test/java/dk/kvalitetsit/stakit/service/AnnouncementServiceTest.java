@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -141,5 +142,27 @@ public class AnnouncementServiceTest {
         assertTrue(result.isEmpty());
 
         Mockito.verify(announcementDao, times(1)).getByUuid(Mockito.eq(input));
+    }
+
+    @Test
+    public void testGetAnnouncements() {
+        var announcementOne = new AnnouncementEntity(10L, UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject one", "message one");
+        var announcementTwo = new AnnouncementEntity(11L, UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject two", "message two");
+
+        Mockito.when(announcementDao.getAnnouncements(Mockito.any())).thenReturn(Arrays.asList(announcementOne, announcementTwo));
+
+        var result = announcementService.getAnnouncements();
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+        assertEquals(announcementOne.message(), result.get(0).message());
+        assertEquals(announcementOne.subject(), result.get(0).subject());
+        assertEquals(announcementOne.toDatetime(), result.get(0).toDatetime());
+        assertEquals(announcementOne.fromDatetime(), result.get(0).fromDatetime());
+
+        assertEquals(announcementTwo.message(), result.get(1).message());
+        assertEquals(announcementTwo.subject(), result.get(1).subject());
+        assertEquals(announcementTwo.toDatetime(), result.get(1).toDatetime());
+        assertEquals(announcementTwo.fromDatetime(), result.get(1).fromDatetime());
     }
 }

@@ -1,6 +1,7 @@
 package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
+import dk.kvalitetsit.stakit.dao.entity.AnnouncementEntity;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
 import dk.kvalitetsit.stakit.service.model.Announcement;
 import org.junit.Before;
@@ -11,9 +12,12 @@ import org.openapitools.model.AnnouncementUpdate;
 import org.springframework.http.HttpStatus;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;

@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AnnouncementIT extends AbstractIntegrationTest {
     private final AnnouncementsApi announcementsApi;
     private UUID uuid;
-    private AnnouncementCreate group;
+    private AnnouncementCreate announcement;
 
     public AnnouncementIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
@@ -33,13 +33,13 @@ public class AnnouncementIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() throws ApiException {
-        group = new AnnouncementCreate()
+        announcement = new AnnouncementCreate()
                 .fromDatetime(OffsetDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS))
                 .toDatetime(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .subject(UUID.randomUUID().toString())
                 .message("message");
 
-        uuid = announcementsApi.v1AnnouncementsPost(group).getUuid();
+        uuid = announcementsApi.v1AnnouncementsPost(announcement).getUuid();
     }
 
     @Test
@@ -47,10 +47,10 @@ public class AnnouncementIT extends AbstractIntegrationTest {
         var result = announcementsApi.v1AnnouncementsUuidGet(uuid);
         assertNotNull(result);
 
-        assertEquals(group.getFromDatetime(), result.getFromDatetime());
-        assertEquals(group.getToDatetime(), result.getToDatetime());
-        assertEquals(group.getSubject(), result.getSubject());
-        assertEquals(group.getMessage(), result.getMessage());
+        assertEquals(announcement.getFromDatetime(), result.getFromDatetime());
+        assertEquals(announcement.getToDatetime(), result.getToDatetime());
+        assertEquals(announcement.getSubject(), result.getSubject());
+        assertEquals(announcement.getMessage(), result.getMessage());
         assertEquals(uuid, result.getUuid());
     }
 

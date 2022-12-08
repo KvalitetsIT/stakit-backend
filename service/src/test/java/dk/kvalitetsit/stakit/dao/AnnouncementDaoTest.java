@@ -97,4 +97,21 @@ public class AnnouncementDaoTest extends AbstractDaoTest {
         var result = announcementDao.deleteByUuid(UUID.randomUUID());
         assertFalse(result);
     }
+
+    @Test
+    public void testGetAnnouncements() {
+        var announcementOne = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now().plusDays(1), "subject one", "message one");
+        var announcementTwo = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now().minusMinutes(10), "subject two", "message two");
+
+        var idOne = announcementDao.insert(announcementOne);
+        var idTwo = announcementDao.insert(announcementTwo);
+
+        var result = announcementDao.getAnnouncements(OffsetDateTime.now());
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(announcementOne.message(), result.get(0).message());
+        assertEquals(announcementOne.subject(), result.get(0).subject());
+        assertEquals(announcementOne.toDatetime(), result.get(0).toDatetime());
+        assertEquals(announcementOne.fromDatetime(), result.get(0).fromDatetime());
+    }
 }

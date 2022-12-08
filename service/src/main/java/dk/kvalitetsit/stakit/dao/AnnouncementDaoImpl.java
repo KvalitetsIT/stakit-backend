@@ -10,7 +10,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import javax.sql.DataSource;
+import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,5 +81,12 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         var sql = "delete from announcement where uuid = :uuid";
 
         return template.update(sql, Collections.singletonMap("uuid", uuid.toString())) > 0;
+    }
+
+    @Override
+    public List<AnnouncementEntity> getAnnouncements(OffsetDateTime toDatetime) {
+        var sql = "select * from announcement where to_datetime > :to_datetime order by to_datetime desc";
+
+        return template.query(sql, Collections.singletonMap("to_datetime", toDatetime), DataClassRowMapper.newInstance(AnnouncementEntity.class));
     }
 }
