@@ -1,6 +1,6 @@
 package dk.kvalitetsit.stakit.controller;
 
-import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundExceptionAbstract;
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.ServiceManagementService;
 import dk.kvalitetsit.stakit.service.model.Service;
 import org.junit.Before;
@@ -102,7 +102,7 @@ public class ServiceManagementControllerTest {
 
         Mockito.when(serviceManagementService.getService(serviceUuid)).thenReturn(Optional.empty());
 
-        var expectedException = assertThrows(ResourceNotFoundExceptionAbstract.class, () -> serviceManagementController.v1ServicesUuidGet(serviceUuid));
+        var expectedException = assertThrows(ResourceNotFoundException.class, () -> serviceManagementController.v1ServicesUuidGet(serviceUuid));
         assertNotNull(expectedException);
         assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());
         assertEquals("Service with uuid %s not found".formatted(serviceUuid), expectedException.getMessage());
@@ -121,7 +121,7 @@ public class ServiceManagementControllerTest {
 
         Mockito.when(serviceManagementService.updateService(Mockito.eq(serviceUuid), Mockito.any())).thenReturn(false);
 
-        var expectedException = assertThrows(ResourceNotFoundExceptionAbstract.class, () ->serviceManagementController.v1ServicesUuidPut(serviceUuid, serviceUpdate));
+        var expectedException = assertThrows(ResourceNotFoundException.class, () ->serviceManagementController.v1ServicesUuidPut(serviceUuid, serviceUpdate));
         assertNotNull(expectedException);
         assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());
         assertEquals("Service with uuid %s not found".formatted(serviceUuid), expectedException.getMessage());

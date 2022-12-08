@@ -1,6 +1,6 @@
 package dk.kvalitetsit.stakit.controller;
 
-import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundExceptionAbstract;
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.controller.mapper.GroupMapper;
 import dk.kvalitetsit.stakit.service.GroupService;
 import org.openapitools.api.GroupManagementApi;
@@ -46,7 +46,7 @@ public class GroupManagementController implements GroupManagementApi {
         var updated = groupService.updateGroup(GroupMapper.mapUpdateGroup(uuid, groupUpdate));
 
         if(!updated) {
-            throw new ResourceNotFoundExceptionAbstract("Group with uuid %s not found".formatted(uuid));
+            throw new ResourceNotFoundException("Group with uuid %s not found".formatted(uuid));
         }
 
         return ResponseEntity.status(HttpStatus.OK).build();
