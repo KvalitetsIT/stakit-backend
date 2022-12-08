@@ -1,6 +1,6 @@
 package dk.kvalitetsit.stakit.controller;
 
-import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundExceptionAbstract;
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.GroupService;
 import dk.kvalitetsit.stakit.service.model.Group;
 import org.junit.Before;
@@ -98,7 +98,7 @@ public class GroupManagementControllerTest {
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(false);
 
-        var expectedException = assertThrows(ResourceNotFoundExceptionAbstract.class, () ->groupManagementController.v1GroupsUuidPut(uuid, input));
+        var expectedException = assertThrows(ResourceNotFoundException.class, () ->groupManagementController.v1GroupsUuidPut(uuid, input));
         assertNotNull(expectedException);
         assertEquals("Group with uuid %s not found".formatted(uuid), expectedException.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());

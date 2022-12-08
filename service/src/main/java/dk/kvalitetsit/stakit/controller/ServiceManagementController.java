@@ -1,6 +1,6 @@
 package dk.kvalitetsit.stakit.controller;
 
-import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundExceptionAbstract;
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.controller.mapper.ServiceManagementMapper;
 import dk.kvalitetsit.stakit.service.ServiceManagementService;
 import org.openapitools.api.ServiceManagementApi;
@@ -40,7 +40,7 @@ public class ServiceManagementController implements ServiceManagementApi {
         var service  = serviceManagementService.getService(uuid);
 
         return ResponseEntity.ok(service.map(ServiceManagementMapper::mapService)
-                .orElseThrow(() -> new ResourceNotFoundExceptionAbstract("Service with uuid %s not found".formatted(uuid))));
+                .orElseThrow(() -> new ResourceNotFoundException("Service with uuid %s not found".formatted(uuid))));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ServiceManagementController implements ServiceManagementApi {
         boolean updated = serviceManagementService.updateService(uuid, ServiceManagementMapper.mapUpdate(serviceUpdate));
 
         if(!updated) {
-            throw new ResourceNotFoundExceptionAbstract("Service with uuid %s not found".formatted(uuid));
+            throw new ResourceNotFoundException("Service with uuid %s not found".formatted(uuid));
         }
 
         return ResponseEntity.status(201).build();

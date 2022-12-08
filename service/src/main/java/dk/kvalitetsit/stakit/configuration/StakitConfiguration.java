@@ -1,9 +1,6 @@
 package dk.kvalitetsit.stakit.configuration;
 
-import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
-import dk.kvalitetsit.stakit.dao.GroupedStatusDao;
-import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
-import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
+import dk.kvalitetsit.stakit.dao.*;
 import dk.kvalitetsit.stakit.service.*;
 import dk.kvalitetsit.stakit.controller.interceptor.ApiAccessInterceptor;
 import dk.kvalitetsit.stakit.session.UserContextService;
@@ -50,6 +47,11 @@ public class StakitConfiguration implements WebMvcConfigurer {
     @Bean
     public ServiceManagementService serviceManagementService(ServiceConfigurationDao serviceConfigurationDao, GroupConfigurationDao groupConfigurationDao) {
         return new ServiceManagementServiceImpl(serviceConfigurationDao, groupConfigurationDao);
+    }
+
+    @Bean
+    public AnnouncementService announcementService(AnnouncementDao announcementDao) {
+        return new AnnouncementServiceImpl(announcementDao);
     }
 
     @Bean

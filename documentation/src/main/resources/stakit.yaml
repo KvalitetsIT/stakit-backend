@@ -12,6 +12,8 @@ tags:
     description: API's used to manage the groups.
   - name: service-management
     description: API's used to manage services.
+  - name: announcements
+    description: API's to create, update, delete and read announcements.
   - name: StaKit
     description: API's to get data for frontend.
 
@@ -209,6 +211,94 @@ paths:
         '401':
           $ref: '#/components/responses/401'
 
+
+  /v1/announcements:
+    post:
+      tags:
+        - announcements
+      summary: Announcements PUT API
+      description: API to create an announcement.
+      requestBody:
+        description: Announcement to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/announcement-create'
+      responses:
+        '201':
+          description: The announcement was created.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The location of the created resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-response'
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
+
+  /v1/announcements/{uuid}:
+    get:
+      tags:
+        - announcements
+      summary: Announcements GET API.
+      description: API to get a single announcement.
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        '200':
+          description: The announcement for the given uuid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/announcement'
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
+
+    delete:
+      tags:
+        - announcements
+      summary: Announcements DELETE API.
+      description: API to delete a single announcement.
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
+
+    put:
+      tags:
+        - announcements
+      summary: Announcements PUT API
+      description: API to update an announcement.
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      requestBody:
+        description: Announcement to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/announcement-update'
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
+
   /v1/service-status-grouped:
     get:
       tags:
@@ -224,6 +314,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/status-grouped'
 
+  /v1/announcements-to-show:
+    get:
+      tags:
+        - StaKit
+      security: []
+      summary: Get announcements to show
+      description: Used to get announcements to show. They are returned in the order they should be displayed.
+      responses:
+        '200':
+          description: Status for all services grouped.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/announcements-to-show'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -235,10 +342,12 @@ components:
       name: X-API-Key
 
   responses:
+    '204':
+      description: 'No Content.'
     '400':
-      description: "Bad Request. This could be because: * One of the required parameters/properties are missing or is empty <br> * Length of input is exceeding maximum length <br> (See a possible detailed error message in the in the response.)"
+      description: 'Bad Request. This could be because: * One of the required parameters/properties are missing or is empty <br> * Length of input is exceeding maximum length <br> (See a possible detailed error message in the in the response.)'
     '401':
-      description: "Unauthorized. No or invalid authorization was provided."
+      description: 'Unauthorized. No or invalid authorization was provided.'
       content:
         application/json:
           schema:
@@ -367,10 +476,33 @@ components:
           example: "My Cool Group Of Services"
           maxLength: 100
         services:
-          description: Array of servies and their status.
+          description: Array of services and their status.
           type: array
           items:
             $ref: "#/components/schemas/service-status"
+
+    announcements-to-show:
+      type: object
+      required:
+        - subject
+        - message
+        - from_datetime
+      properties:
+        subject:
+          description: Announcement subject/title
+          type: string
+          maxLength: 100
+        message:
+          description: Announcement message
+          type: string
+        from_datetime:
+          description: When the announcement is valid from.
+          type: string
+          format: date-time
+        to_datetime:
+          description: When the announcement is valid to.
+          type: string
+          format: date-time
 
     service-status:
       type: object
@@ -487,6 +619,80 @@ components:
           description: Group the service belongs to.
           type: string
           format: uuid
+
+    announcement:
+      type: object
+      required:
+        - uuid
+        - from_datetime
+        - subject
+        - message
+      properties:
+        uuid:
+          description: Announcement uuid
+          type: string
+          format: uuid
+        from_datetime:
+          description: When the announcement is valid from.
+          type: string
+          format: date-time
+        to_datetime:
+          description: When to announcement is valid to. I current time is after this time it will not be shown on the frontpage.
+          type: string
+          format: date-time
+        subject:
+          description: Announcement subject/title
+          type: string
+          maxLength: 100
+        message:
+          description: Announcement message/body
+          type: string
+
+    announcement-create:
+      type: object
+      required:
+        - from_datetime
+        - subject
+        - message
+      properties:
+        from_datetime:
+          description: When the announcement is valid from.
+          type: string
+          format: date-time
+        to_datetime:
+          description: When to announcement is valid to. I current time is after this time it will not be shown on the frontpage.
+          type: string
+          format: date-time
+        subject:
+          description: Announcement subject/title
+          type: string
+          maxLength: 100
+        message:
+          description: Announcement message/body
+          type: string
+
+    announcement-update:
+      type: object
+      required:
+        - from_datetime
+        - subject
+        - message
+      properties:
+        from_datetime:
+          description: When the announcement is valid from.
+          type: string
+          format: date-time
+        to_datetime:
+          description: When to announcement is valid to. I current time is after this time it will not be shown on the frontpage.
+          type: string
+          format: date-time
+        subject:
+          description: Announcement subject/title
+          type: string
+          maxLength: 100
+        message:
+          description: Announcement message/body
+          type: string
 
     create-response:
       type: object
