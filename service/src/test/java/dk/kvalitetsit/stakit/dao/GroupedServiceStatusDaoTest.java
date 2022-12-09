@@ -31,10 +31,10 @@ public class GroupedServiceStatusDaoTest extends AbstractDaoTest {
 
         var serviceConfigurationThree = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Three", false);
 
-        testDataHelper.createService(serviceConfigurationOne, "NOT_OK", OffsetDateTime.now());
-        testDataHelper.createService(serviceConfigurationOne, "OK", OffsetDateTime.now());
-        testDataHelper.createService(serviceConfigurationTwo, "NOT_OK", OffsetDateTime.now());
-        testDataHelper.createService(serviceConfigurationThree, "NOT_OK", OffsetDateTime.now());
+        testDataHelper.createServiceStatus(serviceConfigurationOne, "NOT_OK", OffsetDateTime.now());
+        testDataHelper.createServiceStatus(serviceConfigurationOne, "OK", OffsetDateTime.now());
+        testDataHelper.createServiceStatus(serviceConfigurationTwo, "NOT_OK", OffsetDateTime.now());
+        testDataHelper.createServiceStatus(serviceConfigurationThree, "NOT_OK", OffsetDateTime.now());
 
         var result = groupedStatusDao.getGroupedStatus();
         assertNotNull(result);
