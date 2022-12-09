@@ -32,6 +32,10 @@ public class ServiceStarter {
         System.setProperty("JDBC.USER", "hellouser");
         System.setProperty("JDBC.PASS", "secret1234");
 
+        System.setProperty("MAIL_HOST", "localhost");
+        System.setProperty("MAIL_USER", "some_user");
+        System.setProperty("MAIL_PASSWORD", "some_password");
+
         SpringApplication.run((Application.class));
     }
 
@@ -66,6 +70,10 @@ public class ServiceStarter {
                 .withEnv("JDBC_URL", "jdbc:mariadb://mariadb:3306/hellodb")
                 .withEnv("JDBC_USER", "hellouser")
                 .withEnv("JDBC_PASS", "secret1234")
+
+                .withEnv("MAIL_HOST", "localhost")
+                .withEnv("MAIL_USER", "mail_user")
+                .withEnv("MAIL_PASSWORD", "mail_password")
 
                 .withEnv("spring.flyway.locations", "classpath:db/migration,filesystem:/app/sql")
                 .withClasspathResourceMapping("db/migration/V901__extra_data_for_integration_test.sql", "/app/sql/V901__extra_data_for_integration_test.sql", BindMode.READ_ONLY)

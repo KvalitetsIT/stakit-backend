@@ -35,7 +35,7 @@ public class TestDataHelper {
     }
 
     void createServiceStatus(long statusConfigurationId, String status, OffsetDateTime statusTime)  {
-        serviceStatusDao.insertUpdate(ServiceStatusEntity.createInstance(statusConfigurationId, status, statusTime, null));
+        serviceStatusDao.insert(ServiceStatusEntity.createInstance(statusConfigurationId, status, statusTime, null));
     }
 
     long createGroup(String groupName, UUID groupUuid) {

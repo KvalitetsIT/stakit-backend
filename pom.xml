@@ -129,6 +129,19 @@
 				<version>2.1.1</version>
 			</dependency>
 
+			<!-- Work around for failed to access class com.sun.activation.registries.LogSupport error.-->
+			<dependency>
+				<groupId>com.sun.xml.bind</groupId>
+				<artifactId>jaxb-core</artifactId>
+				<version>4.0.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.eclipse.angus</groupId>
+						<artifactId>angus-activation</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
 			<!-- JSON Web Token stuff -->
 			<dependency>
 				<groupId>io.jsonwebtoken</groupId>

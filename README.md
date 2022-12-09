@@ -48,11 +48,15 @@ In the docker-compose setup is also an example on how to set custom endpoints fo
 
 ## Configuration
 
-| Environment variable | Description | Required |
-|----------------------|-------------|---------- |
-| JDBC_URL | JDBC connection URL | Yes |
-| JDBC_USER | JDBC user          | Yes |
-| JDBC_PASS | JDBC password      | Yes |
-| LOG_LEVEL | Log Level for applikation  log. Defaults to INFO. | No |
-| LOG_LEVEL_FRAMEWORK | Log level for framework. Defaults to INFO. | No |
-| CORRELATION_ID | HTTP header to take correlation id from. Used to correlate log messages. Defaults to "x-request-id". | No
+| Environment variable | Description                                                                                          | Required |
+|----------------------|------------------------------------------------------------------------------------------------------|----------|
+| JDBC_URL             | JDBC connection URL                                                                                  | Yes      |
+| JDBC_USER            | JDBC user                                                                                            | Yes      |
+| JDBC_PASS            | JDBC password                                                                                        | Yes      |
+| LOG_LEVEL            | Log Level for applikation  log. Defaults to INFO.                                                    | No       |
+| LOG_LEVEL_FRAMEWORK  | Log level for framework. Defaults to INFO.                                                           | No       |
+| CORRELATION_ID       | HTTP header to take correlation id from. Used to correlate log messages. Defaults to "x-request-id". | No       
+| MAIL_HOST            | SMTP Relay host                                                                                      | Yes      |
+| MAIL_PORT            | SMTP Relay port. Defaults to port 587                                                                | No    |
+| MAIL_USER        | SMTP Relay username                                                                                  | Yes      |
+| MAIL_PASSWORD        | SMTP Relay password                                                                              | Yes      |

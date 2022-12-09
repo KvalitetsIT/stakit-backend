@@ -22,7 +22,7 @@ public class ServiceStatusDaoTest extends AbstractDaoTest {
 
         var input = ServiceStatusEntity.createInstance(statusConfigurationId,  "OK", OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS), "SOME MESSAGE");
 
-        serviceStatusDao.insertUpdate(input);
+        var serviceStatusId = serviceStatusDao.insert(input);
 
         var result = serviceStatusDao.findAll();
         assertNotNull(result);
@@ -32,6 +32,25 @@ public class ServiceStatusDaoTest extends AbstractDaoTest {
         assertEquals(input.statusTime(), entity.statusTime());
         assertEquals(input.message(), entity.message());
         assertEquals(statusConfigurationId, entity.serviceConfigurationId().longValue());
-        assertNotNull(result.get(0).id());
+        assertEquals(serviceStatusId, result.get(0).id().longValue());
+    }
+
+    @Test
+    public void testGetLatest() {
+        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false);
+
+        var now = OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS);
+
+        testDataHelper.createServiceStatus(statusConfiguration, "OK", now);
+        testDataHelper.createServiceStatus(statusConfiguration, "NOT_OK", now.minus(1, ChronoUnit.MICROS));
+
+        var latest = serviceStatusDao.findLatest("service");
+        assertNotNull(latest);
+        assertTrue(latest.isPresent());
+
+        assertEquals(statusConfiguration, latest.get().serviceConfigurationId().longValue());
+        assertEquals("OK", latest.get().status());
+        assertEquals(now, latest.get().statusTime());
+        assertNull(latest.get().message());
     }
 }
