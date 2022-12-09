@@ -38,6 +38,16 @@ public class DatabaseConfiguration {
     }
 
     @Bean
+    public MailSubscriptionDao mailSubscriptionDao(DataSource dataSource) {
+        return new MailSubscriptionDaoImpl(dataSource);
+    }
+
+    @Bean
+    public MailSubscriptionGroupDao mailSubscriptionGroupsEntity(DataSource dataSource) {
+        return new MailSubscriptionGroupDaoImpl(dataSource);
+    }
+
+    @Bean
     public DataSource dataSource(@Value("${jdbc.url}") String jdbcUrl, @Value("${jdbc.user}") String jdbcUser, @Value("${jdbc.pass}") String jdbcPass) {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(jdbcUrl);
