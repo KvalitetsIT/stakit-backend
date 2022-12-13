@@ -47,8 +47,8 @@ public class AnnouncementIT extends AbstractIntegrationTest {
         var result = announcementsApi.v1AnnouncementsUuidGet(uuid);
         assertNotNull(result);
 
-        assertEquals(announcement.getFromDatetime(), result.getFromDatetime());
-        assertEquals(announcement.getToDatetime(), result.getToDatetime());
+        assertEquals(announcement.getFromDatetime().toInstant(), result.getFromDatetime().toInstant());
+        assertEquals(announcement.getToDatetime().toInstant(), result.getToDatetime().toInstant());
         assertEquals(announcement.getSubject(), result.getSubject());
         assertEquals(announcement.getMessage(), result.getMessage());
         assertEquals(uuid, result.getUuid());
@@ -78,8 +78,8 @@ public class AnnouncementIT extends AbstractIntegrationTest {
         var result = announcementsApi.v1AnnouncementsUuidGet(uuid);
         assertNotNull(result);
 
-        assertEquals(input.getFromDatetime(), result.getFromDatetime());
-        assertEquals(input.getToDatetime(), result.getToDatetime());
+        assertEquals(input.getFromDatetime().toInstant(), result.getFromDatetime().toInstant());
+        assertNull(result.getToDatetime());
         assertEquals(input.getSubject(), result.getSubject());
         assertEquals(input.getMessage(), result.getMessage());
         assertEquals(uuid, result.getUuid());

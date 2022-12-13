@@ -19,6 +19,23 @@ public class ServiceConfigurationDaoTest extends AbstractDaoTest {
     private TestDataHelper testDataHelper;
 
     @Test
+    public void testFindById() {
+        var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(),"service name", true, null);
+
+        var id = serviceConfigurationDao.insert(input);
+
+        var result = serviceConfigurationDao.findById(id);
+        assertNotNull(result);
+        assertTrue(result.isPresent());
+        assertEquals(id, result.get().id().longValue());
+        assertEquals(input.groupConfigurationId(), result.get().groupConfigurationId());
+        assertEquals(input.service(), result.get().service());
+        assertEquals(input.uuid(), result.get().uuid());
+        assertEquals(input.ignoreServiceName(), result.get().ignoreServiceName());
+        assertEquals(input.name(), result.get().name());
+    }
+
+    @Test
     public void testInsertWithGroup() {
         var groupId = testDataHelper.createGroup("group-name", UUID.randomUUID());
         var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(), "service name", true, groupId);

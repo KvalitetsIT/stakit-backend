@@ -14,4 +14,6 @@ public interface GroupConfigurationDao {
     boolean update(GroupConfigurationEntity groupConfigurationEntity);
 
     Optional<GroupConfigurationEntity> findByUuid(UUID group);
+
+    Optional<GroupConfigurationEntity> findById(long id);
 }

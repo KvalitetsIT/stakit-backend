@@ -113,4 +113,19 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
 
         return template.query(sql, DataClassRowMapper.newInstance(ServiceConfigurationEntityWithGroupUuid.class));
     }
+
+    @Override
+    public Optional<ServiceConfigurationEntity> findById(long id) {
+
+        var sql = "select * from service_configuration where id = :id";
+
+        try {
+            return Optional.ofNullable(template.queryForObject(sql, Collections.singletonMap("id", id), DataClassRowMapper.newInstance(ServiceConfigurationEntity.class)));
+        }
+        catch(EmptyResultDataAccessException e) {
+            logger.debug("Service configuration not found for id {}", id);
+
+            return Optional.empty();
+        }
+    }
 }
