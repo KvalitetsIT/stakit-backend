@@ -22,14 +22,14 @@ public class StatusUpdateServiceImplTest {
     private StatusUpdateService statusUpdateService;
     private ServiceConfigurationDao serviceConfigurationDao;
     private ServiceStatusDao serviceStatusDao;
-    private MailService mailService;
+    private MailQueueService mailQueueService;
 
     @Before
     public void setup() {
         serviceConfigurationDao = Mockito.mock(ServiceConfigurationDao.class);
         serviceStatusDao = Mockito.mock(ServiceStatusDao.class);
-        mailService = Mockito.mock(MailService.class);
-        statusUpdateService = new StatusUpdateServiceImpl(serviceConfigurationDao, serviceStatusDao, mailService);
+        mailQueueService = Mockito.mock(MailQueueService.class);
+        statusUpdateService = new StatusUpdateServiceImpl(serviceConfigurationDao, serviceStatusDao, mailQueueService);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class StatusUpdateServiceImplTest {
         Mockito.verify(serviceStatusDao, times(1)).insert(ServiceStatusEntity.createInstance(10L, "NOT_OK", input.statusDateTime(), input.message()));
         Mockito.verify(serviceStatusDao, times(1)).findLatest(input.service());
 
-        Mockito.verifyNoMoreInteractions(serviceConfigurationDao, serviceStatusDao, mailService);
+        Mockito.verifyNoMoreInteractions(serviceConfigurationDao, serviceStatusDao, mailQueueService);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class StatusUpdateServiceImplTest {
         Mockito.verify(serviceStatusDao, times(1)).insert(ServiceStatusEntity.createInstance(10L, "NOT_OK", input.statusDateTime(), input.message()));
         Mockito.verify(serviceStatusDao, times(1)).findLatest(input.service());
 
-        Mockito.verifyNoMoreInteractions(serviceConfigurationDao, serviceStatusDao, mailService);
+        Mockito.verifyNoMoreInteractions(serviceConfigurationDao, serviceStatusDao, mailQueueService);
     }
 
     @Test
@@ -107,8 +107,8 @@ public class StatusUpdateServiceImplTest {
         Mockito.verify(serviceConfigurationDao, times(1)).findByService(input.service());
         Mockito.verify(serviceStatusDao, times(1)).insert(ServiceStatusEntity.createInstance(10L, "OK", input.statusDateTime(), input.message()));
         Mockito.verify(serviceStatusDao, times(1)).findLatest(input.service());
-        Mockito.verify(mailService, times(1)).queueStatusUpdatedMail(10L, 11L);
+        Mockito.verify(mailQueueService, times(1)).queueStatusUpdatedMail(10L, 11L);
 
-        Mockito.verifyNoMoreInteractions(serviceConfigurationDao, serviceStatusDao, mailService);
+        Mockito.verifyNoMoreInteractions(serviceConfigurationDao, serviceStatusDao, mailQueueService);
     }
 }

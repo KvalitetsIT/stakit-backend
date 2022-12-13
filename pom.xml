@@ -102,6 +102,13 @@
 				<version>${spring-request-id-logger-version}</version>
 			</dependency>
 
+			<!-- Easy string haandling -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-text</artifactId>
+				<version>1.10.0</version>
+			</dependency>
+
 			<!-- Jackson Databind nullable -->
 			<dependency>
 				<groupId>org.openapitools</groupId>

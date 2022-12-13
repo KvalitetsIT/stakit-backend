@@ -62,4 +62,18 @@ public class ServiceStatusDaoImpl implements ServiceStatusDao {
             return Optional.empty();
         }
     }
+
+    @Override
+    public Optional<ServiceStatusEntity> findById(long id) {
+        var sql = "select * from service_status where id = :id";
+
+        try {
+            return Optional.ofNullable(template.queryForObject(sql, Collections.singletonMap("id", id), DataClassRowMapper.newInstance(ServiceStatusEntity.class)));
+        }
+        catch(EmptyResultDataAccessException e) {
+            logger.debug("Service status with id {} not found.", id);
+
+            return Optional.empty();
+        }
+    }
 }

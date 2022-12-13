@@ -19,4 +19,6 @@ public interface ServiceConfigurationDao {
     boolean updateByUuid(ServiceConfigurationEntity serviceConfigurationEntity);
 
     List<ServiceConfigurationEntityWithGroupUuid> findAllWithGroupId();
+
+    Optional<ServiceConfigurationEntity> findById(long id);
 }

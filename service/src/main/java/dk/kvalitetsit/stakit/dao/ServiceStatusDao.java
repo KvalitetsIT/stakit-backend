@@ -11,4 +11,6 @@ public interface ServiceStatusDao {
     List<ServiceStatusEntity> findAll();
 
     Optional<ServiceStatusEntity> findLatest(String service);
+
+    Optional<ServiceStatusEntity> findById(long id);
 }

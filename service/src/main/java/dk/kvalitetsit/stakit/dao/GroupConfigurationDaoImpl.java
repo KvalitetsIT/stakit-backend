@@ -70,4 +70,18 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
             return Optional.empty();
         }
     }
+
+    @Override
+    public Optional<GroupConfigurationEntity> findById(long id) {
+        var sql = "select * from group_configuration where id = :id";
+
+        try {
+            return Optional.ofNullable(template.queryForObject(sql, Collections.singletonMap("id", id), DataClassRowMapper.newInstance(GroupConfigurationEntity.class)));
+        }
+        catch(EmptyResultDataAccessException e) {
+            logger.debug("Group configuration with id {} not found.", id);
+
+            return Optional.empty();
+        }
+    }
 }

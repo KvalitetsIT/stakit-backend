@@ -15,6 +15,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Configuration
 public class StakitConfiguration implements WebMvcConfigurer {
@@ -35,8 +38,8 @@ public class StakitConfiguration implements WebMvcConfigurer {
     @Bean
     public StatusUpdateService statusUpdateService(ServiceConfigurationDao serviceConfigurationDao,
                                                    ServiceStatusDao serviceStatusDao,
-                                                   MailService mailService) {
-        return new StatusUpdateServiceImpl(serviceConfigurationDao, serviceStatusDao, mailService);
+                                                   MailQueueService mailQueueService) {
+        return new StatusUpdateServiceImpl(serviceConfigurationDao, serviceStatusDao, mailQueueService);
     }
 
     @Bean
@@ -60,13 +63,23 @@ public class StakitConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public MailSenderService mailSenderService(JavaMailSender javaMailSender) {
-        return new MailSenderServiceImpl(javaMailSender, "sender_email");
+    public MailSenderService mailSenderService(JavaMailSender javaMailSender,
+                                               @Value("${MAIL_FROM}") String from) {
+        return new MailSenderServiceImpl(javaMailSender, from);
     }
 
     @Bean
-    public MailService mailService(MailSubscriptionDao mailSubscriptionDao, MailSenderService mailSenderService) {
-        return new MailServiceImpl(mailSubscriptionDao, mailSenderService);
+    public MailQueueService mailService(MailSubscriptionDao mailSubscriptionDao,
+                                        MailSenderService mailSenderService,
+                                        ServiceConfigurationDao serviceConfigurationDao,
+                                        GroupConfigurationDao groupConfigurationDao,
+                                        ServiceStatusDao serviceStatusDao,
+                                        @Value("${STATUS_UPDATE_SUBJECT_TEMPLATE}") String templateSubject,
+                                        @Value("${STATUS_UPDATE_BODY_TEMPLATE}") String templateBody) throws IOException {
+
+        var stringBodyTemplate = Files.readString(Path.of(templateBody));
+
+        return new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, stringBodyTemplate, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao);
     }
 
     @Bean

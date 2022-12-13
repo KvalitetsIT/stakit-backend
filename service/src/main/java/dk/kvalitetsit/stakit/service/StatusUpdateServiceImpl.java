@@ -16,12 +16,12 @@ public class StatusUpdateServiceImpl implements StatusUpdateService {
     private static final Logger logger = LoggerFactory.getLogger(StatusUpdateServiceImpl.class);
     private final ServiceConfigurationDao serviceConfigurationDao;
     private final ServiceStatusDao serviceStatusDao;
-    private final MailService mailService;
+    private final MailQueueService mailQueueService;
 
-    public StatusUpdateServiceImpl(ServiceConfigurationDao serviceConfigurationDao, ServiceStatusDao serviceStatusDao, MailService mailService) {
+    public StatusUpdateServiceImpl(ServiceConfigurationDao serviceConfigurationDao, ServiceStatusDao serviceStatusDao, MailQueueService mailQueueService) {
         this.serviceConfigurationDao = serviceConfigurationDao;
         this.serviceStatusDao = serviceStatusDao;
-        this.mailService = mailService;
+        this.mailQueueService = mailQueueService;
     }
 
     @Override
@@ -41,7 +41,13 @@ public class StatusUpdateServiceImpl implements StatusUpdateService {
 
         if(oldServiceStatus.isPresent() && !oldServiceStatus.get().status().equals(input.status().toString())) {
             logger.info("Service status changed for service {}. Queueing mail send.", input.service());
-            mailService.queueStatusUpdatedMail(statusConfigurationId, serviceStatusId);
+            try {
+                mailQueueService.queueStatusUpdatedMail(statusConfigurationId, serviceStatusId);
+            }
+            catch(Exception e) {
+                // Catch all exceptions from mail sending and just log it.
+                logger.error("Error during mail sending.", e);
+            }
         }
     }
 }

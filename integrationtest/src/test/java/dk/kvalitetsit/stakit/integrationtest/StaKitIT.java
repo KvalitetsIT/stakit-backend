@@ -89,8 +89,8 @@ public class StaKitIT extends AbstractIntegrationTest {
         assertNotNull(result);
         assertEquals(1, result.size());
 
-        assertEquals(announcementTwo.getFromDatetime(), result.get(0).getFromDatetime());
-        assertEquals(announcementTwo.getToDatetime(), result.get(0).getToDatetime());
+        assertEquals(announcementTwo.getFromDatetime().toInstant(), result.get(0).getFromDatetime().toInstant());
+        assertEquals(announcementTwo.getToDatetime().toInstant(), result.get(0).getToDatetime().toInstant());
         assertEquals(announcementTwo.getSubject(), result.get(0).getSubject());
         assertEquals(announcementTwo.getMessage(), result.get(0).getMessage());
     }

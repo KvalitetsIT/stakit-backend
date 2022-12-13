@@ -72,6 +72,11 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+        </dependency>
+
         <!-- Actuator so it possible to get metrics -->
         <dependency>
             <groupId>dk.kvalitetsit</groupId>

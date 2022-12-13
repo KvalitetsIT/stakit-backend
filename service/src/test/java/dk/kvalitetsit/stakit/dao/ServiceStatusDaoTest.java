@@ -17,6 +17,25 @@ public class ServiceStatusDaoTest extends AbstractDaoTest {
     private TestDataHelper testDataHelper;
 
     @Test
+    public void testFindById() {
+        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false);
+
+        var input = ServiceStatusEntity.createInstance(statusConfigurationId,  "OK", OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS), "SOME MESSAGE");
+
+        var serviceStatusId = serviceStatusDao.insert(input);
+
+        var result = serviceStatusDao.findById(serviceStatusId);
+        assertNotNull(result);
+        assertTrue(result.isPresent());
+        var entity = result.get();
+        assertEquals(input.status(), entity.status());
+        assertEquals(input.statusTime(), entity.statusTime());
+        assertEquals(input.message(), entity.message());
+        assertEquals(statusConfigurationId, entity.serviceConfigurationId().longValue());
+        assertEquals(serviceStatusId, entity.id().longValue());
+    }
+
+    @Test
     public void testInsert() {
         var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false);
 

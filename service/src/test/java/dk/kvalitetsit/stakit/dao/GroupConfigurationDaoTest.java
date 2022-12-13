@@ -16,6 +16,21 @@ public class GroupConfigurationDaoTest extends AbstractDaoTest {
     private TestDataHelper testDataHelper;
 
     @Test
+    public void testFindById() {
+        var input = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "group-name", 0);
+
+        var id = groupConfigurationDao.insert(input);
+
+        var result = groupConfigurationDao.findById(id);
+        assertNotNull(result);
+        assertTrue(result.isPresent());
+        assertEquals(input.uuid(), result.get().uuid());
+        assertEquals(input.name(), result.get().name());
+        assertEquals(id, result.get().id().longValue());
+        assertEquals(input.displayOrder(), result.get().displayOrder());
+    }
+
+    @Test
     public void testInsertAndGetAll() {
         var input = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "group-name", 0);
 
