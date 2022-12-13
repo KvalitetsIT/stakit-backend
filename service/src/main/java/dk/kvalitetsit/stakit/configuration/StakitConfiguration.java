@@ -5,6 +5,8 @@ import dk.kvalitetsit.stakit.service.*;
 import dk.kvalitetsit.stakit.controller.interceptor.ApiAccessInterceptor;
 import dk.kvalitetsit.stakit.session.UserContextService;
 import dk.kvalitetsit.stakit.session.UserContextServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,7 @@ import java.nio.file.Path;
 
 @Configuration
 public class StakitConfiguration implements WebMvcConfigurer {
+    private static final Logger logger = LoggerFactory.getLogger(StakitConfiguration.class);
     private ApiAccessInterceptor apiAccessInterceptor;
 
     @Override
@@ -77,7 +80,9 @@ public class StakitConfiguration implements WebMvcConfigurer {
                                         @Value("${STATUS_UPDATE_SUBJECT_TEMPLATE}") String templateSubject,
                                         @Value("${STATUS_UPDATE_BODY_TEMPLATE}") String templateBody) throws IOException {
 
-        var stringBodyTemplate = Files.readString(Path.of(templateBody));
+        var path = Path.of(templateBody);
+        logger.debug("Loading mail body template form {}", path.toAbsolutePath());
+        var stringBodyTemplate = Files.readString(path);
 
         return new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, stringBodyTemplate, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao);
     }

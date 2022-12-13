@@ -23,6 +23,8 @@ public abstract class AbstractIntegrationTest {
 
     private static GenericContainer helloService;
     private static String apiBasePath;
+    private static String smtpHost;
+    private static int smtpWebPort;
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread()
@@ -57,10 +59,21 @@ public abstract class AbstractIntegrationTest {
             serviceStarter.startServices();
             apiBasePath = "http://localhost:8080";
         }
+
+        smtpHost = serviceStarter.getSmtpHost();
+        smtpWebPort = serviceStarter.getSmtpWebPort();
     }
 
     String getApiBasePath() {
         return apiBasePath;
+    }
+
+    String getSmtpHost() {
+        return smtpHost;
+    }
+
+    int getSmtpWebPort() {
+        return smtpWebPort;
     }
 
     String generateSignedToken() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
