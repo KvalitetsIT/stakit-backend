@@ -381,7 +381,7 @@ components:
     apiKeyAuth:
       type: apiKey
       in: header
-      name: X-API-Key
+      name: X-API-KEY
 
   responses:
     '204':
