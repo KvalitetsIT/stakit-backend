@@ -59,7 +59,7 @@ public class MailQueueServiceImpl implements MailQueueService {
     }
 
     private void processMail(Message message) {
-        mailSenderService.sendMail(message.to(), message.subject(), message.text());
+        mailSenderService.sendMailAsync(message.to(), message.subject(), message.text());
     }
 
     private String substitute(String text, ServiceConfigurationEntity serviceConfiguration, String groupName, ServiceStatusEntity serviceStatus) {

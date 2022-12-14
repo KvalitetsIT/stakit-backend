@@ -56,7 +56,8 @@ public class StakitConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public ServiceManagementService serviceManagementService(ServiceConfigurationDao serviceConfigurationDao, GroupConfigurationDao groupConfigurationDao) {
+    public ServiceManagementService serviceManagementService(ServiceConfigurationDao serviceConfigurationDao,
+                                                             GroupConfigurationDao groupConfigurationDao) {
         return new ServiceManagementServiceImpl(serviceConfigurationDao, groupConfigurationDao);
     }
 
@@ -69,6 +70,14 @@ public class StakitConfiguration implements WebMvcConfigurer {
     public MailSenderService mailSenderService(JavaMailSender javaMailSender,
                                                @Value("${MAIL_FROM}") String from) {
         return new MailSenderServiceImpl(javaMailSender, from);
+    }
+
+    @Bean
+    public SubscriptionService subscriptionService(GroupConfigurationDao groupConfigurationDao,
+                                                   MailSubscriptionDao subscriptionDao,
+                                                   MailSubscriptionGroupDao subscriptionGroupDao,
+                                                   MailSenderService mailSenderService) {
+        return new SubscriptionServiceImpl(groupConfigurationDao, subscriptionDao, subscriptionGroupDao, mailSenderService);
     }
 
     @Bean

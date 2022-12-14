@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class MailSubscriptionDaoImpl implements MailSubscriptionDao {
     private final NamedParameterJdbcTemplate template;
@@ -18,7 +19,7 @@ public class MailSubscriptionDaoImpl implements MailSubscriptionDao {
 
     @Override
     public long insert(MailSubscriptionEntity mailSubscriptionEntity) {
-        var sql = "insert into mail_subscription(uuid, announcements, confirmed, confirm_identifier, email) values(:uuid, :announcements, :confirmed, :confirm_identifier, email)";
+        var sql = "insert into mail_subscription(uuid, announcements, confirmed, confirm_identifier, email) values(:uuid, :announcements, :confirmed, :confirm_identifier, :email)";
 
         var parameters = new MapSqlParameterSource()
                 .addValue("uuid", mailSubscriptionEntity.uuid().toString())
@@ -46,5 +47,14 @@ public class MailSubscriptionDaoImpl implements MailSubscriptionDao {
                 "     and s.confirmed = 1";
 
         return template.query(sql, Collections.singletonMap("service_configuration_id", serviceConfigurationId), DataClassRowMapper.newInstance(MailSubscriptionEntity.class));
+    }
+
+    @Override
+    public boolean updateConfirmedByConfirmationUuid(UUID confirmationUuid) {
+        var sql = "update mail_subscription set confirmed = 1 where confirm_identifier = :uuid";
+
+        var updateCount = template.update(sql, Collections.singletonMap("uuid", confirmationUuid.toString()));
+
+        return updateCount > 0;
     }
 }

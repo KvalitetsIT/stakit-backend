@@ -1,15 +1,18 @@
 package dk.kvalitetsit.stakit.controller;
 
+import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
 import dk.kvalitetsit.stakit.service.StatusGroupService;
+import dk.kvalitetsit.stakit.service.SubscriptionService;
+import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.model.Announcement;
 import dk.kvalitetsit.stakit.service.model.Status;
 import dk.kvalitetsit.stakit.service.model.StatusElement;
 import dk.kvalitetsit.stakit.service.model.StatusGrouped;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openapitools.model.Subscribe;
 import org.springframework.http.HttpStatus;
 
 import java.time.OffsetDateTime;
@@ -19,18 +22,22 @@ import java.util.UUID;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
 
 public class StakitControllerTest {
     private StakitController stakitController;
     private StatusGroupService statusGroupService;
     private AnnouncementService announcementService;
+    private SubscriptionService subscriptionService;
 
     @Before
     public void setup() {
         statusGroupService = Mockito.mock(StatusGroupService.class);
         announcementService = Mockito.mock(AnnouncementService.class);
+        subscriptionService = Mockito.mock(SubscriptionService.class);
 
-        stakitController = new StakitController(statusGroupService, announcementService);
+        stakitController = new StakitController(statusGroupService, announcementService, subscriptionService);
     }
 
     @Test
@@ -98,5 +105,61 @@ public class StakitControllerTest {
         assertEquals(announcementTwo.subject(), body.get(1).getSubject());
         assertEquals(announcementTwo.toDatetime(), body.get(1).getToDatetime());
         assertEquals(announcementTwo.fromDatetime(), body.get(1).getFromDatetime());
+    }
+
+    @Test
+    public void testSubscribe() {
+        var input = new Subscribe();
+        input.setEmail("email");
+        input.setAnnouncements(true);
+        input.setGroups(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
+
+        var subscriptionUuid = UUID.randomUUID();
+
+        Mockito.when(subscriptionService.subscribe(Mockito.any())).thenReturn(subscriptionUuid);
+
+        var result = stakitController.v1SubscribePost(input);
+        assertNotNull(result);
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
+        assertEquals(subscriptionUuid, result.getBody().getUuid());
+
+        Mockito.verify(subscriptionService, times(1)).subscribe(Mockito.argThat(x -> {
+            assertEquals(input.getEmail(), x.email());
+            assertEquals(input.getAnnouncements(), x.announcements());
+            assertEquals(input.getGroups(), x.groups());
+
+            return true;
+        }));
+    }
+
+    @Test
+    public void testSubscribeGroupNotFound() {
+        var input = new Subscribe();
+        input.setEmail("email");
+        input.setAnnouncements(true);
+        input.setGroups(Arrays.asList(UUID.randomUUID(), UUID.randomUUID()));
+
+        Mockito.when(subscriptionService.subscribe(Mockito.any())).thenThrow(new InvalidDataException("message"));
+
+        var result = assertThrows(BadRequestException.class, () -> stakitController.v1SubscribePost(input));
+        assertNotNull(result);
+        assertEquals("message", result.getMessage());
+
+        Mockito.verify(subscriptionService, times(1)).subscribe(Mockito.argThat(x -> {
+            assertEquals(input.getEmail(), x.email());
+            assertEquals(input.getAnnouncements(), x.announcements());
+            assertEquals(input.getGroups(), x.groups());
+
+            return true;
+        }));
+    }
+
+    @Test
+    public void testSubscribeConfirm() {
+        var confirmationUuid = UUID.randomUUID();
+
+        stakitController.v1SubscribeConfirmUuidGet(confirmationUuid);
+
+        Mockito.verify(subscriptionService, times(1)).confirmSubscription(confirmationUuid);
     }
 }

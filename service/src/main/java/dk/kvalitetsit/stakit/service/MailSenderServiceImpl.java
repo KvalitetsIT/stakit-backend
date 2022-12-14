@@ -19,6 +19,15 @@ public class MailSenderServiceImpl implements MailSenderService {
 
     @Override
     @Async
+    public void sendMailAsync(String to, String subject, String text) {
+        try {
+            sendMail(to, subject, text);
+        }
+        catch(MailException e) {
+            // Empty
+        }
+    }
+
     public void sendMail(String to, String subject, String text) {
         var mailMessage = new SimpleMailMessage();
         mailMessage.setFrom(from);;
@@ -29,7 +38,8 @@ public class MailSenderServiceImpl implements MailSenderService {
         try {
             emailSender.send(mailMessage);
         } catch(MailException e) {
-            logger.warn("Could not send mail. Discarding mail.", e);
+            logger.warn("Could not send mail.", e);
+            throw e;
         }
     }
 }
