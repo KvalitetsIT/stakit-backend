@@ -30,12 +30,16 @@ public class StaKitIT extends AbstractIntegrationTest {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
 
+        var adapterClient = new ApiClient();
+        adapterClient.setBasePath(getApiBasePath());
+        adapterClient.addDefaultHeader("X-API-KEY", ServiceStarter.API_KEY);
+
         var authenticatedApi = new ApiClient();
         authenticatedApi.setBasePath(getApiBasePath());
         authenticatedApi.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());
 
         staKitApi = new StaKitApi(apiClient);
-        adapterApi = new AdapterApi(apiClient);
+        adapterApi = new AdapterApi(adapterClient);
         announcementApi = new AnnouncementsApi(authenticatedApi);
     }
 

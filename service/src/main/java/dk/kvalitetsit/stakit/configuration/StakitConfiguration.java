@@ -32,8 +32,8 @@ public class StakitConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public ApiAccessInterceptor apiAccessInterceptor(UserContextService userContextService) {
-        apiAccessInterceptor = new ApiAccessInterceptor(userContextService);
+    public ApiAccessInterceptor apiAccessInterceptor(UserContextService userContextService, @Value("${ADAPTER_API_KEY}") String apiKey) {
+        apiAccessInterceptor = new ApiAccessInterceptor(userContextService, apiKey);
 
         return apiAccessInterceptor;
     }

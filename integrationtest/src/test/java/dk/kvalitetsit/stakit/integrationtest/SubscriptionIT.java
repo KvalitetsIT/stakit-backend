@@ -1,20 +1,13 @@
 package dk.kvalitetsit.stakit.integrationtest;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ResponseBody;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
-import org.openapitools.client.api.AdapterApi;
-import org.openapitools.client.api.AnnouncementsApi;
 import org.openapitools.client.api.StaKitApi;
 import org.openapitools.client.model.Subscribe;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -25,21 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SubscriptionIT extends AbstractIntegrationTest {
-    private final AdapterApi adapterApi;
     private final StaKitApi staKitApi;
-    private final AnnouncementsApi announcementApi;
 
-    public SubscriptionIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
+    public SubscriptionIT() {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
 
-        var authenticatedApi = new ApiClient();
-        authenticatedApi.setBasePath(getApiBasePath());
-        authenticatedApi.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());
-
         staKitApi = new StaKitApi(apiClient);
-        adapterApi = new AdapterApi(apiClient);
-        announcementApi = new AnnouncementsApi(authenticatedApi);
     }
 
     @Test

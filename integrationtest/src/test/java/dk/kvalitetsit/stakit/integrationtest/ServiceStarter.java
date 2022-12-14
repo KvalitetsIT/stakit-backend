@@ -16,6 +16,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import java.util.Collections;
 
 public class ServiceStarter {
+    public static final String API_KEY = "API_KEY";
     private static final Logger logger = LoggerFactory.getLogger(ServiceStarter.class);
     private static final Logger serviceLogger = LoggerFactory.getLogger("stakit-backend");
     private static final Logger mariadbLogger = LoggerFactory.getLogger("mariadb");
@@ -45,6 +46,7 @@ public class ServiceStarter {
         System.setProperty("MAIL_FROM", "from_email");
         System.setProperty("STATUS_UPDATE_SUBJECT_TEMPLATE", "Subject");
         System.setProperty("STATUS_UPDATE_BODY_TEMPLATE", "src/test/resources/body.template");
+        System.setProperty("ADAPTER_API_KEY", API_KEY);
 
         SpringApplication.run((Application.class));
     }
@@ -113,6 +115,7 @@ public class ServiceStarter {
                 .withEnv("MAIL_FROM", "from_email")
                 .withEnv("STATUS_UPDATE_SUBJECT_TEMPLATE", "Subject")
                 .withEnv("STATUS_UPDATE_BODY_TEMPLATE", "/tmp/body.template")
+                .withEnv("ADAPTER_API_KEY", API_KEY)
 
                 .withEnv("spring.flyway.locations", "classpath:db/migration,filesystem:/app/sql")
                 .withClasspathResourceMapping("db/migration/V901__extra_data_for_integration_test.sql", "/app/sql/V901__extra_data_for_integration_test.sql", BindMode.READ_ONLY)

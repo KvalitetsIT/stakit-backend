@@ -26,6 +26,7 @@ public class AdapterIT extends AbstractIntegrationTest {
     public AdapterIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
+        apiClient.addDefaultHeader("X-API-KEY", ServiceStarter.API_KEY);
 
         adapterApi = new AdapterApi(apiClient);
     }
