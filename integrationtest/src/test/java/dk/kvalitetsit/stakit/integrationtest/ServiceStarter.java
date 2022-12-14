@@ -26,6 +26,7 @@ public class ServiceStarter {
     private GenericContainer<?> mockSmtp;
     private String smtpHost;
     private int smtpWebPort;
+    private int smtpPort;
 
     public void startServices() {
         dockerNetwork = Network.newNetwork();
@@ -38,7 +39,7 @@ public class ServiceStarter {
         System.setProperty("JDBC.PASS", "secret1234");
 
         System.setProperty("MAIL_HOST", "localhost");
-        System.setProperty("MAIL_PORT", "" + smtpWebPort);
+        System.setProperty("MAIL_PORT", "" + smtpPort);
         System.setProperty("MAIL_USER", "some_user");
         System.setProperty("MAIL_PASSWORD", "some_password");
         System.setProperty("MAIL_FROM", "from_email");
@@ -60,6 +61,7 @@ public class ServiceStarter {
 
         smtpHost = mockSmtp.getContainerIpAddress();
         smtpWebPort = mockSmtp.getMappedPort(8025);
+        smtpPort = mockSmtp.getMappedPort(1025);
     }
 
     String getSmtpHost() {

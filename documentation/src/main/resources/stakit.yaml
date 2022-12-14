@@ -15,7 +15,7 @@ tags:
   - name: announcements
     description: API's to create, update, delete and read announcements.
   - name: StaKit
-    description: API's to get data for frontend.
+    description: Public API's for the frontend.
 
 security:
   - bearerAuth: []
@@ -331,6 +331,48 @@ paths:
                 items:
                   $ref: '#/components/schemas/announcements-to-show'
 
+  /v1/subscribe:
+    post:
+      tags:
+        - StaKit
+      security: []
+      summary: Create mail subscription
+      description: API to create mail subscription.
+      requestBody:
+        description: Requested mail subscription to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/subscribe'
+      responses:
+        '201':
+          description: The scubscription was created.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The location of the created resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create-response'
+        '403':
+          $ref: '#components/responses/400'
+
+  /v1/subscribe-confirm/{uuid}:
+    get:
+      tags:
+        - StaKit
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      security: []
+      summary: Patch mail subscription
+      description: API to patch mail subscription. Currently it is only possible to set confirmed status to true.
+      responses:
+        '201':
+          $ref: '#/components/responses/201'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -369,25 +411,8 @@ components:
         type: string
         format: uuid
       example: 50edcf81-d36f-4246-a4af-168ba37fd57b
-  schemas:
-    helloResponse:
-      type: object
-      required:
-        - name
-        - now
-      properties:
-        name:
-          description: Your name
-          type: string
-          example: "John Doe"
-        now:
-          description: Time request was received
-          type: string
-          format: date-time
-        i_can_be_null:
-          type: string
-          nullable: true
 
+  schemas:
     status-update:
       type: object
       required:
@@ -693,6 +718,34 @@ components:
         message:
           description: Announcement message/body
           type: string
+
+    subscribe:
+      type: object
+      required:
+        - email
+        - announcements
+        - groups
+      properties:
+        email:
+          description: Email to subscribe
+          type: string
+        announcements:
+          description: Subscribe to announcements
+          type: boolean
+        groups:
+          description: Zero or more groups to get updates for.
+          type: array
+          items:
+            type: string
+            description: Group UUID
+            format: uuid
+
+    subscribe-patch:
+      type: object
+      properties:
+        confirmed:
+          description: Set to true if subscription is to be confirmed.
+          type: boolean
 
     create-response:
       type: object

@@ -1,9 +1,6 @@
 package dk.kvalitetsit.stakit.dao;
 
-import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
-import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionEntity;
-import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
-import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
+import dk.kvalitetsit.stakit.dao.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.OffsetDateTime;
@@ -18,6 +15,9 @@ public class TestDataHelper {
 
     @Autowired
     private MailSubscriptionDao mailSubscriptionDao;
+
+    @Autowired
+    private MailSubscriptionGroupDao mailSubscriptionGroupDao;
 
     @Autowired
     private GroupConfigurationDao groupConfigurationDao;
@@ -42,7 +42,11 @@ public class TestDataHelper {
         return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupUuid, groupName, 10));
     }
 
-    public long createMailSubscription() {
-        return mailSubscriptionDao.insert(MailSubscriptionEntity.createInstance(UUID.randomUUID(), "email", true, true, UUID.randomUUID()));
+    public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier) {
+        return mailSubscriptionDao.insert(MailSubscriptionEntity.createInstance(UUID.randomUUID(), "email", true, true, confirmationIdentifier));
+    }
+
+    public void createMailSubscriptionGroup(long mailSubscriptionId, long groupCOnfigurationId) {
+        mailSubscriptionGroupDao.insert(MailSubscriptionGroupsEntity.createInstance(mailSubscriptionId, groupCOnfigurationId));
     }
 }
