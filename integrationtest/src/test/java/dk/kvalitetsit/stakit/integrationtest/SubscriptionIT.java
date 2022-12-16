@@ -29,6 +29,7 @@ public class SubscriptionIT extends AbstractIntegrationTest {
 
     @Test
     public void testSubScribeAndConfirm() throws ApiException {
+        int currentMailCount = getCurrentMailCount();
         var subscribeInput = new Subscribe();
         subscribeInput.setEmail("email");
         subscribeInput.setAnnouncements(true);
@@ -45,7 +46,7 @@ public class SubscriptionIT extends AbstractIntegrationTest {
                 .when()
                 .get("/messages")
                 .then()
-                .body("total", equalTo(1));
+                .body("total", equalTo(currentMailCount+1));
 
         var body = validatableResponse.extract().body().asString();
         Pattern pattern = Pattern.compile(".*https:\\/\\/some\\/url\\/(.*?)\".*", Pattern.DOTALL);
