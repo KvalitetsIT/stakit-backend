@@ -36,11 +36,11 @@ public class ServiceConfigurationDaoTest extends AbstractDaoTest {
     }
 
     @Test
-    public void testInsertWithGroup() {
+    public void testInsertWithGroupAndDelete() {
         var groupId = testDataHelper.createGroup("group-name", UUID.randomUUID());
         var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(), "service name", true, groupId);
 
-        serviceConfigurationDao.insert(input);
+        var id = serviceConfigurationDao.insert(input);
 
         var result = serviceConfigurationDao.findAll();
         assertNotNull(result);
@@ -50,6 +50,12 @@ public class ServiceConfigurationDaoTest extends AbstractDaoTest {
         assertEquals(input.ignoreServiceName(), entity.ignoreServiceName());
         assertNotNull(result.get(0).id());
         assertEquals(groupId, result.get(0).groupConfigurationId().longValue());
+
+        // Delete
+        var deleted = serviceConfigurationDao.delete(input.uuid());
+        assertTrue(deleted);
+
+        assertTrue(serviceConfigurationDao.findById(id).isEmpty());
     }
 
     @Test
@@ -182,6 +188,12 @@ public class ServiceConfigurationDaoTest extends AbstractDaoTest {
         assertEquals(serviceOneId, secondService.id().longValue());
         assertEquals("service1", secondService.service());
         assertEquals("service1 name", secondService.name());
+    }
+
+    @Test
+    public void testDeleteNotFound() {
+        var result = serviceConfigurationDao.delete(UUID.randomUUID());
+        assertFalse(result);
     }
 }
 

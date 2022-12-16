@@ -84,4 +84,11 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
             return Optional.empty();
         }
     }
+
+    @Override
+    public boolean delete(UUID uuid) {
+        var sql = "delete from group_configuration where uuid = :uuid";
+
+        return template.update(sql, Collections.singletonMap("uuid", uuid.toString())) > 0;
+    }
 }

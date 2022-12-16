@@ -36,6 +36,17 @@ public class ServiceManagementController implements ServiceManagementApi {
     }
 
     @Override
+    public ResponseEntity<Void> v1ServicesUuidDelete(UUID uuid) {
+        var deleted = serviceManagementService.deleteService(uuid);
+
+        if(!deleted) {
+            throw new ResourceNotFoundException("Service with uuid %s not found".formatted(uuid));
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
     public ResponseEntity<Service> v1ServicesUuidGet(UUID uuid) {
         var service  = serviceManagementService.getService(uuid);
 

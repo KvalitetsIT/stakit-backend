@@ -11,4 +11,6 @@ public interface GroupService {
     boolean updateGroup(Group group);
 
     List<Group> getGroups();
+
+    boolean deleteGroup(UUID uuid);
 }

@@ -16,7 +16,7 @@ public class GroupConfigurationDaoTest extends AbstractDaoTest {
     private TestDataHelper testDataHelper;
 
     @Test
-    public void testFindById() {
+    public void testFindByIdAndDelete() {
         var input = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "group-name", 0);
 
         var id = groupConfigurationDao.insert(input);
@@ -28,6 +28,12 @@ public class GroupConfigurationDaoTest extends AbstractDaoTest {
         assertEquals(input.name(), result.get().name());
         assertEquals(id, result.get().id().longValue());
         assertEquals(input.displayOrder(), result.get().displayOrder());
+
+        // Delete
+        var deleted = groupConfigurationDao.delete(input.uuid());
+        assertTrue(deleted);
+
+        assertTrue(groupConfigurationDao.findById(id).isEmpty());
     }
 
     @Test
@@ -87,5 +93,11 @@ public class GroupConfigurationDaoTest extends AbstractDaoTest {
         var result = groupConfigurationDao.findByUuid(group.uuid());
         assertNotNull(result);
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testDeleteNotFound() {
+        var result = groupConfigurationDao.delete(UUID.randomUUID());
+        assertFalse(result);
     }
 }

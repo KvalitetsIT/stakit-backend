@@ -16,4 +16,6 @@ public interface GroupConfigurationDao {
     Optional<GroupConfigurationEntity> findByUuid(UUID group);
 
     Optional<GroupConfigurationEntity> findById(long id);
+
+    boolean delete(UUID input);
 }
