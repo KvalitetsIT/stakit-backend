@@ -18,7 +18,7 @@ import java.util.Date;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class UserContextServiceTest {
+public class UserContextServiceTestModel {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private HttpServletRequest request;
     private String username;

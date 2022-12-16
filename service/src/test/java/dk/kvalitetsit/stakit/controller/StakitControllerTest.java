@@ -5,10 +5,10 @@ import dk.kvalitetsit.stakit.service.AnnouncementService;
 import dk.kvalitetsit.stakit.service.StatusGroupService;
 import dk.kvalitetsit.stakit.service.SubscriptionService;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
-import dk.kvalitetsit.stakit.service.model.Announcement;
+import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
 import dk.kvalitetsit.stakit.service.model.Status;
-import dk.kvalitetsit.stakit.service.model.StatusElement;
-import dk.kvalitetsit.stakit.service.model.StatusGrouped;
+import dk.kvalitetsit.stakit.service.model.StatusElementModel;
+import dk.kvalitetsit.stakit.service.model.StatusGroupedModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -42,14 +42,14 @@ public class StakitControllerTest {
 
     @Test
     public void testStatusGetGrouped() {
-        var groupOne = new StatusGrouped("Default", new ArrayList<>());
-        groupOne.status().add(new StatusElement(Status.OK, "In Default Group"));
+        var groupOne = new StatusGroupedModel("Default", new ArrayList<>());
+        groupOne.status().add(new StatusElementModel(Status.OK, "In Default Group"));
 
-        var groupTwo = new StatusGrouped("Group Two", new ArrayList<>());
-        groupTwo.status().add(new StatusElement(Status.OK, "Name"));
-        groupTwo.status().add(new StatusElement(Status.NOT_OK, "Name Two"));
+        var groupTwo = new StatusGroupedModel("Group Two", new ArrayList<>());
+        groupTwo.status().add(new StatusElementModel(Status.OK, "Name"));
+        groupTwo.status().add(new StatusElementModel(Status.NOT_OK, "Name Two"));
 
-        var serviceResponse = new ArrayList<StatusGrouped>();
+        var serviceResponse = new ArrayList<StatusGroupedModel>();
         serviceResponse.add(groupOne);
         serviceResponse.add(groupTwo);
 
@@ -83,8 +83,8 @@ public class StakitControllerTest {
 
     @Test
     public void testGetAnnouncements() {
-        var announcementOne = new Announcement(UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject one", "message one");
-        var announcementTwo = new Announcement(UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject two", "message two");
+        var announcementOne = new AnnouncementModel(UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject one", "message one");
+        var announcementTwo = new AnnouncementModel(UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject two", "message two");
 
         Mockito.when(announcementService.getAnnouncements()).thenReturn(Arrays.asList(announcementOne, announcementTwo));
 

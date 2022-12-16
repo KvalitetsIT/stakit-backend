@@ -1,16 +1,16 @@
 package dk.kvalitetsit.stakit.service;
 
-import dk.kvalitetsit.stakit.service.model.Group;
+import dk.kvalitetsit.stakit.service.model.GroupModel;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface GroupService {
-    UUID createGroup(Group group);
+    UUID createGroup(GroupModel groupModel);
 
-    boolean updateGroup(Group group);
+    boolean updateGroup(GroupModel groupModel);
 
-    List<Group> getGroups();
+    List<GroupModel> getGroups();
 
     boolean deleteGroup(UUID uuid);
 }

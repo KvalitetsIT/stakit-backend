@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MailSubscriptionDaoTest extends AbstractDaoTest {
+public class MailSubscriptionDaoImplTest extends AbstractDaoTest {
     @Autowired
     private MailSubscriptionDao mailSubscriptionDao;
 

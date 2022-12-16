@@ -17,10 +17,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SubscriptionIT extends AbstractIntegrationTest {
+public class SubscriptionModelIT extends AbstractIntegrationTest {
     private final StaKitApi staKitApi;
 
-    public SubscriptionIT() {
+    public SubscriptionModelIT() {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
 

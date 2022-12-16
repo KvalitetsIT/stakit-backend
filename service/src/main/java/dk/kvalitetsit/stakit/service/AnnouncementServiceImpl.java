@@ -2,7 +2,8 @@ package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.AnnouncementDao;
 import dk.kvalitetsit.stakit.service.mapper.AnnouncementMapper;
-import dk.kvalitetsit.stakit.service.model.Announcement;
+import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -17,30 +18,35 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public Optional<Announcement> getAnnouncement(UUID uuid) {
+    @Transactional
+    public Optional<AnnouncementModel> getAnnouncement(UUID uuid) {
         return announcementDao.getByUuid(uuid).map(AnnouncementMapper::mapEntity);
     }
 
     @Override
-    public UUID createAnnouncement(Announcement announcement) {
+    @Transactional
+    public UUID createAnnouncement(AnnouncementModel announcementModel) {
         var uuid = UUID.randomUUID();
-        announcementDao.insert(AnnouncementMapper.mapModel(uuid, announcement));
+        announcementDao.insert(AnnouncementMapper.mapModel(uuid, announcementModel));
 
         return uuid;
     }
 
     @Override
+    @Transactional
     public boolean deleteAnnouncement(UUID uuid) {
         return announcementDao.deleteByUuid(uuid);
     }
 
     @Override
-    public boolean updateAnnouncement(Announcement announcement) {
-        return announcementDao.updateByUuid(AnnouncementMapper.mapModel(announcement));
+    @Transactional
+    public boolean updateAnnouncement(AnnouncementModel announcementModel) {
+        return announcementDao.updateByUuid(AnnouncementMapper.mapModel(announcementModel));
     }
 
     @Override
-    public List<Announcement> getAnnouncements() {
+    @Transactional
+    public List<AnnouncementModel> getAnnouncements() {
         var announcements = announcementDao.getAnnouncements(OffsetDateTime.now());
 
         return announcements.stream().map(AnnouncementMapper::mapEntity).toList();

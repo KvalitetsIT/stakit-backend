@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.junit.Assert.*;
 
-public class ServiceStatusDaoTest extends AbstractDaoTest {
+public class ServiceStatusDaoImplTest extends AbstractDaoTest {
     @Autowired
     private ServiceStatusDao serviceStatusDao;
 

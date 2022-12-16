@@ -5,7 +5,7 @@ import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
 import dk.kvalitetsit.stakit.service.model.Status;
-import dk.kvalitetsit.stakit.service.model.UpdateServiceInput;
+import dk.kvalitetsit.stakit.service.model.UpdateServiceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -34,7 +34,7 @@ public class StatusUpdateServiceImplTest {
 
     @Test
     public void testStatusConfigurationNotFound() {
-        var input = new UpdateServiceInput(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Status.NOT_OK, OffsetDateTime.now(), "Some message");
+        var input = new UpdateServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Status.NOT_OK, OffsetDateTime.now(), "Some message");
 
         Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenReturn(10L);
         Mockito.when(serviceStatusDao.findLatest(Mockito.any())).thenReturn(Optional.empty());
@@ -57,7 +57,7 @@ public class StatusUpdateServiceImplTest {
 
     @Test
     public void testStatusConfigurationFoundNoStatusChange() {
-        var input = new UpdateServiceInput(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Status.NOT_OK, OffsetDateTime.now(), "Some message");
+        var input = new UpdateServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Status.NOT_OK, OffsetDateTime.now(), "Some message");
         var serviceStatus = new ServiceStatusEntity(10L, 10L, "NOT_OK", OffsetDateTime.now(), "message");
 
         Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenThrow(DuplicateKeyException.class);
@@ -84,7 +84,7 @@ public class StatusUpdateServiceImplTest {
 
     @Test
     public void testStatusConfigurationFoundStatusChange() {
-        var input = new UpdateServiceInput(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Status.OK, OffsetDateTime.now(), "Some message");
+        var input = new UpdateServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), Status.OK, OffsetDateTime.now(), "Some message");
         var serviceStatus = new ServiceStatusEntity(10L, 10L, "NOT_OK", OffsetDateTime.now(), "message");
 
         Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenThrow(DuplicateKeyException.class);

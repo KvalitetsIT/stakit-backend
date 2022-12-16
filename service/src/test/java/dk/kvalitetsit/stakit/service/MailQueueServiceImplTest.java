@@ -20,7 +20,7 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.times;
 
-public class MailQueueServiceTest {
+public class MailQueueServiceImplTest {
     private MailSubscriptionDao mailSubscriptionDao;
     private MailSenderService mailSenderService;
     private String templateSubject;

@@ -4,7 +4,8 @@ import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
 import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.service.mapper.ServiceMapper;
-import dk.kvalitetsit.stakit.service.model.Service;
+import dk.kvalitetsit.stakit.service.model.ServiceModel;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,46 +22,51 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
     }
 
     @Override
-    public List<Service> getServices() {
+    @Transactional
+    public List<ServiceModel> getServices() {
         var services = serviceConfigurationDao.findAllWithGroupId();
 
         return services.stream().map(ServiceMapper::mapEntityToService).toList();
     }
 
     @Override
-    public Optional<Service> getService(UUID uuid) {
+    @Transactional
+    public Optional<ServiceModel> getService(UUID uuid) {
         var service = serviceConfigurationDao.findByUuidWithGroupUuid(uuid);
 
         return service.map(ServiceMapper::mapEntityToService);
     }
 
     @Override
-    public boolean updateService(UUID uuid, Service service) {
-        Optional<GroupConfigurationEntity> group = service.group() != null ? groupConfigurationDao.findByUuid(service.group()) : Optional.empty();
+    @Transactional
+    public boolean updateService(UUID uuid, ServiceModel serviceModel) {
+        Optional<GroupConfigurationEntity> group = serviceModel.group() != null ? groupConfigurationDao.findByUuid(serviceModel.group()) : Optional.empty();
 
-        if(service.group() != null && group.isEmpty()) {
+        if(serviceModel.group() != null && group.isEmpty()) {
             throw new IllegalArgumentException("Group not found");
         }
 
-        return serviceConfigurationDao.updateByUuid(ServiceMapper.mapServiceToEntity(uuid, service, group));
+        return serviceConfigurationDao.updateByUuid(ServiceMapper.mapServiceToEntity(uuid, serviceModel, group));
     }
 
     @Override
-    public UUID createService(Service service) {
+    @Transactional
+    public UUID createService(ServiceModel serviceModel) {
         var serviceUuid = UUID.randomUUID();
 
-        Optional<GroupConfigurationEntity> group = service.group() != null ? groupConfigurationDao.findByUuid(service.group()) : Optional.empty();
+        Optional<GroupConfigurationEntity> group = serviceModel.group() != null ? groupConfigurationDao.findByUuid(serviceModel.group()) : Optional.empty();
 
-        if(service.group() != null && group.isEmpty()) {
+        if(serviceModel.group() != null && group.isEmpty()) {
             return null;
         }
 
-        serviceConfigurationDao.insert(ServiceMapper.mapServiceToEntity(serviceUuid, service, group));
+        serviceConfigurationDao.insert(ServiceMapper.mapServiceToEntity(serviceUuid, serviceModel, group));
 
         return serviceUuid;
     }
 
     @Override
+    @Transactional
     public boolean deleteService(UUID uuid) {
         return serviceConfigurationDao.delete(uuid);
     }

@@ -1,15 +1,15 @@
 package dk.kvalitetsit.stakit.service;
 
-import dk.kvalitetsit.stakit.service.model.Announcement;
+import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface AnnouncementService {
-    Optional<Announcement> getAnnouncement(UUID uuid);
-    UUID createAnnouncement(Announcement announcement);
+    Optional<AnnouncementModel> getAnnouncement(UUID uuid);
+    UUID createAnnouncement(AnnouncementModel announcementModel);
     boolean deleteAnnouncement(UUID uuid);
-    boolean updateAnnouncement(Announcement announcement);
-    List<Announcement> getAnnouncements();
+    boolean updateAnnouncement(AnnouncementModel announcementModel);
+    List<AnnouncementModel> getAnnouncements();
 }

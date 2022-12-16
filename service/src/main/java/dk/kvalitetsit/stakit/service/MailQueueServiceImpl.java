@@ -7,8 +7,9 @@ import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
-import dk.kvalitetsit.stakit.service.model.Message;
+import dk.kvalitetsit.stakit.service.model.MessageModel;
 import org.apache.commons.text.StringSubstitutor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -40,6 +41,7 @@ public class MailQueueServiceImpl implements MailQueueService {
     }
 
     @Override
+    @Transactional
     public void queueStatusUpdatedMail(long serviceConfigurationId, long serviceStatusId) {
         var mails = mailSubscriptionDao.findSubscriptionsByServiceConfigurationId(serviceConfigurationId);
 
@@ -52,14 +54,14 @@ public class MailQueueServiceImpl implements MailQueueService {
         var serviceStatus = serviceStatusDao.findById(serviceStatusId).orElseThrow(() -> new RuntimeException("Service status not found. This should not happen. ID: " + serviceStatusId));
 
         mails.stream()
-                .map(x -> new Message(x.email(),
+                .map(x -> new MessageModel(x.email(),
                                       substitute(templateSubject, serviceConfiguration, groupName, serviceStatus),
                                       substitute(templateBody, serviceConfiguration, groupName, serviceStatus)))
                 .forEach(this::processMail);
     }
 
-    private void processMail(Message message) {
-        mailSenderService.sendMailAsync(message.to(), message.subject(), message.text());
+    private void processMail(MessageModel messageModel) {
+        mailSenderService.sendMailAsync(messageModel.to(), messageModel.subject(), messageModel.text());
     }
 
     private String substitute(String text, ServiceConfigurationEntity serviceConfiguration, String groupName, ServiceStatusEntity serviceStatus) {

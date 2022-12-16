@@ -6,7 +6,7 @@ import dk.kvalitetsit.stakit.dao.MailSubscriptionGroupDao;
 import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionGroupsEntity;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.mapper.SubscriptionMapper;
-import dk.kvalitetsit.stakit.service.model.Subscription;
+import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -26,11 +26,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     @Transactional
-    public UUID subscribe(Subscription mapSubscription) {
-        var subscriptionEntity = SubscriptionMapper.mapSubscription(mapSubscription);
+    public UUID subscribe(SubscriptionModel mapSubscriptionModel) {
+        var subscriptionEntity = SubscriptionMapper.mapSubscription(mapSubscriptionModel);
         var subscriptionId = subscriptionDao.insert(subscriptionEntity);
 
-        mapSubscription.groups().stream()
+        mapSubscriptionModel.groups().stream()
                 .map(x -> MailSubscriptionGroupsEntity.createInstance(subscriptionId, groupConfigurationDao.findByUuid(x).orElseThrow(() -> new InvalidDataException("Group not found: %s".formatted(x))).id()))
                 .forEach(mailSubscriptionGroupDao::insert);
 
@@ -41,12 +41,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .append("https://some/url/")
                 .append(subscriptionEntity.confirmIdentifier());
 
-        mailSenderService.sendMail(mapSubscription.email(), "Bekræft tilmelding til statusopdateringer", bodyBuilder.toString());
+        mailSenderService.sendMail(mapSubscriptionModel.email(), "Bekræft tilmelding til statusopdateringer", bodyBuilder.toString());
 
         return subscriptionEntity.uuid();
     }
 
     @Override
+    @Transactional
     public void confirmSubscription(UUID confirmationUuid) {
         subscriptionDao.updateConfirmedByConfirmationUuid(confirmationUuid);
     }

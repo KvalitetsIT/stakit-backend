@@ -1,9 +1,8 @@
 package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
-import dk.kvalitetsit.stakit.dao.entity.AnnouncementEntity;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
-import dk.kvalitetsit.stakit.service.model.Announcement;
+import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -12,7 +11,6 @@ import org.openapitools.model.AnnouncementUpdate;
 import org.springframework.http.HttpStatus;
 
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,7 +20,7 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
-public class AnnouncementControllerTest {
+public class AnnouncementModelControllerTest {
     private AnnouncementService announcementService;
     private AnnouncementController announcementController;
 
@@ -143,7 +141,7 @@ public class AnnouncementControllerTest {
     public void testGet() {
         var uuid = UUID.randomUUID();
 
-        var announcement = new Announcement(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now(), "subject", "message");
+        var announcement = new AnnouncementModel(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now(), "subject", "message");
 
         Mockito.when(announcementService.getAnnouncement(Mockito.any())).thenReturn(Optional.of(announcement));
 

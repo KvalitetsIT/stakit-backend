@@ -7,7 +7,7 @@ import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionEntity;
 import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionGroupsEntity;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
-import dk.kvalitetsit.stakit.service.model.Subscription;
+import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 
-public class SubscriptionServiceTest {
+public class SubscriptionModelServiceImplTest {
     private SubscriptionServiceImpl subscriptionService;
     private GroupConfigurationDao groupConfigurationDao;
     private MailSubscriptionDao subscriptionDao;
@@ -39,7 +39,7 @@ public class SubscriptionServiceTest {
 
     @Test
     public void testSubscribe() {
-        var input = new Subscription("email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
+        var input = new SubscriptionModel("email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
 
         var groupOne = new GroupConfigurationEntity(1L, input.groups().get(0), "group one", 10);
         var groupTwo = new GroupConfigurationEntity(2L, input.groups().get(1), "group two", 10);
@@ -58,7 +58,7 @@ public class SubscriptionServiceTest {
 
     @Test
     public void testSubscribeGroupNotFound() {
-        var input = new Subscription("email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
+        var input = new SubscriptionModel("email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
 
         var groupOne = new GroupConfigurationEntity(1L, input.groups().get(0), "group one", 10);
 

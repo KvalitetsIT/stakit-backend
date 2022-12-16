@@ -1,7 +1,6 @@
 package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,7 +10,7 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ServiceConfigurationDaoTest extends AbstractDaoTest {
+public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
     @Autowired
     private ServiceConfigurationDao serviceConfigurationDao;
 
