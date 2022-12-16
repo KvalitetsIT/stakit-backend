@@ -134,4 +134,19 @@ public class ServiceManagementIT extends AbstractIntegrationTest {
         assertEquals("Service with uuid %s not found".formatted(uuid), body.getError());
         assertNotNull(body.getTimestamp());
     }
+
+    @Test
+    public void testDeleteService() throws ApiException {
+        var input = new ServiceCreate();
+        input.setServiceIdentifier(UUID.randomUUID().toString());
+        input.setName("name");
+        input.setIgnoreServiceName(true);
+
+        var serviceResult = serviceManagementApi.v1ServicesPostWithHttpInfo(input);
+        var serviceUuid = serviceResult.getData().getUuid();
+
+        var result = serviceManagementApi.v1ServicesUuidDeleteWithHttpInfo(serviceUuid);
+        assertNotNull(result);
+        assertEquals(204, result.getStatusCode());
+    }
 }

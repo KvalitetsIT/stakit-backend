@@ -15,4 +15,6 @@ public interface ServiceManagementService {
     boolean updateService(UUID uuid, Service service);
 
     UUID createService(Service service);
+
+    boolean deleteService(UUID uuid);
 }

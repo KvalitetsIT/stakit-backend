@@ -42,6 +42,17 @@ public class GroupManagementController implements GroupManagementApi {
     }
 
     @Override
+    public ResponseEntity<Void> v1GroupsUuidDelete(UUID uuid) {
+        var deleted = groupService.deleteGroup(uuid);
+
+        if(!deleted) {
+            throw new ResourceNotFoundException("Group with uuid %s not found.".formatted(uuid));
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
     public ResponseEntity<Void> v1GroupsUuidPut(UUID uuid, GroupInput groupUpdate) {
         var updated = groupService.updateGroup(GroupMapper.mapUpdateGroup(uuid, groupUpdate));
 

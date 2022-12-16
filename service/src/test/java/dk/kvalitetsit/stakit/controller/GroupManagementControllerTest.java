@@ -105,4 +105,28 @@ public class GroupManagementControllerTest {
 
         Mockito.verify(groupService, times(1)).updateGroup(serviceInput);
     }
+
+    @Test
+    public void testDelete() {
+        var uuid = UUID.randomUUID();
+
+        Mockito.when(groupService.deleteGroup(uuid)).thenReturn(true);
+
+        var result = groupManagementController.v1GroupsUuidDelete(uuid);
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
+
+        Mockito.verify(groupService, times(1)).deleteGroup(uuid);
+    }
+
+    @Test
+    public void testDeleteNotFound() {
+        var uuid = UUID.randomUUID();
+
+        Mockito.when(groupService.deleteGroup(uuid)).thenReturn(false);
+
+        var expectedException = assertThrows(ResourceNotFoundException.class, () -> groupManagementController.v1GroupsUuidDelete(uuid));
+        assertNotNull(expectedException);
+
+        Mockito.verify(groupService, times(1)).deleteGroup(uuid);
+    }
 }

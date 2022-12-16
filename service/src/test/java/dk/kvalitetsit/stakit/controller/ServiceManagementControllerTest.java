@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
@@ -187,5 +188,30 @@ public class ServiceManagementControllerTest {
 
             return true;
         }));
+    }
+
+    @Test
+    public void testDelete() {
+        var uuid = UUID.randomUUID();
+
+        Mockito.when(serviceManagementService.deleteService(uuid)).thenReturn(true);
+
+        var result = serviceManagementController.v1ServicesUuidDelete(uuid);
+        assertNotNull(result);
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
+
+        Mockito.verify(serviceManagementService, times(1)).deleteService(uuid);
+    }
+
+    @Test
+    public void testDeleteNotFound() {
+        var uuid = UUID.randomUUID();
+
+        Mockito.when(serviceManagementService.deleteService(uuid)).thenReturn(false);
+
+        var expectedException = assertThrows(ResourceNotFoundException.class, () -> serviceManagementController.v1ServicesUuidDelete(uuid));
+        assertNotNull(expectedException);
+
+        Mockito.verify(serviceManagementService, times(1)).deleteService(uuid);
     }
 }

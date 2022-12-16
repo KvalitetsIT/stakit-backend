@@ -124,6 +124,19 @@ paths:
           $ref: '#/components/responses/404'
         '401':
           $ref: '#/components/responses/401'
+    delete:
+      tags:
+        - group-management
+      summary: Delete a group
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
 
   /v1/services:
     get:
@@ -210,7 +223,19 @@ paths:
           $ref: '#/components/responses/404'
         '401':
           $ref: '#/components/responses/401'
-
+    delete:
+      tags:
+        - service-management
+      summary: Delete a service
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
 
   /v1/announcements:
     post:

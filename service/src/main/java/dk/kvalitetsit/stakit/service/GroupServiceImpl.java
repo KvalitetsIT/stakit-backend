@@ -35,4 +35,9 @@ public class GroupServiceImpl implements GroupService {
 
         return dbResult.stream().map(x -> new Group(x.uuid(), x.name(), x.displayOrder())).collect(Collectors.toList());
     }
+
+    @Override
+    public boolean deleteGroup(UUID uuid) {
+        return groupConfigurationDao.delete(uuid);
+    }
 }

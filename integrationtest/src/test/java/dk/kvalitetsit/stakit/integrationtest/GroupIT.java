@@ -45,4 +45,17 @@ public class GroupIT extends AbstractIntegrationTest {
         assertTrue(result.stream().anyMatch(x -> groupUpdate.getDisplayOrder().equals(x.getDisplayOrder()) &&
                groupUpdate.getName().equals(x.getName())));
     }
+
+    @Test
+    public void testDeleteGroup() throws ApiException {
+        var groupUpdate = new GroupInput();
+        groupUpdate.setName("name");
+        groupUpdate.setDisplayOrder(20);
+
+        var createResponse = groupManagementApi.v1GroupsPostWithHttpInfo(groupUpdate);
+        var uuid = createResponse.getData().getUuid();
+
+        var response = groupManagementApi.v1GroupsUuidDeleteWithHttpInfo(uuid);
+        assertEquals(204, response.getStatusCode());
+    }
 }

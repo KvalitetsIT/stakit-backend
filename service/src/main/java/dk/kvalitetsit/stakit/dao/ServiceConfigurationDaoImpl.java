@@ -128,4 +128,11 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
             return Optional.empty();
         }
     }
+
+    @Override
+    public boolean delete(UUID uuid) {
+        var sql = "delete from service_configuration where uuid = :uuid";
+
+        return template.update(sql, Collections.singletonMap("uuid", uuid.toString())) > 0;
+    }
 }

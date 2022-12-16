@@ -59,4 +59,9 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
 
         return serviceUuid;
     }
+
+    @Override
+    public boolean deleteService(UUID uuid) {
+        return serviceConfigurationDao.delete(uuid);
+    }
 }

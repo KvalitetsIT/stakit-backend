@@ -7,6 +7,7 @@ import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntityWithGroupUuid;
 import dk.kvalitetsit.stakit.service.model.Service;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 
 import java.util.Arrays;
@@ -221,5 +222,29 @@ public class ServiceManagementServiceImplTest {
         assertEquals(serviceTwo.ignoreServiceName(), secondResult.ignoreServiceName());
         assertEquals(serviceTwo.service(), secondResult.serviceIdentifier());
         assertEquals(serviceTwo.groupUuid(), secondResult.group());
+    }
+
+    @Test
+    public void testDelete() {
+        var input = UUID.randomUUID();
+
+        Mockito.when(serviceConfigurationDao.delete(input)).thenReturn(true);
+
+        var result = serviceManagementService.deleteService(input);
+        Assertions.assertTrue(result);
+
+        Mockito.verify(serviceConfigurationDao, times(1)).delete(input);
+    }
+
+    @Test
+    public void testDeleteNotFound() {
+        var input = UUID.randomUUID();
+
+        Mockito.when(serviceConfigurationDao.delete(input)).thenReturn(false);
+
+        var result = serviceManagementService.deleteService(input);
+        assertFalse(result);
+
+        Mockito.verify(serviceConfigurationDao, times(1)).delete(input);
     }
 }

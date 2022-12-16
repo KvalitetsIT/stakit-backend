@@ -81,4 +81,28 @@ public class GroupServiceImplTest {
 
         Mockito.verify(groupDao, times(1)).update(daoInput);
     }
+
+    @Test
+    public void testDelete() {
+        var input = UUID.randomUUID();
+
+        Mockito.when(groupDao.delete(input)).thenReturn(true);
+
+        var result = groupService.deleteGroup(input);
+        assertTrue(result);
+
+        Mockito.verify(groupDao, times(1)).delete(input);
+    }
+
+    @Test
+    public void testDeleteNotFound() {
+        var input = UUID.randomUUID();
+
+        Mockito.when(groupDao.delete(input)).thenReturn(false);
+
+        var result = groupService.deleteGroup(input);
+        assertFalse(result);
+
+        Mockito.verify(groupDao, times(1)).delete(input);
+    }
 }
