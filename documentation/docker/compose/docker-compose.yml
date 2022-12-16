@@ -12,21 +12,22 @@ services:
       interval: 2s
       timeout: 2s
       retries: 10
-   helloservice:
+   api:
      image: kvalitetsit/stakit-backend:latest
      environment:
       - jdbc_url=jdbc:mariadb://mariadb:3306/hellodb
       - jdbc_user=hellouser
       - jdbc_pass=secret1234
-      - usercontext_header_name=X-Test-Auth
-
-      - userattributes_role_key=UserRoles
-      - userattributes_org_key=organisation
-
-      - userrole_admin_values=adminrole
-      - userrole_user_values=userrole1,userrole2
-      - userrole_monitor_values=monitorrole
-      - userrole_provisioner_values=provisionerrole
+      - MAIL_HOST=mail
+      - MAIL_PORT=1025
+      - MAIL_USER=mail_user
+      - MAIL_PASSWORD=mail_password
+      - MAIL_FROM=from
+      - STATUS_UPDATE_BODY_TEMPLATE=/tmp/body.template
+      - STATUS_UPDATE_SUBJECT_TEMPLATE=Subject
+      - ADAPTER_API_KEY=API-KEY
+     volumes:
+      - ./body.template:/tmp/body.template:ro
      depends_on:
       mariadb:
        condition: service_healthy
@@ -37,6 +38,8 @@ services:
      image: kvalitetsit/stakit-backend-documentation:latest
      environment:
       - BASE_URL=/test
-      - 'SERVER_URLS=[{"url": "http://localhost:8080", "name": "HelloService"}]'
+      - 'SERVER_URLS=[{"url": "http://localhost:8080", "name": "StaKIT API"}]'
      ports:
       - 80:8080
+   mail:
+     image: mailhog/mailhog
