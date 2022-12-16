@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GroupConfigurationDaoTest extends AbstractDaoTest {
+public class GroupConfigurationDaoImplTest extends AbstractDaoTest {
     @Autowired
     private GroupConfigurationDao groupConfigurationDao;
 

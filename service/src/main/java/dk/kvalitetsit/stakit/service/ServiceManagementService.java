@@ -1,20 +1,20 @@
 package dk.kvalitetsit.stakit.service;
 
 
-import dk.kvalitetsit.stakit.service.model.Service;
+import dk.kvalitetsit.stakit.service.model.ServiceModel;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface ServiceManagementService {
-    List<Service> getServices();
+    List<ServiceModel> getServices();
 
-    Optional<Service> getService(UUID uuid);
+    Optional<ServiceModel> getService(UUID uuid);
 
-    boolean updateService(UUID uuid, Service service);
+    boolean updateService(UUID uuid, ServiceModel serviceModel);
 
-    UUID createService(Service service);
+    UUID createService(ServiceModel serviceModel);
 
     boolean deleteService(UUID uuid);
 }

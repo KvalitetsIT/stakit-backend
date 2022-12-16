@@ -2,9 +2,8 @@ package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.service.StatusUpdateService;
 import dk.kvalitetsit.stakit.service.model.Status;
-import dk.kvalitetsit.stakit.service.model.UpdateServiceInput;
+import dk.kvalitetsit.stakit.service.model.UpdateServiceModel;
 import dk.kvalitetsit.stakit.session.ApiKey;
-import dk.kvalitetsit.stakit.session.PublicApi;
 import org.openapitools.api.AdapterApi;
 import org.openapitools.model.StatusUpdate;
 import org.slf4j.Logger;
@@ -29,7 +28,7 @@ public class AdapterController implements AdapterApi {
     public ResponseEntity<Void> v1StatusPost(StatusUpdate statusUpdate) {
         logger.debug("Updating or creating status");
 
-        statusUpdateService.updateStatus(new UpdateServiceInput(statusUpdate.getService(), statusUpdate.getServiceName(), Status.valueOf(Status.class, statusUpdate.getStatus().toString()), statusUpdate.getStatusTime(), statusUpdate.getMessage()));
+        statusUpdateService.updateStatus(new UpdateServiceModel(statusUpdate.getService(), statusUpdate.getServiceName(), Status.valueOf(Status.class, statusUpdate.getStatus().toString()), statusUpdate.getStatusTime(), statusUpdate.getMessage()));
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

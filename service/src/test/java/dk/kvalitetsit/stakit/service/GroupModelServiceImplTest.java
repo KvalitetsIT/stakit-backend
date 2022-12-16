@@ -2,7 +2,7 @@ package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
-import dk.kvalitetsit.stakit.service.model.Group;
+import dk.kvalitetsit.stakit.service.model.GroupModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -13,7 +13,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
-public class GroupServiceImplTest {
+public class GroupModelServiceImplTest {
     private GroupConfigurationDao groupDao;
     private GroupService groupService;
 
@@ -46,7 +46,7 @@ public class GroupServiceImplTest {
 
     @Test
     public void testCreateGroup() {
-        var input = Group.createInstance("name", 10);
+        var input = GroupModel.createInstance("name", 10);
 
         var result = groupService.createGroup(input);
         assertNotNull(result);
@@ -56,7 +56,7 @@ public class GroupServiceImplTest {
 
     @Test
     public void testUpdateGroup() {
-        var input = new Group(UUID.randomUUID(), "name", 10);
+        var input = new GroupModel(UUID.randomUUID(), "name", 10);
 
         var daoInput = GroupConfigurationEntity.createInstance(input.uuid(), input.name(), input.displayOrder());
 
@@ -70,7 +70,7 @@ public class GroupServiceImplTest {
 
     @Test
     public void testUpdateGroupNotFound() {
-        var input = new Group(UUID.randomUUID(), "name", 10);
+        var input = new GroupModel(UUID.randomUUID(), "name", 10);
 
         var daoInput = GroupConfigurationEntity.createInstance(input.uuid(), input.name(), input.displayOrder());
 

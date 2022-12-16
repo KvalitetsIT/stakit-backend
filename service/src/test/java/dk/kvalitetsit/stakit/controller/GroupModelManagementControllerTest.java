@@ -2,7 +2,7 @@ package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.GroupService;
-import dk.kvalitetsit.stakit.service.model.Group;
+import dk.kvalitetsit.stakit.service.model.GroupModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 
-public class GroupManagementControllerTest {
+public class GroupModelManagementControllerTest {
     private GroupManagementController groupManagementController;
     private GroupService groupService;
 
@@ -30,8 +30,8 @@ public class GroupManagementControllerTest {
 
     @Test
     public void testGetGroups() {
-        var groupOne = new Group(UUID.randomUUID(), "Name 1", 20);
-        var groupTwo = new Group(UUID.randomUUID(), "Name 2", 30);
+        var groupOne = new GroupModel(UUID.randomUUID(), "Name 1", 20);
+        var groupTwo = new GroupModel(UUID.randomUUID(), "Name 2", 30);
 
         Mockito.when(groupService.getGroups()).thenReturn(Arrays.asList(groupOne, groupTwo));
 
@@ -60,7 +60,7 @@ public class GroupManagementControllerTest {
 
         var expectedUuid = UUID.randomUUID();
 
-        Mockito.when(groupService.createGroup(Group.createInstance(input.getName(), input.getDisplayOrder()))).thenReturn(expectedUuid);
+        Mockito.when(groupService.createGroup(GroupModel.createInstance(input.getName(), input.getDisplayOrder()))).thenReturn(expectedUuid);
 
         var result = groupManagementController.v1GroupsPost(input);
         assertNotNull(result);
@@ -76,7 +76,7 @@ public class GroupManagementControllerTest {
         input.setName("name");
         input.setDisplayOrder(10);
 
-        var serviceInput = new Group(uuid, input.getName(), input.getDisplayOrder());
+        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder());
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(true);
 
@@ -94,7 +94,7 @@ public class GroupManagementControllerTest {
         input.setName("name");
         input.setDisplayOrder(10);
 
-        var serviceInput = new Group(uuid, input.getName(), input.getDisplayOrder());
+        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder());
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(false);
 

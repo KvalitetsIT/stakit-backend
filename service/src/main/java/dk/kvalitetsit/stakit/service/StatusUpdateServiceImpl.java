@@ -4,7 +4,7 @@ import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
 import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
-import dk.kvalitetsit.stakit.service.model.UpdateServiceInput;
+import dk.kvalitetsit.stakit.service.model.UpdateServiceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
@@ -26,7 +26,7 @@ public class StatusUpdateServiceImpl implements StatusUpdateService {
 
     @Override
     @Transactional
-    public void updateStatus(UpdateServiceInput input) {
+    public void updateStatus(UpdateServiceModel input) {
         Long statusConfigurationId;
         try {
             statusConfigurationId = serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), UUID.randomUUID(), input.serviceName(), false, null));

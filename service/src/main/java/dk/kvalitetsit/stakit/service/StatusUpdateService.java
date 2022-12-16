@@ -1,7 +1,7 @@
 package dk.kvalitetsit.stakit.service;
 
-import dk.kvalitetsit.stakit.service.model.UpdateServiceInput;
+import dk.kvalitetsit.stakit.service.model.UpdateServiceModel;
 
 public interface StatusUpdateService {
-    void updateStatus(UpdateServiceInput input);
+    void updateStatus(UpdateServiceModel input);
 }

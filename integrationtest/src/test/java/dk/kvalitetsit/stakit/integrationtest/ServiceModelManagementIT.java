@@ -20,11 +20,11 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ServiceManagementIT extends AbstractIntegrationTest {
+public class ServiceModelManagementIT extends AbstractIntegrationTest {
     private final GroupManagementApi groupManagementApi;
     private final ServiceManagementApi serviceManagementApi;
 
-    public ServiceManagementIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
+    public ServiceModelManagementIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
         apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());

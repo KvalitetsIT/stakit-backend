@@ -6,7 +6,8 @@ import dk.kvalitetsit.stakit.service.AnnouncementService;
 import dk.kvalitetsit.stakit.service.StatusGroupService;
 import dk.kvalitetsit.stakit.service.SubscriptionService;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
-import dk.kvalitetsit.stakit.service.model.Subscription;
+import dk.kvalitetsit.stakit.service.model.StatusGroupedModel;
+import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
 import dk.kvalitetsit.stakit.session.PublicApi;
 import org.openapitools.api.StaKitApi;
 import org.openapitools.model.*;
@@ -86,16 +87,16 @@ public class StakitController implements StaKitApi {
         }
     }
 
-    private Subscription mapSubscription(Subscribe subscribe) {
-        return new Subscription(subscribe.getEmail(), subscribe.getGroups(), subscribe.getAnnouncements());
+    private SubscriptionModel mapSubscription(Subscribe subscribe) {
+        return new SubscriptionModel(subscribe.getEmail(), subscribe.getGroups(), subscribe.getAnnouncements());
     }
 
-    private Grouped mapGroup(dk.kvalitetsit.stakit.service.model.StatusGrouped statusGrouped) {
+    private Grouped mapGroup(StatusGroupedModel statusGroupedModel) {
         var group = new Grouped();
-        group.setGroupName(statusGrouped.groupName());
+        group.setGroupName(statusGroupedModel.groupName());
         group.setServices(new ArrayList<>());
 
-        statusGrouped.status().forEach(x -> {
+        statusGroupedModel.status().forEach(x -> {
             var s = new org.openapitools.model.ServiceStatus();
             s.setServiceName(x.statusName());
             s.setStatus(org.openapitools.model.ServiceStatus.StatusEnum.fromValue(x.status().toString()));

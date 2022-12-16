@@ -13,10 +13,10 @@ import java.security.spec.InvalidKeySpecException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GroupIT extends AbstractIntegrationTest {
+public class GroupModelIT extends AbstractIntegrationTest {
     private final GroupManagementApi groupManagementApi;
 
-    public GroupIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
+    public GroupModelIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
         apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AnnouncementDaoTest extends AbstractDaoTest {
+public class AnnouncementDaoImplTest extends AbstractDaoTest {
     @Autowired
     private AnnouncementDao announcementDao;
 

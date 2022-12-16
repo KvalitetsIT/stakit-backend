@@ -4,7 +4,7 @@ import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
 import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntityWithGroupUuid;
-import dk.kvalitetsit.stakit.service.model.Service;
+import dk.kvalitetsit.stakit.service.model.ServiceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -65,7 +65,7 @@ public class ServiceManagementServiceImplTest {
     @Test
     public void testCreateService() {
         var groupId = 10L;
-        var serviceCreate = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null);
+        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null);
 
         var groupConfigurationEntity = new GroupConfigurationEntity(groupId, UUID.randomUUID(), "group name", 10);
         Mockito.when(groupConfigurationDao.findByUuid(serviceCreate.group())).thenReturn(Optional.of(groupConfigurationEntity));
@@ -87,7 +87,7 @@ public class ServiceManagementServiceImplTest {
 
     @Test
     public void testCreateServiceGroupNotFound() {
-        var serviceCreate = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null);
+        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null);
 
         Mockito.when(groupConfigurationDao.findByUuid(serviceCreate.group())).thenReturn(Optional.empty());
 
@@ -100,7 +100,7 @@ public class ServiceManagementServiceImplTest {
 
     @Test
     public void testCreateServiceNoGroup() {
-        var serviceCreate = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null);
+        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null);
 
         var result = serviceManagementService.createService(serviceCreate);
         assertNotNull(result);
@@ -120,7 +120,7 @@ public class ServiceManagementServiceImplTest {
     @Test
     public void testUpdateServiceNotFound() {
         var serviceUuid = UUID.randomUUID();
-        var serviceUpdate = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null);
+        var serviceUpdate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null);
 
         Mockito.when(serviceConfigurationDao.updateByUuid(Mockito.any())).thenReturn(false);
 
@@ -143,7 +143,7 @@ public class ServiceManagementServiceImplTest {
     public void testUpdateService() {
         var groupId = 10L;
         var serviceUuid = UUID.randomUUID();
-        var serviceUpdate = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null);
+        var serviceUpdate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null);
 
         var groupConfigurationEntity = new GroupConfigurationEntity(groupId, UUID.randomUUID(), "group name", 10);
         Mockito.when(groupConfigurationDao.findByUuid(serviceUpdate.group())).thenReturn(Optional.of(groupConfigurationEntity));
@@ -168,7 +168,7 @@ public class ServiceManagementServiceImplTest {
     @Test
     public void testUpdateServiceGroupNotFound() {
         var serviceUuid = UUID.randomUUID();
-        var serviceCreate = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null);
+        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null);
 
         Mockito.when(groupConfigurationDao.findByUuid(serviceCreate.group())).thenReturn(Optional.empty());
 
@@ -181,7 +181,7 @@ public class ServiceManagementServiceImplTest {
     @Test
     public void testUpdateServiceNoGroup() {
         var serviceUuid = UUID.randomUUID();
-        var serviceCreate = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null);
+        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null);
 
         Mockito.when(serviceConfigurationDao.updateByUuid(Mockito.any())).thenReturn(true);
 

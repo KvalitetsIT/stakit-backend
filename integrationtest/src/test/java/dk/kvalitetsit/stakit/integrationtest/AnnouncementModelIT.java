@@ -18,12 +18,12 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AnnouncementIT extends AbstractIntegrationTest {
+public class AnnouncementModelIT extends AbstractIntegrationTest {
     private final AnnouncementsApi announcementsApi;
     private UUID uuid;
     private AnnouncementCreate announcement;
 
-    public AnnouncementIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
+    public AnnouncementModelIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
         apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());

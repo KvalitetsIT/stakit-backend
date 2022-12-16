@@ -2,7 +2,7 @@ package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.ServiceManagementService;
-import dk.kvalitetsit.stakit.service.model.Service;
+import dk.kvalitetsit.stakit.service.model.ServiceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
-public class ServiceManagementControllerTest {
+public class ServiceModelManagementControllerTest {
     private ServiceManagementService serviceManagementService;
     private ServiceManagementController serviceManagementController;
 
@@ -32,8 +32,8 @@ public class ServiceManagementControllerTest {
 
     @Test
     public void testGetAllServices() {
-        var serviceOne = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID());
-        var serviceTwo = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, UUID.randomUUID());
+        var serviceOne = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID());
+        var serviceTwo = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, UUID.randomUUID());
 
         Mockito.when(serviceManagementService.getServices()).thenReturn(Arrays.asList(serviceOne, serviceTwo));
 
@@ -78,7 +78,7 @@ public class ServiceManagementControllerTest {
     @Test
     public void testGetService() {
         var serviceUuid = UUID.randomUUID();
-        var service = new Service(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID());
+        var service = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID());
 
         Mockito.when(serviceManagementService.getService(serviceUuid)).thenReturn(Optional.of(service));
 

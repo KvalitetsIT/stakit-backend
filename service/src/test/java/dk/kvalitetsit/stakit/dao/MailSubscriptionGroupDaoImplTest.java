@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
-public class MailSubscriptionGroupDaoTest extends AbstractDaoTest {
+public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
     @Autowired
     private MailSubscriptionGroupDao mailSubscriptionGroupDao;
 

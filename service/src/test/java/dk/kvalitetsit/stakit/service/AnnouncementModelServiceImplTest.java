@@ -2,7 +2,7 @@ package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.AnnouncementDao;
 import dk.kvalitetsit.stakit.dao.entity.AnnouncementEntity;
-import dk.kvalitetsit.stakit.service.model.Announcement;
+import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -16,7 +16,7 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 
-public class AnnouncementServiceTest {
+public class AnnouncementModelServiceImplTest {
     private AnnouncementDao announcementDao;
     private AnnouncementServiceImpl announcementService;
 
@@ -28,7 +28,7 @@ public class AnnouncementServiceTest {
 
     @Test
     public void testCreate() {
-        var input = new Announcement(null, OffsetDateTime.now().minusDays(1), OffsetDateTime.now(), "subject", "message");
+        var input = new AnnouncementModel(null, OffsetDateTime.now().minusDays(1), OffsetDateTime.now(), "subject", "message");
 
         Mockito.when(announcementDao.insert(Mockito.any())).thenReturn(10L);
 
@@ -48,7 +48,7 @@ public class AnnouncementServiceTest {
 
     @Test
     public void testUpdate() {
-        var input = new Announcement(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now(), "subject", "message");
+        var input = new AnnouncementModel(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now(), "subject", "message");
 
         Mockito.when(announcementDao.updateByUuid(Mockito.any())).thenReturn(true);
 
@@ -68,7 +68,7 @@ public class AnnouncementServiceTest {
 
     @Test
     public void testUpdateNotFound() {
-        var input = new Announcement(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now(), "subject", "message");
+        var input = new AnnouncementModel(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now(), "subject", "message");
 
         Mockito.when(announcementDao.updateByUuid(Mockito.any())).thenReturn(false);
 

@@ -1,5 +1,6 @@
 package dk.kvalitetsit.stakit.controller.mapper;
 
+import dk.kvalitetsit.stakit.service.model.ServiceModel;
 import org.openapitools.model.Service;
 import org.openapitools.model.ServiceCreate;
 import org.openapitools.model.ServiceUpdate;
@@ -8,36 +9,36 @@ import org.openapitools.model.Services;
 import java.util.List;
 
 public class ServiceManagementMapper {
-    public static List<Services> mapServices(List<dk.kvalitetsit.stakit.service.model.Service> services) {
-        return services.stream().map(ServiceManagementMapper::mapServices).toList();
+    public static List<Services> mapServices(List<ServiceModel> serviceModels) {
+        return serviceModels.stream().map(ServiceManagementMapper::mapServices).toList();
     }
 
-    private static Services mapServices(dk.kvalitetsit.stakit.service.model.Service service) {
+    private static Services mapServices(ServiceModel serviceModel) {
         var s = new Services();
-        s.setServiceIdentifier(service.serviceIdentifier());
-        s.setName(service.name());
-        s.setIgnoreServiceName(service.ignoreServiceName());
-        s.setGroup(service.group());
-        s.setUuid(service.uuid());
+        s.setServiceIdentifier(serviceModel.serviceIdentifier());
+        s.setName(serviceModel.name());
+        s.setIgnoreServiceName(serviceModel.ignoreServiceName());
+        s.setGroup(serviceModel.group());
+        s.setUuid(serviceModel.uuid());
 
         return s;
     }
 
-    public static Service mapService(dk.kvalitetsit.stakit.service.model.Service service) {
+    public static Service mapService(ServiceModel serviceModel) {
         var s = new Service();
-        s.setServiceIdentifier(service.serviceIdentifier());
-        s.setName(service.name());
-        s.setIgnoreServiceName(service.ignoreServiceName());
-        s.setGroup(service.group());
+        s.setServiceIdentifier(serviceModel.serviceIdentifier());
+        s.setName(serviceModel.name());
+        s.setIgnoreServiceName(serviceModel.ignoreServiceName());
+        s.setGroup(serviceModel.group());
 
         return s;
     }
 
-    public static dk.kvalitetsit.stakit.service.model.Service mapUpdate(ServiceUpdate serviceUpdate) {
-        return new dk.kvalitetsit.stakit.service.model.Service(serviceUpdate.getName(), serviceUpdate.getServiceIdentifier(), serviceUpdate.getIgnoreServiceName(), serviceUpdate.getGroup(), null);
+    public static ServiceModel mapUpdate(ServiceUpdate serviceUpdate) {
+        return new ServiceModel(serviceUpdate.getName(), serviceUpdate.getServiceIdentifier(), serviceUpdate.getIgnoreServiceName(), serviceUpdate.getGroup(), null);
     }
 
-    public static dk.kvalitetsit.stakit.service.model.Service mapCreate(ServiceCreate serviceCreate) {
-        return new dk.kvalitetsit.stakit.service.model.Service(serviceCreate.getName(), serviceCreate.getServiceIdentifier(), serviceCreate.getIgnoreServiceName(), serviceCreate.getGroup(), null);
+    public static ServiceModel mapCreate(ServiceCreate serviceCreate) {
+        return new ServiceModel(serviceCreate.getName(), serviceCreate.getServiceIdentifier(), serviceCreate.getIgnoreServiceName(), serviceCreate.getGroup(), null);
     }
 }
