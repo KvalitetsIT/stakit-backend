@@ -2,6 +2,7 @@ package dk.kvalitetsit.stakit.integrationtest;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.restassured.RestAssured;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -17,6 +18,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+
+import static io.restassured.RestAssured.given;
 
 public abstract class AbstractIntegrationTest {
     private static final Logger logger = LoggerFactory.getLogger(AbstractIntegrationTest.class);
@@ -91,5 +94,18 @@ public abstract class AbstractIntegrationTest {
                 .claim("email", "john@example.com")
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
+    }
+
+    int getCurrentMailCount() {
+        RestAssured.baseURI = "http://" + getSmtpHost();
+        RestAssured.port = getSmtpWebPort();
+        RestAssured.basePath = "/api/v2";
+
+        return given()
+                .when()
+                .get("/messages")
+                .then()
+                .extract()
+                .path("total");
     }
 }

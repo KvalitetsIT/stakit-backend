@@ -33,6 +33,7 @@ public class AdapterIT extends AbstractIntegrationTest {
 
     @Test
     public void testCallService() throws ApiException {
+        var currentMailCount = getCurrentMailCount();
         var input = new StatusUpdate();
 
         input.setService("service-id");
@@ -52,7 +53,7 @@ public class AdapterIT extends AbstractIntegrationTest {
                 .when()
                     .get("/messages")
                 .then()
-                    .body("total", equalTo(0));
+                    .body("total", equalTo(currentMailCount + 0));
     }
 
     @Test
