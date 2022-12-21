@@ -15,6 +15,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -89,11 +90,7 @@ public class StakitConfiguration implements WebMvcConfigurer {
                                         @Value("${STATUS_UPDATE_SUBJECT_TEMPLATE}") String templateSubject,
                                         @Value("${STATUS_UPDATE_BODY_TEMPLATE}") String templateBody) throws IOException {
 
-        var path = Path.of(templateBody);
-        logger.debug("Loading mail body template form {}", path.toAbsolutePath());
-        var stringBodyTemplate = Files.readString(path);
-
-        return new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, stringBodyTemplate, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao);
+        return new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, templateBody, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao);
     }
 
     @Bean
