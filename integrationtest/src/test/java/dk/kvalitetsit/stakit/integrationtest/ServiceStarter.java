@@ -45,7 +45,7 @@ public class ServiceStarter {
         System.setProperty("MAIL_PASSWORD", "some_password");
         System.setProperty("MAIL_FROM", "from_email");
         System.setProperty("STATUS_UPDATE_SUBJECT_TEMPLATE", "Subject");
-        System.setProperty("STATUS_UPDATE_BODY_TEMPLATE", "src/test/resources/body.template");
+        System.setProperty("STATUS_UPDATE_BODY_TEMPLATE", "Mail body.");
         System.setProperty("ADAPTER_API_KEY", API_KEY);
 
         SpringApplication.run((Application.class));
@@ -99,7 +99,6 @@ public class ServiceStarter {
         }
 
         service.withNetwork(dockerNetwork)
-                .withClasspathResourceMapping("body.template", "/tmp/body.template", BindMode.READ_ONLY)
                 .withNetworkAliases("stakit-backend")
 
                 .withEnv("LOG_LEVEL", "INFO")
@@ -114,7 +113,7 @@ public class ServiceStarter {
                 .withEnv("MAIL_PASSWORD", "mail_password")
                 .withEnv("MAIL_FROM", "from_email")
                 .withEnv("STATUS_UPDATE_SUBJECT_TEMPLATE", "Subject")
-                .withEnv("STATUS_UPDATE_BODY_TEMPLATE", "/tmp/body.template")
+                .withEnv("STATUS_UPDATE_BODY_TEMPLATE", "Mail body.")
                 .withEnv("ADAPTER_API_KEY", API_KEY)
 
                 .withEnv("spring.flyway.locations", "classpath:db/migration,filesystem:/app/sql")

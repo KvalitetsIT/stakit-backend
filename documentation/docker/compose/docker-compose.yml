@@ -23,7 +23,7 @@ services:
       - MAIL_USER=mail_user
       - MAIL_PASSWORD=mail_password
       - MAIL_FROM=from
-      - STATUS_UPDATE_BODY_TEMPLATE=/tmp/body.template
+      - STATUS_UPDATE_BODY_TEMPLATE="This is a mail template."
       - STATUS_UPDATE_SUBJECT_TEMPLATE=Subject
       - ADAPTER_API_KEY=API-KEY
      volumes:
