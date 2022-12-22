@@ -1,8 +1,9 @@
 package dk.kvalitetsit.stakit.configuration;
 
+import dk.kvalitetsit.stakit.controller.interceptor.ApiAccessInterceptor;
 import dk.kvalitetsit.stakit.dao.*;
 import dk.kvalitetsit.stakit.service.*;
-import dk.kvalitetsit.stakit.controller.interceptor.ApiAccessInterceptor;
+import dk.kvalitetsit.stakit.session.JwtTokenParser;
 import dk.kvalitetsit.stakit.session.UserContextService;
 import dk.kvalitetsit.stakit.session.UserContextServiceImpl;
 import org.slf4j.Logger;
@@ -15,12 +16,13 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 @Configuration
 public class StakitConfiguration implements WebMvcConfigurer {
@@ -115,8 +117,15 @@ public class StakitConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
+    public JwtTokenParser jwtTokenParser(@Value("${JWT_SIGNING_KEY}") String publicKey) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+        var pemPublicKey = Files.readString(Path.of(publicKey));
+
+        return new JwtTokenParser(pemPublicKey);
+    }
+
+    @Bean
     @RequestScope
-    public UserContextService userContextService(HttpServletRequest request) {
-        return new UserContextServiceImpl(request);
+    public UserContextService userContextService(HttpServletRequest request, JwtTokenParser tokenParser) {
+        return new UserContextServiceImpl(request, tokenParser);
     }
 }

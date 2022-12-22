@@ -47,6 +47,7 @@ public class ServiceStarter {
         System.setProperty("STATUS_UPDATE_SUBJECT_TEMPLATE", "Subject");
         System.setProperty("STATUS_UPDATE_BODY_TEMPLATE", "Mail body.");
         System.setProperty("ADAPTER_API_KEY", API_KEY);
+        System.setProperty("JWT_SIGNING_KEY", "src/test/resources/key.pub" );
 
         SpringApplication.run((Application.class));
     }
@@ -115,6 +116,9 @@ public class ServiceStarter {
                 .withEnv("STATUS_UPDATE_SUBJECT_TEMPLATE", "Subject")
                 .withEnv("STATUS_UPDATE_BODY_TEMPLATE", "Mail body.")
                 .withEnv("ADAPTER_API_KEY", API_KEY)
+                .withEnv("JWT_SIGNING_KEY", "/tmp/signing.pub" )
+
+                .withClasspathResourceMapping("key.pub", "/tmp/signing.pub", BindMode.READ_ONLY)
 
                 .withEnv("spring.flyway.locations", "classpath:db/migration,filesystem:/app/sql")
                 .withClasspathResourceMapping("db/migration/V901__extra_data_for_integration_test.sql", "/app/sql/V901__extra_data_for_integration_test.sql", BindMode.READ_ONLY)
