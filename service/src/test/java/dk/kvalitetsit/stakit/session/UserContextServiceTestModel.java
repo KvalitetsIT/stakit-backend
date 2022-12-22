@@ -7,9 +7,13 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -22,10 +26,13 @@ public class UserContextServiceTestModel {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private HttpServletRequest request;
     private String username;
+    private JwtTokenParser tokenParser;
 
     @Before
-    public void setup() {
+    public void setup() throws URISyntaxException, IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         request = Mockito.mock(HttpServletRequest.class);
+
+        tokenParser = new JwtTokenParser(Files.readString(Paths.get(ClassLoader.getSystemResource("key.pub").toURI())));
 
         username = "some_username";
     }
@@ -33,7 +40,7 @@ public class UserContextServiceTestModel {
     @Test
     public void testInvalidHeaderReturnFalse() {
         Mockito.when(request.getHeader(AUTHORIZATION_HEADER)).thenReturn("Bearer ÆÅØ");
-        UserContextServiceImpl userContextService = new UserContextServiceImpl(request);
+        UserContextServiceImpl userContextService = new UserContextServiceImpl(request, tokenParser);
 
         assertFalse(userContextService.hasValidAuthorizationToken());
     }
@@ -41,7 +48,7 @@ public class UserContextServiceTestModel {
     @Test
     public void testNoHeaderReturnFalse() {
         Mockito.when(request.getHeader(AUTHORIZATION_HEADER)).thenReturn(null);
-        UserContextServiceImpl userContextService = new UserContextServiceImpl(request);
+        UserContextServiceImpl userContextService = new UserContextServiceImpl(request, tokenParser);
 
         assertFalse(userContextService.hasValidAuthorizationToken());
     }
@@ -49,7 +56,7 @@ public class UserContextServiceTestModel {
     @Test
     public void testValidHeaderReturnFalse() throws Exception {
         Mockito.when(request.getHeader(AUTHORIZATION_HEADER)).thenReturn("Bearer " + generateSignedToken());
-        UserContextServiceImpl userContextService = new UserContextServiceImpl(request);
+        UserContextServiceImpl userContextService = new UserContextServiceImpl(request, tokenParser);
 
         assertTrue(userContextService.hasValidAuthorizationToken());
     }
