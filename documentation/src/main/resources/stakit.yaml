@@ -382,7 +382,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/create-response'
-        '403':
+        '400':
           $ref: '#components/responses/400'
 
   /v1/subscribe-confirm/{uuid}:
