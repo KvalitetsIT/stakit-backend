@@ -483,7 +483,7 @@ components:
       required:
         - id
         - name
-        - display-order
+        - display_order
       properties:
         id:
           description: Group name
@@ -493,7 +493,7 @@ components:
           description: Group name
           type: string
           maxLength: 50
-        display-order:
+        display_order:
           description: Order the group should be displayed on screen. From low to high.
           type: integer
           maximum: 100
@@ -503,13 +503,13 @@ components:
       type: object
       required:
         - name
-        - display-order
+        - display_order
       properties:
         name:
           description: Group name
           type: string
           maxLength: 50
-        display-order:
+        display_order:
           description: Order the group should be displayed on screen. From low to high.
           type: integer
           maximum: 100
@@ -624,6 +624,7 @@ components:
     service-create:
       type: object
       required:
+        - service_identifier
         - name
         - ignore_service_name
       properties:
