@@ -10,13 +10,11 @@ import org.openapitools.model.AnnouncementUpdate;
 import org.openapitools.model.CreateResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "http://localhost") // TODO Jeg skal nok fjernes igen.
 public class AnnouncementController implements AnnouncementsApi {
     private final AnnouncementService announcementService;
 

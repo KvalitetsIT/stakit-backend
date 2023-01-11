@@ -47,6 +47,7 @@ public class ServiceStarter {
         System.setProperty("STATUS_UPDATE_SUBJECT_TEMPLATE", "Subject");
         System.setProperty("STATUS_UPDATE_BODY_TEMPLATE", "Mail body.");
         System.setProperty("ADAPTER_API_KEY", API_KEY);
+        System.setProperty("ALLOWED_ORIGINS", "*");
 
         SpringApplication.run((Application.class));
     }
@@ -115,6 +116,7 @@ public class ServiceStarter {
                 .withEnv("STATUS_UPDATE_SUBJECT_TEMPLATE", "Subject")
                 .withEnv("STATUS_UPDATE_BODY_TEMPLATE", "Mail body.")
                 .withEnv("ADAPTER_API_KEY", API_KEY)
+                .withEnv("ALLOWED_ORIGINS", "*")
 
                 .withEnv("spring.flyway.locations", "classpath:db/migration,filesystem:/app/sql")
                 .withClasspathResourceMapping("db/migration/V901__extra_data_for_integration_test.sql", "/app/sql/V901__extra_data_for_integration_test.sql", BindMode.READ_ONLY)

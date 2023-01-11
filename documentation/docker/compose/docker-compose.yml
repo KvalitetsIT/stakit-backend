@@ -26,6 +26,7 @@ services:
       - STATUS_UPDATE_BODY_TEMPLATE="This is a mail template."
       - STATUS_UPDATE_SUBJECT_TEMPLATE=Subject
       - ADAPTER_API_KEY=API-KEY
+      - ALLOWED_ORIGINS=*
      volumes:
       - ./body.template:/tmp/body.template:ro
      depends_on:

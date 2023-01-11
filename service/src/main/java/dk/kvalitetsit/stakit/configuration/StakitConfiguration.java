@@ -1,26 +1,28 @@
 package dk.kvalitetsit.stakit.configuration;
 
+import dk.kvalitetsit.stakit.controller.interceptor.ApiAccessInterceptor;
 import dk.kvalitetsit.stakit.dao.*;
 import dk.kvalitetsit.stakit.service.*;
-import dk.kvalitetsit.stakit.controller.interceptor.ApiAccessInterceptor;
 import dk.kvalitetsit.stakit.session.UserContextService;
 import dk.kvalitetsit.stakit.session.UserContextServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.List;
 
 @Configuration
 public class StakitConfiguration implements WebMvcConfigurer {
@@ -30,6 +32,25 @@ public class StakitConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(apiAccessInterceptor);
+    }
+
+    @Value("${ALLOWED_ORIGINS}")
+    private List<String> allowedOrigins;
+
+    @Bean
+    public FilterRegistrationBean<CorsFilter> corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        allowedOrigins.forEach(config::addAllowedOrigin);
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
+        bean.setOrder(0);
+
+        return bean;
     }
 
     @Bean
