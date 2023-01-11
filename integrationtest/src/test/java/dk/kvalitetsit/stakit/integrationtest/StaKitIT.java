@@ -63,13 +63,13 @@ public class StaKitIT extends AbstractIntegrationTest {
         assertEquals(1, result.getStatusGroup().size());
 
         var group = result.getStatusGroup().get(0);
-        assertEquals("Default", group.getGroupName());
+        assertEquals("Default", group.getName());
 
         assertNotNull(group.getServices());
         assertTrue(group.getServices().size() >= 1);
 
-        assertEquals(1L, group.getServices().stream().filter(x -> x.getServiceName().equals(statusUpdate.getServiceName())).count());
-        assertEquals(ServiceStatus.StatusEnum.NOT_OK, group.getServices().stream().filter(x -> x.getServiceName().equals(statusUpdate.getServiceName())).findAny().get().getStatus());
+        assertEquals(1L, group.getServices().stream().filter(x -> x.getName().equals(statusUpdate.getServiceName())).count());
+        assertEquals(ServiceStatus.StatusEnum.NOT_OK, group.getServices().stream().filter(x -> x.getName().equals(statusUpdate.getServiceName())).findAny().get().getStatus());
     }
 
     @Test
