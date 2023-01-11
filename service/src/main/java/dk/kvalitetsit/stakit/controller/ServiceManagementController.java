@@ -7,14 +7,12 @@ import org.openapitools.api.ServiceManagementApi;
 import org.openapitools.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "http://localhost") // TODO Jeg skal nok fjernes igen.
 public class ServiceManagementController implements ServiceManagementApi {
     private final ServiceManagementService serviceManagementService;
 

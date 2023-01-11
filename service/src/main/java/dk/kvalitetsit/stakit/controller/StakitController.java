@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "http://localhost") // TODO Jeg skal nok fjernes igen.
 public class StakitController implements StaKitApi {
     private static final Logger logger = LoggerFactory.getLogger(StakitController.class);
     private final StatusGroupService statusGroupService;
