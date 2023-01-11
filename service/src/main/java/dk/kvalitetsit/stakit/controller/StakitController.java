@@ -91,12 +91,12 @@ public class StakitController implements StaKitApi {
 
     private Grouped mapGroup(StatusGroupedModel statusGroupedModel) {
         var group = new Grouped();
-        group.setGroupName(statusGroupedModel.groupName());
+        group.setName(statusGroupedModel.groupName());
         group.setServices(new ArrayList<>());
 
         statusGroupedModel.status().forEach(x -> {
             var s = new org.openapitools.model.ServiceStatus();
-            s.setServiceName(x.statusName());
+            s.setName(x.statusName());
             s.setStatus(org.openapitools.model.ServiceStatus.StatusEnum.fromValue(x.status().toString()));
 
             group.addServicesItem(s);

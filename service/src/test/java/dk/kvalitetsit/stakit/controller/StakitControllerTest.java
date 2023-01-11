@@ -65,19 +65,19 @@ public class StakitControllerTest {
 
         // Assert first one
         var statusGroup = statusGroupList.get(0);
-        assertEquals(groupOne.groupName(), statusGroup.getGroupName());
+        assertEquals(groupOne.groupName(), statusGroup.getName());
 
-        assertEquals(groupOne.status().get(0).statusName(), statusGroup.getServices().get(0).getServiceName());
+        assertEquals(groupOne.status().get(0).statusName(), statusGroup.getServices().get(0).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());
 
         // Assert second one
         statusGroup = statusGroupList.get(1);
-        assertEquals(groupTwo.groupName(), statusGroup.getGroupName());
+        assertEquals(groupTwo.groupName(), statusGroup.getName());
 
-        assertEquals(groupTwo.status().get(0).statusName(), statusGroup.getServices().get(0).getServiceName());
+        assertEquals(groupTwo.status().get(0).statusName(), statusGroup.getServices().get(0).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());
 
-        assertEquals(groupTwo.status().get(1).statusName(), statusGroup.getServices().get(1).getServiceName());
+        assertEquals(groupTwo.status().get(1).statusName(), statusGroup.getServices().get(1).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.NOT_OK, statusGroup.getServices().get(1).getStatus());
     }
 

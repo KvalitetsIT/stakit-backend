@@ -518,9 +518,9 @@ components:
     grouped:
       type: object
       required:
-        - group-name
+        - name
       properties:
-        group-name:
+        name:
           description: Name of the group.
           type: string
           example: "My Cool Group Of Services"
@@ -556,8 +556,11 @@ components:
 
     service-status:
       type: object
+      required:
+        - name
+        - status
       properties:
-        service-name:
+        name:
           description: The name of the service.
           type: string
           example: "My Cool Service"
