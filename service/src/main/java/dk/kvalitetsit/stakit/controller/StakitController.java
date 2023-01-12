@@ -49,7 +49,7 @@ public class StakitController implements StaKitApi {
 
     @Override
     @PublicApi
-    public ResponseEntity<StatusGrouped> v1ServiceStatusGroupedGet() {
+    public ResponseEntity<List<StatusGroup>> v1ServiceStatusGroupedGet() {
         logger.debug("Reading status");
 
         var groupStatus = statusGroupService.getStatusGrouped();
@@ -58,7 +58,7 @@ public class StakitController implements StaKitApi {
                 .map(this::mapGroup)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new StatusGrouped().statusGroup(mappedResult));
+        return ResponseEntity.ok(mappedResult);
     }
 
     @Override
@@ -89,19 +89,19 @@ public class StakitController implements StaKitApi {
         return new SubscriptionModel(subscribe.getEmail(), subscribe.getGroups(), subscribe.getAnnouncements());
     }
 
-    private Grouped mapGroup(StatusGroupedModel statusGroupedModel) {
-        var group = new Grouped();
-        group.setName(statusGroupedModel.groupName());
-        group.setServices(new ArrayList<>());
+    private StatusGroup mapGroup(StatusGroupedModel statusGroupedModel) {
+        var statusGroup = new StatusGroup();
+        statusGroup.setName(statusGroupedModel.groupName());
+        statusGroup.setServices(new ArrayList<>());
 
         statusGroupedModel.status().forEach(x -> {
             var s = new org.openapitools.model.ServiceStatus();
             s.setName(x.statusName());
             s.setStatus(org.openapitools.model.ServiceStatus.StatusEnum.fromValue(x.status().toString()));
 
-            group.addServicesItem(s);
+            statusGroup.addServicesItem(s);
         });
 
-        return group;
+        return statusGroup;
     }
 }

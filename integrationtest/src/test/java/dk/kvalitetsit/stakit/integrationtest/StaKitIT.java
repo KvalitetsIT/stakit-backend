@@ -59,10 +59,9 @@ public class StaKitIT extends AbstractIntegrationTest {
         var result = staKitApi.v1ServiceStatusGroupedGet();
 
         assertNotNull(result);
-        assertNotNull(result.getStatusGroup());
-        assertEquals(1, result.getStatusGroup().size());
+        assertEquals(1, result.size());
 
-        var group = result.getStatusGroup().get(0);
+        var group = result.get(0);
         assertEquals("Default", group.getName());
 
         assertNotNull(group.getServices());

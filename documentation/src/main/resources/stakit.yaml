@@ -337,7 +337,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/status-grouped'
+                type: array
+                items:
+                  $ref: '#/components/schemas/status-group'
 
   /v1/announcements-to-show:
     get:
@@ -467,16 +469,21 @@ components:
           type: string
           example: "Service can not connect to database."
 
-    status-grouped:
+    status-group:
       type: object
       required:
         - status
       properties:
-        status-group:
-          description: The service to update. If the service is not created it will be created. It is recommended to use a hashed value of for instance the service name being monitored.
+        name:
+          description: Name of the group.
+          type: string
+          example: "My Cool Group Of Services"
+          maxLength: 100
+        services:
+          description: Array of services and their status.
           type: array
           items:
-            $ref: "#/components/schemas/grouped"
+            $ref: "#/components/schemas/service-status"
 
     group:
       type: object
@@ -514,22 +521,6 @@ components:
           type: integer
           maximum: 100
           minimum: 0
-
-    grouped:
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          description: Name of the group.
-          type: string
-          example: "My Cool Group Of Services"
-          maxLength: 100
-        services:
-          description: Array of services and their status.
-          type: array
-          items:
-            $ref: "#/components/schemas/service-status"
 
     announcements-to-show:
       type: object

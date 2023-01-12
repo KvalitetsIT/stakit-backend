@@ -60,7 +60,7 @@ public class StakitControllerTest {
         assertNotNull(result);
         assertNotNull(result.getBody());
 
-        var statusGroupList = result.getBody().getStatusGroup();
+        var statusGroupList = result.getBody();
         assertEquals(2, statusGroupList.size());
 
         // Assert first one
