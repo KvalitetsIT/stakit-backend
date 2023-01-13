@@ -47,6 +47,21 @@ public class GroupModelIT extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testGetSingleGroup() throws ApiException {
+        var groupUpdate = new GroupInput();
+        groupUpdate.setName("name");
+        groupUpdate.setDisplayOrder(20);
+
+        var response = groupManagementApi.v1GroupsPost(groupUpdate);
+
+        var result = groupManagementApi.v1GroupsUuidGet(response.getUuid());
+        assertNotNull(result);
+        assertEquals(groupUpdate.getName(), result.getName());
+        assertEquals(groupUpdate.getDisplayOrder(), result.getDisplayOrder());
+        assertEquals(response.getUuid(), result.getId());
+    }
+
+    @Test
     public void testDeleteGroup() throws ApiException {
         var groupUpdate = new GroupInput();
         groupUpdate.setName("name");

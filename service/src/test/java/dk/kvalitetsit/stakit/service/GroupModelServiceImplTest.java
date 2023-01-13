@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -104,5 +105,36 @@ public class GroupModelServiceImplTest {
         assertFalse(result);
 
         Mockito.verify(groupDao, times(1)).delete(input);
+    }
+
+    @Test
+    public void testFindGroup() {
+        var input = UUID.randomUUID();
+
+        var groupConfigurationEntity = new GroupConfigurationEntity(10L, input, "name", 10);
+        Mockito.when(groupDao.findByUuid(input)).thenReturn(Optional.of(groupConfigurationEntity));
+
+        var result = groupService.getGroup(input);
+        assertNotNull(result);
+        assertTrue(result.isPresent());
+
+        assertEquals(groupConfigurationEntity.uuid(), result.get().uuid());
+        assertEquals(groupConfigurationEntity.name(), result.get().name());
+        assertEquals(groupConfigurationEntity.displayOrder(), result.get().displayOrder());
+
+        Mockito.verify(groupDao, times(1)).findByUuid(input);
+    }
+
+    @Test
+    public void testFindGroupNotFound() {
+        var input = UUID.randomUUID();
+
+        Mockito.when(groupDao.findByUuid(input)).thenReturn(Optional.empty());
+
+        var result = groupService.getGroup(input);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+
+        Mockito.verify(groupDao, times(1)).findByUuid(input);
     }
 }
