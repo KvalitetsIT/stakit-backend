@@ -32,7 +32,7 @@ public class StatusGroupServiceImpl implements StatusGroupService {
         statusData.forEach(x -> {
             var groupName = x.groupName() == null ? "Default" : x.groupName();
             groupMap.computeIfAbsent(groupName, k -> new StatusGroupedModel(groupName, new ArrayList<>())).status()
-                    .add(new StatusElementModel(Status.valueOf(x.status()), x.serviceName()));
+                    .add(new StatusElementModel(Status.valueOf(x.status()), x.serviceName(), x.description()));
         });
 
         return new ArrayList<>(groupMap.values());

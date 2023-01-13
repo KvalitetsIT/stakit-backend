@@ -40,9 +40,9 @@ public class StatusGroupServiceImplTest {
 
     @Test
     public void testGetServices() {
-        var groupOne = new GroupedStatus(null, "OK", "Service One");
-        var groupTwo = new GroupedStatus("Group One", "NOT_OK", "Service Two");
-        var groupThree = new GroupedStatus("Group One", "OK", "Service Three");
+        var groupOne = new GroupedStatus(null, "OK", "Service One", "Description One");
+        var groupTwo = new GroupedStatus("Group One", "NOT_OK", "Service Two", "Description Two");
+        var groupThree = new GroupedStatus("Group One", "OK", "Service Three", "Description Three");
 
         var dbResult = Arrays.asList(groupOne, groupTwo, groupThree);
         Mockito.when(groupStatusDao.getGroupedStatus()).thenReturn(dbResult);
@@ -56,6 +56,7 @@ public class StatusGroupServiceImplTest {
         assertEquals(1, firstGroupResult.status().size());
         assertEquals(Status.OK, firstGroupResult.status().get(0).status());
         assertEquals(groupOne.serviceName(), firstGroupResult.status().get(0).statusName());
+        assertEquals(groupOne.description(), firstGroupResult.status().get(0).description());
 
 
         var secondGroupResult = result.get(0);
@@ -64,9 +65,11 @@ public class StatusGroupServiceImplTest {
 
         assertEquals(Status.NOT_OK, secondGroupResult.status().get(0).status());
         assertEquals(groupTwo.serviceName(), secondGroupResult.status().get(0).statusName());
+        assertEquals(groupTwo.description(), secondGroupResult.status().get(0).description());
 
         assertEquals(Status.OK, secondGroupResult.status().get(1).status());
         assertEquals(groupThree.serviceName(), secondGroupResult.status().get(1).statusName());
+        assertEquals(groupThree.description(), secondGroupResult.status().get(1).description());
     }
 
     private ServiceStatusEntity createStatusEntity(String status, String message) {

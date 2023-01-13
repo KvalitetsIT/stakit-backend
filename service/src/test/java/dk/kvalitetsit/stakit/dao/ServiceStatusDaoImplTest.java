@@ -18,7 +18,7 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testFindById() {
-        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false);
+        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false, "description");
 
         var input = ServiceStatusEntity.createInstance(statusConfigurationId,  "OK", OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS), "SOME MESSAGE");
 
@@ -37,7 +37,7 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testInsert() {
-        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false);
+        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false, "description");
 
         var input = ServiceStatusEntity.createInstance(statusConfigurationId,  "OK", OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS), "SOME MESSAGE");
 
@@ -56,7 +56,7 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testGetLatest() {
-        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false);
+        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false, "description");
 
         var now = OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS);
 

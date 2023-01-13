@@ -18,6 +18,7 @@ public class GroupedStatusDaoImpl implements GroupedStatusDao {
     public List<GroupedStatus> getGroupedStatus() {
         var sql = "select sc.name as service_name, " +
                 "         gc.name as group_name, " +
+                "         sc.description, " +
                 "         status " +
                 "   from service_status s, " +
                 "        service_configuration sc " +

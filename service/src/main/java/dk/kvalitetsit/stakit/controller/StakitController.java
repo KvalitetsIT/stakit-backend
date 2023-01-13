@@ -98,6 +98,7 @@ public class StakitController implements StaKitApi {
             var s = new org.openapitools.model.ServiceStatus();
             s.setName(x.statusName());
             s.setStatus(org.openapitools.model.ServiceStatus.StatusEnum.fromValue(x.status().toString()));
+            s.setDescription(x.description());
 
             statusGroup.addServicesItem(s);
         });

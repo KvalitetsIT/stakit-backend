@@ -22,16 +22,16 @@ public class TestDataHelper {
     @Autowired
     private GroupConfigurationDao groupConfigurationDao;
 
-    long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName) {
-        return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, UUID.randomUUID(), serviceName, ignoreServiceName, null));
+    long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName, String description) {
+        return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, UUID.randomUUID(), serviceName, ignoreServiceName, null, description));
     }
 
-    long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName, long groupConfigurationId) {
-        return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, UUID.randomUUID(), serviceName, ignoreServiceName, groupConfigurationId));
+    long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName, long groupConfigurationId, String description) {
+        return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, UUID.randomUUID(), serviceName, ignoreServiceName, groupConfigurationId, description));
     }
 
-    long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName, Long groupConfigurationId, UUID serviceUuid) {
-        return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, serviceUuid, serviceName, ignoreServiceName, groupConfigurationId));
+    long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName, Long groupConfigurationId, UUID serviceUuid, String description) {
+        return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, serviceUuid, serviceName, ignoreServiceName, groupConfigurationId, description));
     }
 
     void createServiceStatus(long statusConfigurationId, String status, OffsetDateTime statusTime)  {

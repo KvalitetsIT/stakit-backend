@@ -46,6 +46,7 @@ public class StatusUpdateServiceImplTest {
             assertFalse(x.ignoreServiceName());
             assertNull(x.groupConfigurationId());
             assertNotNull(x.uuid());
+            assertNull(x.description());
 
             return true;
         }));
@@ -61,7 +62,7 @@ public class StatusUpdateServiceImplTest {
         var serviceStatus = new ServiceStatusEntity(10L, 10L, "NOT_OK", OffsetDateTime.now(), "message");
 
         Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenThrow(DuplicateKeyException.class);
-        Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null));
+        Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null, "description"));
         Mockito.when(serviceStatusDao.findLatest(Mockito.any())).thenReturn(Optional.of(serviceStatus));
         statusUpdateService.updateStatus(input);
 
@@ -71,6 +72,7 @@ public class StatusUpdateServiceImplTest {
             assertFalse(x.ignoreServiceName());
             assertNull(x.groupConfigurationId());
             assertNotNull(x.uuid());
+            assertNull(x.description());
 
             return true;
         }));
@@ -88,7 +90,7 @@ public class StatusUpdateServiceImplTest {
         var serviceStatus = new ServiceStatusEntity(10L, 10L, "NOT_OK", OffsetDateTime.now(), "message");
 
         Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenThrow(DuplicateKeyException.class);
-        Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null));
+        Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null, "description"));
         Mockito.when(serviceStatusDao.findLatest(Mockito.any())).thenReturn(Optional.of(serviceStatus));
         Mockito.when(serviceStatusDao.insert(Mockito.any())).thenReturn(11L);
 
@@ -100,6 +102,7 @@ public class StatusUpdateServiceImplTest {
             assertFalse(x.ignoreServiceName());
             assertNull(x.groupConfigurationId());
             assertNotNull(x.uuid());
+            assertNull(x.description());
 
             return true;
         }));

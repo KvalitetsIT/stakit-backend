@@ -29,7 +29,7 @@ public class StatusUpdateServiceImpl implements StatusUpdateService {
     public void updateStatus(UpdateServiceModel input) {
         Long statusConfigurationId;
         try {
-            statusConfigurationId = serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), UUID.randomUUID(), input.serviceName(), false, null));
+            statusConfigurationId = serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), UUID.randomUUID(), input.serviceName(), false, null, null));
         }
         catch(DuplicateKeyException e) {
             statusConfigurationId = serviceConfigurationDao.findByService(input.service()).id();

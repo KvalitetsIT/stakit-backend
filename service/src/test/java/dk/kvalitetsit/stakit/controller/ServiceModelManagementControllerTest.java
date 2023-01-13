@@ -32,8 +32,8 @@ public class ServiceModelManagementControllerTest {
 
     @Test
     public void testGetAllServices() {
-        var serviceOne = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID());
-        var serviceTwo = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, UUID.randomUUID());
+        var serviceOne = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID().toString());
+        var serviceTwo = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, UUID.randomUUID(), UUID.randomUUID().toString());
 
         Mockito.when(serviceManagementService.getServices()).thenReturn(Arrays.asList(serviceOne, serviceTwo));
 
@@ -50,12 +50,14 @@ public class ServiceModelManagementControllerTest {
         assertEquals(serviceOne.serviceIdentifier(), firstBodyElement.getServiceIdentifier());
         assertEquals(serviceOne.ignoreServiceName(), firstBodyElement.getIgnoreServiceName());
         assertEquals(serviceOne.group(), firstBodyElement.getGroup());
+        assertEquals(serviceOne.description(), firstBodyElement.getDescription());
 
         var secondBodyElement = body.get(1);
         assertEquals(serviceTwo.name(), secondBodyElement.getName());
         assertEquals(serviceTwo.serviceIdentifier(), secondBodyElement.getServiceIdentifier());
         assertEquals(serviceTwo.ignoreServiceName(), secondBodyElement.getIgnoreServiceName());
         assertNull(secondBodyElement.getGroup());
+        assertEquals(serviceTwo.description(), secondBodyElement.getDescription());
 
         Mockito.verify(serviceManagementService, times(1)).getServices();
     }
@@ -78,7 +80,7 @@ public class ServiceModelManagementControllerTest {
     @Test
     public void testGetService() {
         var serviceUuid = UUID.randomUUID();
-        var service = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID());
+        var service = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID().toString());
 
         Mockito.when(serviceManagementService.getService(serviceUuid)).thenReturn(Optional.of(service));
 
@@ -93,6 +95,7 @@ public class ServiceModelManagementControllerTest {
         assertEquals(service.serviceIdentifier(), body.getServiceIdentifier());
         assertEquals(service.ignoreServiceName(), body.getIgnoreServiceName());
         assertEquals(service.group(), body.getGroup());
+        assertEquals(service.description(), body.getDescription());
 
         Mockito.verify(serviceManagementService, times(1)).getService(serviceUuid);
     }
@@ -119,6 +122,7 @@ public class ServiceModelManagementControllerTest {
         serviceUpdate.setName(UUID.randomUUID().toString());
         serviceUpdate.setIgnoreServiceName(true);
         serviceUpdate.setGroup(UUID.randomUUID());
+        serviceUpdate.setDescription(UUID.randomUUID().toString());
 
         Mockito.when(serviceManagementService.updateService(Mockito.eq(serviceUuid), Mockito.any())).thenReturn(false);
 
@@ -132,6 +136,7 @@ public class ServiceModelManagementControllerTest {
             assertEquals(serviceUpdate.getIgnoreServiceName(), x.ignoreServiceName());
             assertEquals(serviceUpdate.getName(), x.name());
             assertEquals(serviceUpdate.getGroup(), x.group());
+            assertEquals(serviceUpdate.getDescription(), x.description());
 
             return true;
         }));
@@ -145,6 +150,7 @@ public class ServiceModelManagementControllerTest {
         serviceUpdate.setName(UUID.randomUUID().toString());
         serviceUpdate.setIgnoreServiceName(true);
         serviceUpdate.setGroup(UUID.randomUUID());
+        serviceUpdate.setDescription(UUID.randomUUID().toString());
 
         Mockito.when(serviceManagementService.updateService(Mockito.eq(serviceUuid), Mockito.any())).thenReturn(true);
 
@@ -157,6 +163,7 @@ public class ServiceModelManagementControllerTest {
             assertEquals(serviceUpdate.getIgnoreServiceName(), x.ignoreServiceName());
             assertEquals(serviceUpdate.getName(), x.name());
             assertEquals(serviceUpdate.getGroup(), x.group());
+            assertEquals(serviceUpdate.getDescription(), x.description());
 
             return true;
         }));
@@ -169,6 +176,7 @@ public class ServiceModelManagementControllerTest {
         serviceCreate.setName(UUID.randomUUID().toString());
         serviceCreate.setIgnoreServiceName(true);
         serviceCreate.setGroup(UUID.randomUUID());
+        serviceCreate.setDescription(UUID.randomUUID().toString());
 
         var expectedUuid = UUID.randomUUID();
 
@@ -185,6 +193,7 @@ public class ServiceModelManagementControllerTest {
             assertEquals(serviceCreate.getIgnoreServiceName(), x.ignoreServiceName());
             assertEquals(serviceCreate.getName(), x.name());
             assertEquals(serviceCreate.getGroup(), x.group());
+            assertEquals(serviceCreate.getDescription(), x.description());
 
             return true;
         }));
