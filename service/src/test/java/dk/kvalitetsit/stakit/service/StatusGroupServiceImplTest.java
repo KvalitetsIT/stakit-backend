@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
@@ -27,6 +28,9 @@ public class StatusGroupServiceImplTest {
 
     @Test
     public void testGetNoServices() {
+        var daoResult = new GroupedStatus("Default", null, null);
+        Mockito.when(groupStatusDao.getGroupedStatus()).thenReturn(Collections.singletonList(daoResult));
+
         var result = statusGroupServiceImpl.getStatusGrouped();
 
         assertNotNull(result);
@@ -40,7 +44,7 @@ public class StatusGroupServiceImplTest {
 
     @Test
     public void testGetServices() {
-        var groupOne = new GroupedStatus(null, "OK", "Service One");
+        var groupOne = new GroupedStatus("Default", "OK", "Service One");
         var groupTwo = new GroupedStatus("Group One", "NOT_OK", "Service Two");
         var groupThree = new GroupedStatus("Group One", "OK", "Service Three");
 

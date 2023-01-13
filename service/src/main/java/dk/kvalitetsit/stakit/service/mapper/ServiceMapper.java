@@ -13,7 +13,7 @@ public class ServiceMapper {
         return new ServiceModel(input.name(), input.service(), input.ignoreServiceName(), input.groupUuid(), input.uuid());
     }
 
-    public static ServiceConfigurationEntity mapServiceToEntity(UUID uuid, ServiceModel serviceModel, Optional<GroupConfigurationEntity> group) {
-        return ServiceConfigurationEntity.createInstance(serviceModel.serviceIdentifier(), uuid, serviceModel.name(), serviceModel.ignoreServiceName(), group.map(GroupConfigurationEntity::id).orElse(null));
+    public static ServiceConfigurationEntity mapServiceToEntity(UUID uuid, ServiceModel serviceModel, long group) {
+        return ServiceConfigurationEntity.createInstance(serviceModel.serviceIdentifier(), uuid, serviceModel.name(), serviceModel.ignoreServiceName(), group);
     }
 }

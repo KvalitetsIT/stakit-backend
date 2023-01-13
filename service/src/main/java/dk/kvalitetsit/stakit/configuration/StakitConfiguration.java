@@ -63,8 +63,9 @@ public class StakitConfiguration implements WebMvcConfigurer {
     @Bean
     public StatusUpdateService statusUpdateService(ServiceConfigurationDao serviceConfigurationDao,
                                                    ServiceStatusDao serviceStatusDao,
-                                                   MailQueueService mailQueueService) {
-        return new StatusUpdateServiceImpl(serviceConfigurationDao, serviceStatusDao, mailQueueService);
+                                                   MailQueueService mailQueueService,
+                                                   GroupConfigurationDao groupConfigurationDao) {
+        return new StatusUpdateServiceImpl(serviceConfigurationDao, serviceStatusDao, mailQueueService, groupConfigurationDao);
     }
 
     @Bean

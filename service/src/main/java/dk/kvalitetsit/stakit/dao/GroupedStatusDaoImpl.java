@@ -19,12 +19,12 @@ public class GroupedStatusDaoImpl implements GroupedStatusDao {
         var sql = "select sc.name as service_name, " +
                 "         gc.name as group_name, " +
                 "         status " +
-                "   from service_status s, " +
-                "        service_configuration sc " +
-                "   left outer join group_configuration gc " +
-                "        on gc.id = sc.group_configuration_id  " +
-                "  where s.service_configuration_id = sc.id " +
-                "    and s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id)" +
+                "   from group_configuration gc " +
+                "   left outer join service_configuration sc" +
+                "        on gc.id = sc.group_configuration_id" +
+                "   left outer join service_status s " +
+                "        on s.service_configuration_id = sc.id and " +
+                "           s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) " +
                 " order by group_name, service_name";
 
         return template.query(sql, DataClassRowMapper.newInstance(GroupedStatus.class));
