@@ -58,4 +58,14 @@ public class GroupModelIT extends AbstractIntegrationTest {
         var response = groupManagementApi.v1GroupsUuidDeleteWithHttpInfo(uuid);
         assertEquals(204, response.getStatusCode());
     }
+
+    @Test
+    public void testGetAll() throws ApiException {
+        var groups = groupManagementApi.v1GroupsGet();
+
+        assertNotNull(groups);
+
+        assertTrue(groups.size() > 0);
+        assertTrue(groups.stream().anyMatch(x -> x.getName().equals("Default")));
+    }
 }

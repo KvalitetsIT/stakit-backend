@@ -40,7 +40,7 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
 
     @Override
     public List<GroupConfigurationEntity> findAll() {
-        var sql = "select * from group_configuration";
+        var sql = "select * from group_configuration order by display_order";
 
         return template.query(sql, new DataClassRowMapper<>(GroupConfigurationEntity.class));
     }
@@ -90,5 +90,12 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
         var sql = "delete from group_configuration where uuid = :uuid";
 
         return template.update(sql, Collections.singletonMap("uuid", uuid.toString())) > 0;
+    }
+
+    @Override
+    public long findDefaultGroupId() {
+        var sql = "select min(id) as id from group_configuration where name = 'Default'";
+
+        return template.queryForObject(sql, Collections.emptyMap(), Long.class);
     }
 }

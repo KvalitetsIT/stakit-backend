@@ -46,7 +46,9 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
             throw new IllegalArgumentException("Group not found");
         }
 
-        return serviceConfigurationDao.updateByUuid(ServiceMapper.mapServiceToEntity(uuid, serviceModel, group));
+        var groupId = group.map(GroupConfigurationEntity::id).orElse(groupConfigurationDao.findDefaultGroupId());
+
+        return serviceConfigurationDao.updateByUuid(ServiceMapper.mapServiceToEntity(uuid, serviceModel, groupId));
     }
 
     @Override
@@ -54,11 +56,13 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
     public UUID createService(ServiceModel serviceModel) {
         var serviceUuid = UUID.randomUUID();
 
-        Optional<GroupConfigurationEntity> group = serviceModel.group() != null ? groupConfigurationDao.findByUuid(serviceModel.group()) : Optional.empty();
+        Optional<GroupConfigurationEntity> optionalGroup = serviceModel.group() != null ? groupConfigurationDao.findByUuid(serviceModel.group()) : Optional.empty();
 
-        if(serviceModel.group() != null && group.isEmpty()) {
+        if(serviceModel.group() != null && optionalGroup.isEmpty()) {
             return null;
         }
+
+        var group = optionalGroup.map(GroupConfigurationEntity::id).orElse(groupConfigurationDao.findDefaultGroupId());
 
         serviceConfigurationDao.insert(ServiceMapper.mapServiceToEntity(serviceUuid, serviceModel, group));
 

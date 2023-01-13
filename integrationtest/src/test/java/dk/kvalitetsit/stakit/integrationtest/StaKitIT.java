@@ -5,8 +5,10 @@ import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.AdapterApi;
 import org.openapitools.client.api.AnnouncementsApi;
+import org.openapitools.client.api.GroupManagementApi;
 import org.openapitools.client.api.StaKitApi;
 import org.openapitools.client.model.AnnouncementCreate;
+import org.openapitools.client.model.GroupInput;
 import org.openapitools.client.model.ServiceStatus;
 import org.openapitools.client.model.StatusUpdate;
 
@@ -25,6 +27,7 @@ public class StaKitIT extends AbstractIntegrationTest {
     private final StaKitApi staKitApi;
     private final AdapterApi adapterApi;
     private final AnnouncementsApi announcementApi;
+    private final GroupManagementApi groupApi;
 
     public StaKitIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
@@ -41,6 +44,7 @@ public class StaKitIT extends AbstractIntegrationTest {
         staKitApi = new StaKitApi(apiClient);
         adapterApi = new AdapterApi(adapterClient);
         announcementApi = new AnnouncementsApi(authenticatedApi);
+        groupApi = new GroupManagementApi(authenticatedApi);
     }
 
     @Test
@@ -59,9 +63,8 @@ public class StaKitIT extends AbstractIntegrationTest {
         var result = staKitApi.v1ServiceStatusGroupedGet();
 
         assertNotNull(result);
-        assertEquals(1, result.size());
 
-        var group = result.get(0);
+        var group = result.stream().filter(x ->x.getName().equals("Default")).findFirst().orElseThrow();
         assertEquals("Default", group.getName());
 
         assertNotNull(group.getServices());
@@ -69,6 +72,19 @@ public class StaKitIT extends AbstractIntegrationTest {
 
         assertEquals(1L, group.getServices().stream().filter(x -> x.getName().equals(statusUpdate.getServiceName())).count());
         assertEquals(ServiceStatus.StatusEnum.NOT_OK, group.getServices().stream().filter(x -> x.getName().equals(statusUpdate.getServiceName())).findAny().get().getStatus());
+    }
+
+    @Test
+    public void testReturnEmptyGroupsInGroupedStatus() throws ApiException {
+        GroupInput groupInput = new GroupInput()
+                .displayOrder(10)
+                .name(UUID.randomUUID().toString());
+        groupApi.v1GroupsPost(groupInput);
+
+        var result = staKitApi.v1ServiceStatusGroupedGet();
+
+        assertNotNull(result);
+        assertTrue(result.stream().anyMatch(x -> x.getName().equals(groupInput.getName())));
     }
 
     @Test

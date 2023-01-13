@@ -18,4 +18,6 @@ public interface GroupConfigurationDao {
     Optional<GroupConfigurationEntity> findById(long id);
 
     boolean delete(UUID input);
+
+    long findDefaultGroupId();
 }
