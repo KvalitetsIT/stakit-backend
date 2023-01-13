@@ -6,6 +6,7 @@ import dk.kvalitetsit.stakit.service.model.GroupModel;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,5 +45,12 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public boolean deleteGroup(UUID uuid) {
         return groupConfigurationDao.delete(uuid);
+    }
+
+    @Override
+    public Optional<GroupModel> getGroup(UUID uuid) {
+        var dbResult = groupConfigurationDao.findByUuid(uuid);
+
+        return dbResult.map(x -> new GroupModel(x.uuid(), x.name(), x.displayOrder()));
     }
 }

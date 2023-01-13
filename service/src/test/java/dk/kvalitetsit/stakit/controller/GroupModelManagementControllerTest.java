@@ -10,6 +10,7 @@ import org.openapitools.model.GroupInput;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -129,4 +130,32 @@ public class GroupModelManagementControllerTest {
 
         Mockito.verify(groupService, times(1)).deleteGroup(uuid);
     }
+
+    @Test
+    public void testGetGroup() {
+        var uuid = UUID.randomUUID();
+
+        Mockito.when(groupService.getGroup(uuid)).thenReturn(Optional.of(new GroupModel(uuid, "name", 10)));
+
+        var result = groupManagementController.v1GroupsUuidGet(uuid);
+        assertNotNull(result);
+        assertNotNull(result.getBody());
+
+        assertEquals(uuid, result.getBody().getId());
+        assertEquals("name", result.getBody().getName());
+        assertEquals(10, result.getBody().getDisplayOrder());
+    }
+
+    @Test
+    public void testGetGroupNotFound() {
+        var uuid = UUID.randomUUID();
+
+        Mockito.when(groupService.getGroup(uuid)).thenReturn(Optional.empty());
+
+        var expectedException = assertThrows(ResourceNotFoundException.class, () -> groupManagementController.v1GroupsUuidGet(uuid));
+        assertNotNull(expectedException);
+
+        Mockito.verify(groupService, times(1)).getGroup(uuid);
+    }
+
 }
