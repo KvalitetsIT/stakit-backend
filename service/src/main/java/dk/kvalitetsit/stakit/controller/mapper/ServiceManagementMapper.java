@@ -20,6 +20,7 @@ public class ServiceManagementMapper {
         s.setIgnoreServiceName(serviceModel.ignoreServiceName());
         s.setGroup(serviceModel.group());
         s.setUuid(serviceModel.uuid());
+        s.setDescription(serviceModel.description());
 
         return s;
     }
@@ -30,15 +31,16 @@ public class ServiceManagementMapper {
         s.setName(serviceModel.name());
         s.setIgnoreServiceName(serviceModel.ignoreServiceName());
         s.setGroup(serviceModel.group());
+        s.setDescription(serviceModel.description());
 
         return s;
     }
 
     public static ServiceModel mapUpdate(ServiceUpdate serviceUpdate) {
-        return new ServiceModel(serviceUpdate.getName(), serviceUpdate.getServiceIdentifier(), serviceUpdate.getIgnoreServiceName(), serviceUpdate.getGroup(), null);
+        return new ServiceModel(serviceUpdate.getName(), serviceUpdate.getServiceIdentifier(), serviceUpdate.getIgnoreServiceName(), serviceUpdate.getGroup(), null, serviceUpdate.getDescription());
     }
 
     public static ServiceModel mapCreate(ServiceCreate serviceCreate) {
-        return new ServiceModel(serviceCreate.getName(), serviceCreate.getServiceIdentifier(), serviceCreate.getIgnoreServiceName(), serviceCreate.getGroup(), null);
+        return new ServiceModel(serviceCreate.getName(), serviceCreate.getServiceIdentifier(), serviceCreate.getIgnoreServiceName(), serviceCreate.getGroup(), null, serviceCreate.getDescription());
     }
 }

@@ -25,7 +25,7 @@ public class MailSubscriptionDaoImplTest extends AbstractDaoTest {
     @Test
     public void testFindSubscriptionsByServiceConfigurationId() {
         var groupId = testDataHelper.createGroup("group name", UUID.randomUUID());
-        var serviceConfigurationId = testDataHelper.createServiceConfiguration("service", "service name", true, groupId);
+        var serviceConfigurationId = testDataHelper.createServiceConfiguration("service", "service name", true, groupId, "description");
         var mailSubscriptionId = testDataHelper.createMailSubscription(true, UUID.randomUUID());
         testDataHelper.createMailSubscriptionGroup(mailSubscriptionId, groupId);
 

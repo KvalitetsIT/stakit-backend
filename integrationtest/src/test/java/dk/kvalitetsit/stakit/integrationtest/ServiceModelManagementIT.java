@@ -62,6 +62,7 @@ public class ServiceModelManagementIT extends AbstractIntegrationTest {
         input.setName("name");
         input.setIgnoreServiceName(true);
         input.setGroup(groupUuid);
+        input.setDescription("description");
 
         var serviceResult = serviceManagementApi.v1ServicesPostWithHttpInfo(input);
         assertEquals(201, serviceResult.getStatusCode());
@@ -74,6 +75,7 @@ public class ServiceModelManagementIT extends AbstractIntegrationTest {
         assertEquals(input.getServiceIdentifier(), result.getServiceIdentifier());
         assertEquals(input.getName(), result.getName());
         assertEquals(input.getIgnoreServiceName(), result.getIgnoreServiceName());
+        assertEquals(input.getDescription(), result.getDescription());
     }
 
     @Test
@@ -89,6 +91,7 @@ public class ServiceModelManagementIT extends AbstractIntegrationTest {
         input.setServiceIdentifier(UUID.randomUUID().toString());
         input.setName("name");
         input.setIgnoreServiceName(true);
+        input.setDescription("description");
 
         var serviceResult = serviceManagementApi.v1ServicesPostWithHttpInfo(input);
         assertEquals(201, serviceResult.getStatusCode());
@@ -100,6 +103,7 @@ public class ServiceModelManagementIT extends AbstractIntegrationTest {
         serviceUpdate.setName("name updated");
         serviceUpdate.setIgnoreServiceName(false);
         serviceUpdate.setGroup(groupUuid);
+        serviceUpdate.setDescription("description updated");
 
         var updateResult = serviceManagementApi.v1ServicesUuidPutWithHttpInfo(serviceUuid, serviceUpdate);
         assertEquals(201, updateResult.getStatusCode());
@@ -113,6 +117,7 @@ public class ServiceModelManagementIT extends AbstractIntegrationTest {
         assertEquals(serviceUpdate.getGroup(), service.getGroup());
         assertEquals(serviceUpdate.getIgnoreServiceName(), service.getIgnoreServiceName());
         assertEquals(serviceUpdate.getName(), service.getName());
+        assertEquals(serviceUpdate.getDescription(), service.getDescription());
     }
 
     @Test
@@ -122,6 +127,7 @@ public class ServiceModelManagementIT extends AbstractIntegrationTest {
         input.setServiceIdentifier("id");
         input.setName("name");
         input.setIgnoreServiceName(true);
+        input.setDescription("description");
 
         var expectedException = assertThrows(ApiException.class, () -> serviceManagementApi.v1ServicesUuidPut(uuid, input));
         assertEquals(404, expectedException.getCode());
@@ -141,6 +147,7 @@ public class ServiceModelManagementIT extends AbstractIntegrationTest {
         input.setServiceIdentifier(UUID.randomUUID().toString());
         input.setName("name");
         input.setIgnoreServiceName(true);
+        input.setDescription("description");
 
         var serviceResult = serviceManagementApi.v1ServicesPostWithHttpInfo(input);
         var serviceUuid = serviceResult.getData().getUuid();

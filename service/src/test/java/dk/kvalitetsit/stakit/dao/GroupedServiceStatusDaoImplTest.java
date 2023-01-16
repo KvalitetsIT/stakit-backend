@@ -38,10 +38,9 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
     public void testGetGrouped() {
         var groupOne = testDataHelper.createGroup("Group One", UUID.randomUUID());
 
-        var serviceConfigurationOne = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service One", false, groupOne);
-        var serviceConfigurationTwo = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Two", false, groupOne);
-
-        var serviceConfigurationThree = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Three", false, defaultGroupId);
+        var serviceConfigurationOne = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service One", false, groupOne, "Description One");
+        var serviceConfigurationTwo = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Two", false, groupOne, "Description Two");
+        var serviceConfigurationThree = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Three", false, defaultGroupId, "Description Three");
 
         testDataHelper.createServiceStatus(serviceConfigurationOne, "NOT_OK", OffsetDateTime.now());
         testDataHelper.createServiceStatus(serviceConfigurationOne, "OK", OffsetDateTime.now());
@@ -56,15 +55,18 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
         assertEquals("Service Three", groupedStatus.serviceName());
         assertEquals("Default", groupedStatus.groupName());
         assertEquals("NOT_OK", groupedStatus.status());
+        assertEquals("Description Three", groupedStatus.description());
 
         groupedStatus = result.get(1);
         assertEquals("Service One", groupedStatus.serviceName());
         assertEquals("Group One", groupedStatus.groupName());
         assertEquals("OK", groupedStatus.status());
+        assertEquals("Description One", groupedStatus.description());
 
         groupedStatus = result.get(2);
         assertEquals("Service Two", groupedStatus.serviceName());
         assertEquals("Group One", groupedStatus.groupName());
         assertEquals("NOT_OK", groupedStatus.status());
+        assertEquals("Description Two", groupedStatus.description());
     }
 }

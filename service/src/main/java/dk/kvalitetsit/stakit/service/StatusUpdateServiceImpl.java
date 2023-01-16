@@ -36,7 +36,7 @@ public class StatusUpdateServiceImpl implements StatusUpdateService {
         Long statusConfigurationId;
         try {
             var groupId = groupConfigurationDao.findDefaultGroupId();
-            statusConfigurationId = serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), UUID.randomUUID(), input.serviceName(), false, groupId));
+            statusConfigurationId = serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), UUID.randomUUID(), input.serviceName(), false, groupId, null));
         }
         catch(DuplicateKeyException e) {
             statusConfigurationId = serviceConfigurationDao.findByService(input.service()).id();

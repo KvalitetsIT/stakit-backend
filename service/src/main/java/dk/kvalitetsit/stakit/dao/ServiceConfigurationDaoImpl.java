@@ -25,7 +25,7 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
     public long insert(ServiceConfigurationEntity serviceConfigurationEntity) {
         logger.info("Inserting or updating entry in database.");
 
-        var sql = "insert service_configuration(service, uuid, name, ignore_service_name, group_configuration_id) values(:service, :uuid, :service_name, :ignore_service_name, :group_configuration_id)";
+        var sql = "insert service_configuration(service, uuid, name, ignore_service_name, group_configuration_id, description) values(:service, :uuid, :service_name, :ignore_service_name, :group_configuration_id, :description)";
 
         var parameterMap = new HashMap<String, Object>();
         parameterMap.put("service", serviceConfigurationEntity.service());
@@ -33,6 +33,7 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
         parameterMap.put("ignore_service_name", serviceConfigurationEntity.ignoreServiceName());
         parameterMap.put("group_configuration_id", serviceConfigurationEntity.groupConfigurationId());
         parameterMap.put("uuid", serviceConfigurationEntity.uuid().toString());
+        parameterMap.put("description", serviceConfigurationEntity.description());
 
         var keyHolder = new GeneratedKeyHolder();
         template.update(sql, new MapSqlParameterSource(parameterMap), keyHolder);
@@ -59,6 +60,7 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
                 "         s.service, " +
                 "         s.name, " +
                 "         s.ignore_service_name, " +
+                "         s.description, " +
                 "         g.uuid as group_uuid " +
                 "   from service_configuration s " +
                 "   left outer join group_configuration g " +
@@ -82,7 +84,8 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
                 "     set service = :service, " +
                 "         name = :name, " +
                 "         group_configuration_id = :group_configuration_id," +
-                "         ignore_service_name = :ignore_service_name " +
+                "         ignore_service_name = :ignore_service_name, " +
+                "         description = :description " +
                 "   where uuid = :uuid";
 
         var parameters = new MapSqlParameterSource()
@@ -90,7 +93,8 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
                 .addValue("name", serviceConfigurationEntity.name())
                 .addValue("group_configuration_id", serviceConfigurationEntity.groupConfigurationId())
                 .addValue("uuid", serviceConfigurationEntity.uuid().toString())
-                .addValue("ignore_service_name", serviceConfigurationEntity.ignoreServiceName());
+                .addValue("ignore_service_name", serviceConfigurationEntity.ignoreServiceName())
+                .addValue("description", serviceConfigurationEntity.description());
 
         var updateCount = template.update(sql, parameters);
 
@@ -105,6 +109,7 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
                 "         s.service, " +
                 "         s.name, " +
                 "         s.ignore_service_name, " +
+                "         s.description, " +
                 "         g.uuid as group_uuid " +
                 "    from service_configuration s " +
                 "    left outer join group_configuration g " +

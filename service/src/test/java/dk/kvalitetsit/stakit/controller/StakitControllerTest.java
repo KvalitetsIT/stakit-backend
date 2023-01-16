@@ -43,11 +43,11 @@ public class StakitControllerTest {
     @Test
     public void testStatusGetGrouped() {
         var groupOne = new StatusGroupedModel("Default", new ArrayList<>());
-        groupOne.status().add(new StatusElementModel(Status.OK, "In Default Group"));
+        groupOne.status().add(new StatusElementModel(Status.OK, "In Default Group", "Description"));
 
         var groupTwo = new StatusGroupedModel("Group Two", new ArrayList<>());
-        groupTwo.status().add(new StatusElementModel(Status.OK, "Name"));
-        groupTwo.status().add(new StatusElementModel(Status.NOT_OK, "Name Two"));
+        groupTwo.status().add(new StatusElementModel(Status.OK, "Name", "Description One"));
+        groupTwo.status().add(new StatusElementModel(Status.NOT_OK, "Name Two", "Description Two"));
 
         var serviceResponse = new ArrayList<StatusGroupedModel>();
         serviceResponse.add(groupOne);
@@ -69,6 +69,7 @@ public class StakitControllerTest {
 
         assertEquals(groupOne.status().get(0).statusName(), statusGroup.getServices().get(0).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());
+        assertEquals(groupOne.status().get(0).description(), statusGroup.getServices().get(0).getDescription());
 
         // Assert second one
         statusGroup = statusGroupList.get(1);
@@ -76,9 +77,11 @@ public class StakitControllerTest {
 
         assertEquals(groupTwo.status().get(0).statusName(), statusGroup.getServices().get(0).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());
+        assertEquals(groupTwo.status().get(0).description(), statusGroup.getServices().get(0).getDescription());
 
         assertEquals(groupTwo.status().get(1).statusName(), statusGroup.getServices().get(1).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.NOT_OK, statusGroup.getServices().get(1).getStatus());
+        assertEquals(groupTwo.status().get(1).description(), statusGroup.getServices().get(1).getDescription());
     }
 
     @Test

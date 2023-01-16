@@ -577,6 +577,11 @@ components:
           description: Status of service.
           type: string
           enum: [OK, NOT_OK]
+        description:
+          description: Description of service
+          type: string
+          example: "Very descriptive"
+          maxLength: 250
 
     service:
       type: object
@@ -586,7 +591,7 @@ components:
         - ignore_service_name
       properties:
         service_identifier:
-          description: Unique identifier of thr service.
+          description: Unique identifier of the service.
           type: string
           example: "4fa59cef25fbcab4155e6eb5201a27ce1eb010408e4550b1313f1126"
           maxLength: 100
@@ -602,6 +607,11 @@ components:
           description: Group the service belongs to.
           type: string
           format: uuid
+        description:
+          description: Description of service
+          type: string
+          example: "Very descriptive"
+          maxLength: 250
 
     services:
       type: object
@@ -616,7 +626,7 @@ components:
           type: string
           format: uuid
         service_identifier:
-          description: Unique identifier of thr service.
+          description: Unique identifier of the service.
           type: string
           example: "4fa59cef25fbcab4155e6eb5201a27ce1eb010408e4550b1313f1126"
           maxLength: 100
@@ -632,6 +642,11 @@ components:
           description: Group the service belongs to.
           type: string
           format: uuid
+        description:
+          description: Description of service
+          type: string
+          example: "Very descriptive"
+          maxLength: 250
 
     service-create:
       type: object
@@ -641,7 +656,7 @@ components:
         - ignore_service_name
       properties:
         service_identifier:
-          description: Unique identifier of thr service. If not present it is automatically generated.
+          description: Unique identifier of the service. If not present it is automatically generated.
           type: string
           example: "4fa59cef25fbcab4155e6eb5201a27ce1eb010408e4550b1313f1126"
           maxLength: 100
@@ -657,6 +672,11 @@ components:
           description: Group the service belongs to.
           type: string
           format: uuid
+        description:
+          description: Description of service
+          type: string
+          example: "Very descriptive"
+          maxLength: 250
 
     service-update:
       type: object
@@ -666,7 +686,7 @@ components:
         - ignore_service_name
       properties:
         service_identifier:
-          description: Unique identifier of thr service. If not present it is automatically generated.
+          description: Unique identifier of the service. If not present it is automatically generated.
           type: string
           example: "4fa59cef25fbcab4155e6eb5201a27ce1eb010408e4550b1313f1126"
           maxLength: 100
@@ -682,6 +702,11 @@ components:
           description: Group the service belongs to.
           type: string
           format: uuid
+        description:
+          description: Description of service
+          type: string
+          example: "Very descriptive"
+          maxLength: 250
 
     announcement:
       type: object
