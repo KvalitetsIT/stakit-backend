@@ -104,6 +104,24 @@ paths:
           $ref: '#/components/responses/401'
 
   /v1/groups/{uuid}:
+    get:
+      tags:
+        - group-management
+      summary: Group get.
+      description: API to get a single gorup
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        '200':
+          description: The gropu for the given uuid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/group'
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
     put:
       tags:
         - group-management

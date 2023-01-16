@@ -1,6 +1,7 @@
 package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,10 +16,16 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Autowired
     private TestDataHelper testDataHelper;
+    private long defaultGroupId;
+
+    @Before
+    public void setup() {
+        defaultGroupId = testDataHelper.findDefaultGroupId();
+    }
 
     @Test
     public void testFindById() {
-        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false, "description");
+        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false, defaultGroupId, "description");
 
         var input = ServiceStatusEntity.createInstance(statusConfigurationId,  "OK", OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS), "SOME MESSAGE");
 
@@ -37,7 +44,7 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testInsert() {
-        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false, "description");
+        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name", false, defaultGroupId, "description");
 
         var input = ServiceStatusEntity.createInstance(statusConfigurationId,  "OK", OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS), "SOME MESSAGE");
 
@@ -56,7 +63,7 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testGetLatest() {
-        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false, "description");
+        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false, defaultGroupId, "description");
 
         var now = OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS);
 

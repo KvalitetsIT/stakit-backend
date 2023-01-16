@@ -1,6 +1,7 @@
 package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,10 +17,16 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
 
     @Autowired
     private TestDataHelper testDataHelper;
+    private long defaultGroupId;
+
+    @Before
+    public void setup() {
+        defaultGroupId = testDataHelper.findDefaultGroupId();
+    }
 
     @Test
     public void testFindById() {
-        var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(),"service name", true, null, "description");
+        var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(),"service name", true, defaultGroupId, "description");
 
         var id = serviceConfigurationDao.insert(input);
 
@@ -61,7 +68,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testInsertWithoutGroup() {
-        var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(),"service name", true, null, "description");
+        var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(),"service name", true, defaultGroupId, "description");
 
         serviceConfigurationDao.insert(input);
 
@@ -72,7 +79,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
         assertEquals(input.name(), entity.name());
         assertEquals(input.ignoreServiceName(), entity.ignoreServiceName());
         assertNotNull(result.get(0).id());
-        assertNull(result.get(0).groupConfigurationId());
+        assertEquals(defaultGroupId, result.get(0).groupConfigurationId().longValue());
         assertEquals(input.description(), entity.description());
     }
 
@@ -81,7 +88,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
         var service = "this_is_a_service";
         var serviceName = "service name";
         var description = "description of service";
-        var id = testDataHelper.createServiceConfiguration(service, serviceName, true, description);
+        var id = testDataHelper.createServiceConfiguration(service, serviceName, true, defaultGroupId, description);
 
         var result = serviceConfigurationDao.findByService(service);
         assertNotNull(result);
@@ -131,7 +138,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testUpdateByUuidNotFound() {
-        var serviceEntity = new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service", "name", true, null, "description");
+        var serviceEntity = new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service", "name", true, defaultGroupId, "description");
 
         var updated = serviceConfigurationDao.updateByUuid(serviceEntity);
         assertFalse(updated);
@@ -172,7 +179,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
         var groupId = testDataHelper.createGroup("group name", groupUuid);
 
         var serviceOneId = testDataHelper.createServiceConfiguration("service1", "service1 name", true, groupId, serviceOneUuid, "service1 description");
-        var serviceTwoId = testDataHelper.createServiceConfiguration("service2", "service2 name", false, null, serviceTwoUuid, "service2 description");
+        var serviceTwoId = testDataHelper.createServiceConfiguration("service2", "service2 name", false, defaultGroupId, serviceTwoUuid, "service2 description");
 
 
         var result = serviceConfigurationDao.findAllWithGroupId();
@@ -181,7 +188,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
 
         var firstService = result.get(0);
         assertEquals(serviceTwoUuid, firstService.uuid());
-        assertNull(firstService.groupUuid());
+        assertNotNull(firstService.groupUuid());
         assertFalse(firstService.ignoreServiceName());
         assertEquals(serviceTwoId, firstService.id().longValue());
         assertEquals("service2", firstService.service());

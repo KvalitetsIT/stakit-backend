@@ -12,8 +12,7 @@ public class ServiceMapper {
     public static ServiceModel mapEntityToService(ServiceConfigurationEntityWithGroupUuid input) {
         return new ServiceModel(input.name(), input.service(), input.ignoreServiceName(), input.groupUuid(), input.uuid(), input.description());
     }
-
-    public static ServiceConfigurationEntity mapServiceToEntity(UUID uuid, ServiceModel serviceModel, Optional<GroupConfigurationEntity> group) {
-        return ServiceConfigurationEntity.createInstance(serviceModel.serviceIdentifier(), uuid, serviceModel.name(), serviceModel.ignoreServiceName(), group.map(GroupConfigurationEntity::id).orElse(null), serviceModel.description());
+    public static ServiceConfigurationEntity mapServiceToEntity(UUID uuid, ServiceModel serviceModel, long group) {
+        return ServiceConfigurationEntity.createInstance(serviceModel.serviceIdentifier(), uuid, serviceModel.name(), serviceModel.ignoreServiceName(), group, serviceModel.description());
     }
 }

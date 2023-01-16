@@ -1,5 +1,6 @@
 package dk.kvalitetsit.stakit.dao;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,13 +15,24 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Autowired
     private TestDataHelper testDataHelper;
+    private long defaultGroupId;
+
+    @Before
+    public void setup() {
+        defaultGroupId = testDataHelper.findDefaultGroupId();
+    }
 
     @Test
     public void testGetGroupedStatusNothingFound() {
         var result = groupedStatusDao.getGroupedStatus();
         assertNotNull(result);
-        assertTrue(result.isEmpty());
+        assertEquals(1, result.size());
+
+        assertEquals("Default", result.get(0).groupName());
+        assertNull(result.get(0).serviceName());
+        assertNull(result.get(0).status());
     }
+
 
     @Test
     public void testGetGrouped() {
@@ -28,8 +40,7 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
 
         var serviceConfigurationOne = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service One", false, groupOne, "Description One");
         var serviceConfigurationTwo = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Two", false, groupOne, "Description Two");
-
-        var serviceConfigurationThree = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Three", false, "Description Three");
+        var serviceConfigurationThree = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Three", false, defaultGroupId, "Description Three");
 
         testDataHelper.createServiceStatus(serviceConfigurationOne, "NOT_OK", OffsetDateTime.now());
         testDataHelper.createServiceStatus(serviceConfigurationOne, "OK", OffsetDateTime.now());
@@ -42,7 +53,7 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
 
         var groupedStatus = result.get(0);
         assertEquals("Service Three", groupedStatus.serviceName());
-        assertNull(groupedStatus.groupName());
+        assertEquals("Default", groupedStatus.groupName());
         assertEquals("NOT_OK", groupedStatus.status());
         assertEquals("Description Three", groupedStatus.description());
 

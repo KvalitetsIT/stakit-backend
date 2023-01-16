@@ -1,5 +1,6 @@
 package dk.kvalitetsit.stakit.service;
 
+import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
 import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
 import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
@@ -17,11 +18,16 @@ public class StatusUpdateServiceImpl implements StatusUpdateService {
     private final ServiceConfigurationDao serviceConfigurationDao;
     private final ServiceStatusDao serviceStatusDao;
     private final MailQueueService mailQueueService;
+    private final GroupConfigurationDao groupConfigurationDao;
 
-    public StatusUpdateServiceImpl(ServiceConfigurationDao serviceConfigurationDao, ServiceStatusDao serviceStatusDao, MailQueueService mailQueueService) {
+    public StatusUpdateServiceImpl(ServiceConfigurationDao serviceConfigurationDao,
+                                   ServiceStatusDao serviceStatusDao,
+                                   MailQueueService mailQueueService,
+                                   GroupConfigurationDao groupConfigurationDao) {
         this.serviceConfigurationDao = serviceConfigurationDao;
         this.serviceStatusDao = serviceStatusDao;
         this.mailQueueService = mailQueueService;
+        this.groupConfigurationDao = groupConfigurationDao;
     }
 
     @Override
@@ -29,7 +35,8 @@ public class StatusUpdateServiceImpl implements StatusUpdateService {
     public void updateStatus(UpdateServiceModel input) {
         Long statusConfigurationId;
         try {
-            statusConfigurationId = serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), UUID.randomUUID(), input.serviceName(), false, null, null));
+            var groupId = groupConfigurationDao.findDefaultGroupId();
+            statusConfigurationId = serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), UUID.randomUUID(), input.serviceName(), false, groupId, null));
         }
         catch(DuplicateKeyException e) {
             statusConfigurationId = serviceConfigurationDao.findByService(input.service()).id();

@@ -20,9 +20,6 @@ public class StatusGroupServiceImpl implements StatusGroupService {
     @Transactional
     public List<StatusGroupedModel> getStatusGrouped() {
         var statusData = groupedStatusDao.getGroupedStatus();
-        if(statusData.isEmpty()) {
-            return Collections.singletonList(new StatusGroupedModel("Default", Collections.emptyList()));
-        }
 
         return mapStatus(statusData);
     }
@@ -30,9 +27,14 @@ public class StatusGroupServiceImpl implements StatusGroupService {
     private List<StatusGroupedModel> mapStatus(List<GroupedStatus> statusData) {
         var groupMap = new HashMap<String, StatusGroupedModel>();
         statusData.forEach(x -> {
-            var groupName = x.groupName() == null ? "Default" : x.groupName();
-            groupMap.computeIfAbsent(groupName, k -> new StatusGroupedModel(groupName, new ArrayList<>())).status()
-                    .add(new StatusElementModel(Status.valueOf(x.status()), x.serviceName(), x.description()));
+
+            var groupName =  x.groupName();
+            var statusGroupModel = groupMap.computeIfAbsent(groupName, k -> new StatusGroupedModel(groupName, new ArrayList<>()));
+            if(x.status() != null) {
+                statusGroupModel.status()
+                        .add(new StatusElementModel(Status.valueOf(x.status()), x.serviceName(), x.description()));
+
+            }
         });
 
         return new ArrayList<>(groupMap.values());

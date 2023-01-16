@@ -51,6 +51,13 @@ public class GroupManagementController implements GroupManagementApi {
     }
 
     @Override
+    public ResponseEntity<Group> v1GroupsUuidGet(UUID uuid) {
+        var group = groupService.getGroup(uuid);
+
+        return ResponseEntity.ok(group.map(GroupMapper::mapGroup).orElseThrow(() -> new ResourceNotFoundException("Group with uuid %s not found".formatted(uuid))));
+    }
+
+    @Override
     public ResponseEntity<Void> v1GroupsUuidPut(UUID uuid, GroupInput groupUpdate) {
         var updated = groupService.updateGroup(GroupMapper.mapUpdateGroup(uuid, groupUpdate));
 

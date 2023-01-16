@@ -102,6 +102,10 @@ public class ServiceManagementServiceImplTest {
 
     @Test
     public void testCreateServiceNoGroup() {
+        var groupId = 10L;
+
+        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
+
         var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, UUID.randomUUID().toString());
 
         var result = serviceManagementService.createService(serviceCreate);
@@ -111,21 +115,25 @@ public class ServiceManagementServiceImplTest {
             assertEquals(serviceCreate.name(), x.name());
             assertEquals(serviceCreate.serviceIdentifier(), x.service());
             assertEquals(serviceCreate.ignoreServiceName(), x.ignoreServiceName());
-            assertNull(x.groupConfigurationId());
+            assertEquals(groupId, x.groupConfigurationId());
             assertNotNull(x.uuid());
             assertEquals(serviceCreate.description(), x.description());
 
             return true;
         }));
-        Mockito.verifyNoInteractions(groupConfigurationDao);
+
+        Mockito.verify(groupConfigurationDao, times(1)).findDefaultGroupId();
     }
 
     @Test
     public void testUpdateServiceNotFound() {
+        var groupId = 10L;
         var serviceUuid = UUID.randomUUID();
+
         var serviceUpdate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, UUID.randomUUID().toString());
 
         Mockito.when(serviceConfigurationDao.updateByUuid(Mockito.any())).thenReturn(false);
+        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
 
         var result = serviceManagementService.updateService(serviceUuid, serviceUpdate);
         assertFalse(result);
@@ -134,13 +142,14 @@ public class ServiceManagementServiceImplTest {
             assertEquals(serviceUpdate.name(), x.name());
             assertEquals(serviceUpdate.serviceIdentifier(), x.service());
             assertEquals(serviceUpdate.ignoreServiceName(), x.ignoreServiceName());
-            assertNull(x.groupConfigurationId());
+            assertEquals(groupId, x.groupConfigurationId());
             assertEquals(serviceUuid, x.uuid());
             assertEquals(serviceUpdate.description(), x.description());
 
             return true;
         }));
-        Mockito.verifyNoInteractions(groupConfigurationDao);
+        Mockito.verify(groupConfigurationDao, times(1)).findDefaultGroupId();
+
     }
 
     @Test
@@ -186,9 +195,12 @@ public class ServiceManagementServiceImplTest {
     @Test
     public void testUpdateServiceNoGroup() {
         var serviceUuid = UUID.randomUUID();
+
         var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, UUID.randomUUID().toString());
+        var groupId = 10L;
 
         Mockito.when(serviceConfigurationDao.updateByUuid(Mockito.any())).thenReturn(true);
+        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
 
         var result = serviceManagementService.updateService(serviceUuid, serviceCreate);
         assertTrue(result);
@@ -197,13 +209,13 @@ public class ServiceManagementServiceImplTest {
             assertEquals(serviceCreate.name(), x.name());
             assertEquals(serviceCreate.serviceIdentifier(), x.service());
             assertEquals(serviceCreate.ignoreServiceName(), x.ignoreServiceName());
-            assertNull(x.groupConfigurationId());
+            assertEquals(groupId, x.groupConfigurationId());
             assertNotNull(x.uuid());
             assertEquals(serviceCreate.description(), x.description());
 
             return true;
         }));
-        Mockito.verifyNoInteractions(groupConfigurationDao);
+        Mockito.verify(groupConfigurationDao, times(1)).findDefaultGroupId();
     }
 
     @Test

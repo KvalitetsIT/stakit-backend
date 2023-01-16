@@ -21,11 +21,7 @@ public class TestDataHelper {
 
     @Autowired
     private GroupConfigurationDao groupConfigurationDao;
-
-    long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName, String description) {
-        return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, UUID.randomUUID(), serviceName, ignoreServiceName, null, description));
-    }
-
+    
     long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName, long groupConfigurationId, String description) {
         return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, UUID.randomUUID(), serviceName, ignoreServiceName, groupConfigurationId, description));
     }
@@ -39,7 +35,7 @@ public class TestDataHelper {
     }
 
     long createGroup(String groupName, UUID groupUuid) {
-        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupUuid, groupName, 10));
+        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupUuid, groupName, 100));
     }
 
     public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier) {
@@ -48,5 +44,9 @@ public class TestDataHelper {
 
     public void createMailSubscriptionGroup(long mailSubscriptionId, long groupCOnfigurationId) {
         mailSubscriptionGroupDao.insert(MailSubscriptionGroupsEntity.createInstance(mailSubscriptionId, groupCOnfigurationId));
+    }
+
+    public long findDefaultGroupId() {
+        return groupConfigurationDao.findDefaultGroupId();
     }
 }
