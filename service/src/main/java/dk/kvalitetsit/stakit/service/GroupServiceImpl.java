@@ -1,7 +1,9 @@
 package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
+import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
+import dk.kvalitetsit.stakit.service.model.GroupGetModel;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +14,11 @@ import java.util.stream.Collectors;
 
 public class GroupServiceImpl implements GroupService {
     private final GroupConfigurationDao groupConfigurationDao;
+    private final ServiceConfigurationDao serviceConfigurationDao;
 
-    public GroupServiceImpl(GroupConfigurationDao groupConfigurationDao) {
+    public GroupServiceImpl(GroupConfigurationDao groupConfigurationDao, ServiceConfigurationDao serviceConfigurationDao) {
         this.groupConfigurationDao = groupConfigurationDao;
+        this.serviceConfigurationDao = serviceConfigurationDao;
     }
 
     @Override
@@ -35,10 +39,10 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public List<GroupModel> getGroups() {
+    public List<GroupGetModel> getGroups() {
         var dbResult = groupConfigurationDao.findAll();
 
-        return dbResult.stream().map(x -> new GroupModel(x.uuid(), x.name(), x.displayOrder())).collect(Collectors.toList());
+        return dbResult.stream().map(x -> new GroupGetModel(x.uuid(), x.name(), x.displayOrder(), serviceConfigurationDao.findByGroupUuid(x.uuid()))).collect(Collectors.toList());
     }
 
     @Override
@@ -48,9 +52,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Optional<GroupModel> getGroup(UUID uuid) {
+    public Optional<GroupGetModel> getGroup(UUID uuid) {
         var dbResult = groupConfigurationDao.findByUuid(uuid);
+        var services = serviceConfigurationDao.findByGroupUuid(uuid);
 
-        return dbResult.map(x -> new GroupModel(x.uuid(), x.name(), x.displayOrder()));
+        return dbResult.map(x -> new GroupGetModel(x.uuid(), x.name(), x.displayOrder(), services));
     }
 }

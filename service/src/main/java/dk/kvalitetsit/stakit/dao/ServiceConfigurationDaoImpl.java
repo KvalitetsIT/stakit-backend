@@ -140,4 +140,11 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
 
         return template.update(sql, Collections.singletonMap("uuid", uuid.toString())) > 0;
     }
+
+    @Override
+    public List<UUID> findByGroupUuid(UUID uuid) {
+        var sql = "select sc.uuid from service_configuration sc, group_configuration gc where gc.id = sc.group_configuration_id and gc.uuid = :uuid";
+
+        return template.queryForList(sql, Collections.singletonMap("uuid", uuid.toString()), UUID.class);
+    }
 }

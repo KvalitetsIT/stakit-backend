@@ -220,5 +220,23 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
         assertNotNull(result);
         assertNull(result.get(0).description());
     }
+
+    @Test
+    public void testQueryForServiceByGroupUUID() {
+        var groupUuid = UUID.randomUUID();
+        var groupId = testDataHelper.createGroup("some group", groupUuid);
+
+        var s1Uuid = UUID.randomUUID();
+        var s2Uuid = UUID.randomUUID();
+
+        var s1 = testDataHelper.createServiceConfiguration("s1", "n1", true, groupId, s1Uuid,null);
+        var s2 = testDataHelper.createServiceConfiguration("s2", "n2", true, groupId, s2Uuid,null);
+
+        var result = serviceConfigurationDao.findByGroupUuid(groupUuid);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertTrue(result.contains(s1Uuid));
+        assertTrue(result.contains(s2Uuid));
+    }
 }
 
