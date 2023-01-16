@@ -28,7 +28,7 @@ public class StatusGroupServiceImplTest {
 
     @Test
     public void testGetNoServices() {
-        var daoResult = new GroupedStatus("Default", null, null);
+        var daoResult = new GroupedStatus("Default", null, null, null);
         Mockito.when(groupStatusDao.getGroupedStatus()).thenReturn(Collections.singletonList(daoResult));
 
         var result = statusGroupServiceImpl.getStatusGrouped();

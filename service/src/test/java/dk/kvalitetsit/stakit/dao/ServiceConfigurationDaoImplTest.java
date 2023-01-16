@@ -213,7 +213,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testDescriptionMayBeNull() {
-        var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(),"service name", true, null, null);
+        var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(),"service name", true, defaultGroupId, null);
         serviceConfigurationDao.insert(input);
 
         var result = serviceConfigurationDao.findAll();
