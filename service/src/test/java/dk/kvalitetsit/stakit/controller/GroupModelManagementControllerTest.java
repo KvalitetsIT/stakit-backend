@@ -2,6 +2,7 @@ package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.GroupService;
+import dk.kvalitetsit.stakit.service.model.GroupGetModel;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,9 +10,7 @@ import org.mockito.Mockito;
 import org.openapitools.model.GroupInput;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,8 +30,8 @@ public class GroupModelManagementControllerTest {
 
     @Test
     public void testGetGroups() {
-        var groupOne = new GroupModel(UUID.randomUUID(), "Name 1", 20);
-        var groupTwo = new GroupModel(UUID.randomUUID(), "Name 2", 30);
+        var groupOne = new GroupGetModel(UUID.randomUUID(), "Name 1", 20, new ArrayList<UUID>());
+        var groupTwo = new GroupGetModel(UUID.randomUUID(), "Name 2", 30, new ArrayList<UUID>());
 
         Mockito.when(groupService.getGroups()).thenReturn(Arrays.asList(groupOne, groupTwo));
 
@@ -47,10 +46,12 @@ public class GroupModelManagementControllerTest {
         assertEquals(groupOne.uuid(), body.get(0).getId());
         assertEquals(groupOne.name(), body.get(0).getName());
         assertEquals(groupOne.displayOrder(), body.get(0).getDisplayOrder());
+        assertEquals(groupOne.services(), groupOne.services());
 
         assertEquals(groupTwo.uuid(), body.get(1).getId());
         assertEquals(groupTwo.name(), body.get(1).getName());
         assertEquals(groupTwo.displayOrder(), body.get(1).getDisplayOrder());
+        assertEquals(groupTwo.services(), groupTwo.services());
     }
 
     @Test
@@ -134,8 +135,9 @@ public class GroupModelManagementControllerTest {
     @Test
     public void testGetGroup() {
         var uuid = UUID.randomUUID();
+        var serviceUuid = UUID.randomUUID();
 
-        Mockito.when(groupService.getGroup(uuid)).thenReturn(Optional.of(new GroupModel(uuid, "name", 10)));
+        Mockito.when(groupService.getGroup(uuid)).thenReturn(Optional.of(new GroupGetModel(uuid, "name", 10, Collections.singletonList(serviceUuid))));
 
         var result = groupManagementController.v1GroupsUuidGet(uuid);
         assertNotNull(result);
@@ -144,6 +146,8 @@ public class GroupModelManagementControllerTest {
         assertEquals(uuid, result.getBody().getId());
         assertEquals("name", result.getBody().getName());
         assertEquals(10, result.getBody().getDisplayOrder());
+        assertEquals(1, result.getBody().getServices().size());
+        assertEquals(serviceUuid, result.getBody().getServices().get(0));
     }
 
     @Test

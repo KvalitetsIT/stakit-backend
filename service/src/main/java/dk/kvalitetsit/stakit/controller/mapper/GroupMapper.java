@@ -1,5 +1,6 @@
 package dk.kvalitetsit.stakit.controller.mapper;
 
+import dk.kvalitetsit.stakit.service.model.GroupGetModel;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
 import org.openapitools.model.Group;
 import org.openapitools.model.GroupInput;
@@ -17,14 +18,15 @@ public class GroupMapper {
         return new GroupModel(uuid, from.getName(), from.getDisplayOrder());
     }
 
-    public static List<org.openapitools.model.Group> mapGetGroups(List<GroupModel> from) {
+    public static List<org.openapitools.model.Group> mapGetGroups(List<GroupGetModel> from) {
         return from.stream().map(GroupMapper::mapGroup).collect(Collectors.toList());
     }
 
-    public static Group mapGroup(GroupModel groupModel) {
+    public static Group mapGroup(GroupGetModel groupModel) {
         return new Group()
                 .displayOrder(groupModel.displayOrder())
                 .id(groupModel.uuid())
-                .name(groupModel.name());
+                .name(groupModel.name())
+                .services(groupModel.services());
     }
 }

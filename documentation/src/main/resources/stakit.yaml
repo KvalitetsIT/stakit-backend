@@ -523,6 +523,12 @@ components:
           type: integer
           maximum: 100
           minimum: 0
+        services:
+          description: Services in the group identified by UUID.
+          type: array
+          items:
+            type: string
+            format: uuid
 
     group-input:
       type: object

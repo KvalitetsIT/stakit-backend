@@ -74,8 +74,8 @@ public class StakitConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public GroupService groupService(GroupConfigurationDao groupConfigurationDao) {
-        return new GroupServiceImpl(groupConfigurationDao);
+    public GroupService groupService(GroupConfigurationDao groupConfigurationDao, ServiceConfigurationDao serviceConfigurationDao) {
+        return new GroupServiceImpl(groupConfigurationDao, serviceConfigurationDao);
     }
 
     @Bean

@@ -1,15 +1,15 @@
 package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
+import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
+import dk.kvalitetsit.stakit.dao.ServiceConfigurationDaoImpl;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
@@ -17,11 +17,13 @@ import static org.mockito.Mockito.times;
 public class GroupModelServiceImplTest {
     private GroupConfigurationDao groupDao;
     private GroupService groupService;
+    private ServiceConfigurationDao serviceConfigurationDao;
 
     @Before
     public void setup() {
         groupDao = Mockito.mock(GroupConfigurationDao.class);
-        groupService = new GroupServiceImpl(groupDao);
+        serviceConfigurationDao = Mockito.mock(ServiceConfigurationDao.class);
+        groupService = new GroupServiceImpl(groupDao, serviceConfigurationDao);
     }
 
     @Test
@@ -29,7 +31,12 @@ public class GroupModelServiceImplTest {
         var groupOne = new GroupConfigurationEntity(1L, UUID.randomUUID(), "name 1", 10);
         var groupTwo = new GroupConfigurationEntity(1L, UUID.randomUUID(), "name 2", 20);
 
+        var groupOneServices = new ArrayList<UUID>();
+        var groupTwoServices = new ArrayList<UUID>();
+
         Mockito.when(groupDao.findAll()).thenReturn(Arrays.asList(groupOne, groupTwo));
+        Mockito.when(serviceConfigurationDao.findByGroupUuid(groupOne.uuid())).thenReturn(groupOneServices);
+        Mockito.when(serviceConfigurationDao.findByGroupUuid(groupTwo.uuid())).thenReturn(groupTwoServices);
 
         var result = groupService.getGroups();
         assertNotNull(result);
@@ -39,10 +46,12 @@ public class GroupModelServiceImplTest {
         assertEquals(groupOne.uuid(), result.get(0).uuid());
         assertEquals(groupOne.name(), result.get(0).name());
         assertEquals(groupOne.displayOrder(), result.get(0).displayOrder());
+        assertEquals(groupOneServices, result.get(0).services());
 
         assertEquals(groupTwo.uuid(), result.get(1).uuid());
         assertEquals(groupTwo.name(), result.get(1).name());
         assertEquals(groupTwo.displayOrder(), result.get(1).displayOrder());
+        assertEquals(groupTwoServices, result.get(1).services());
     }
 
     @Test
@@ -111,8 +120,11 @@ public class GroupModelServiceImplTest {
     public void testFindGroup() {
         var input = UUID.randomUUID();
 
+        var services = new ArrayList<UUID>();
+
         var groupConfigurationEntity = new GroupConfigurationEntity(10L, input, "name", 10);
         Mockito.when(groupDao.findByUuid(input)).thenReturn(Optional.of(groupConfigurationEntity));
+        Mockito.when(serviceConfigurationDao.findByGroupUuid(input)).thenReturn(services);
 
         var result = groupService.getGroup(input);
         assertNotNull(result);
@@ -121,6 +133,7 @@ public class GroupModelServiceImplTest {
         assertEquals(groupConfigurationEntity.uuid(), result.get().uuid());
         assertEquals(groupConfigurationEntity.name(), result.get().name());
         assertEquals(groupConfigurationEntity.displayOrder(), result.get().displayOrder());
+        assertEquals(services, result.get().services());
 
         Mockito.verify(groupDao, times(1)).findByUuid(input);
     }
