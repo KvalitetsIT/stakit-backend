@@ -4,6 +4,7 @@ import dk.kvalitetsit.stakit.service.model.GroupGetModel;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
 import org.openapitools.model.Group;
 import org.openapitools.model.GroupInput;
+import org.openapitools.model.GroupPatch;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,5 +29,9 @@ public class GroupMapper {
                 .id(groupModel.uuid())
                 .name(groupModel.name())
                 .services(groupModel.services());
+    }
+
+    public static List<UUID> mapPatchGroup(GroupPatch patch){
+        return patch.getServices();
     }
 }

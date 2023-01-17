@@ -4,7 +4,10 @@ import org.junit.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.GroupManagementApi;
+import org.openapitools.client.api.ServiceManagementApi;
 import org.openapitools.client.model.GroupInput;
+import org.openapitools.client.model.GroupPatch;
+import org.openapitools.client.model.ServiceCreate;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -15,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GroupModelIT extends AbstractIntegrationTest {
     private final GroupManagementApi groupManagementApi;
+    private final ServiceManagementApi serviceManagementApi;
 
     public GroupModelIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
@@ -22,6 +26,7 @@ public class GroupModelIT extends AbstractIntegrationTest {
         apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());
 
         groupManagementApi = new GroupManagementApi(apiClient);
+        serviceManagementApi = new ServiceManagementApi(apiClient);
     }
 
     @Test
@@ -82,5 +87,56 @@ public class GroupModelIT extends AbstractIntegrationTest {
 
         assertTrue(groups.size() > 0);
         assertTrue(groups.stream().anyMatch(x -> x.getName().equals("Default")));
+    }
+
+    @Test
+    public void testPatchGroup() throws ApiException {
+        var group = new GroupInput();
+        group.setName("patchName");
+        group.setDisplayOrder(10);
+        var groupPatch = groupManagementApi.v1GroupsPost(group);
+
+        var groupUuid = groupPatch.getUuid();
+
+        var input1 = new ServiceCreate();
+        input1.setServiceIdentifier("patch service1");
+        input1.setName("patch name1");
+        input1.setIgnoreServiceName(true);
+        input1.setGroup(groupUuid);
+        input1.setDescription("patch description1");
+        var service1 = serviceManagementApi.v1ServicesPost(input1);
+
+        var input2 = new ServiceCreate();
+        input2.setServiceIdentifier("patch service2");
+        input2.setName("patch name2");
+        input2.setIgnoreServiceName(true);
+        input2.setGroup(groupUuid);
+        input2.setDescription("patch description2");
+        var service2 = serviceManagementApi.v1ServicesPost(input2);
+
+        var input3 = new ServiceCreate();
+        input3.setServiceIdentifier("patch service3");
+        input3.setName("patch name3");
+        input3.setIgnoreServiceName(true);
+        input3.setGroup(null);
+        input3.setDescription("patch description3");
+        var service3 = serviceManagementApi.v1ServicesPost(input3);
+
+        var patch = new GroupPatch();
+
+        patch.addServicesItem(service2.getUuid());
+        patch.addServicesItem(service3.getUuid());
+
+        assertNotNull(groupPatch);
+
+        var response = groupManagementApi.v1GroupsUuidPatchWithHttpInfo(groupUuid, patch);
+        assertEquals(204, response.getStatusCode());
+
+        var patchedGroup = groupManagementApi.v1GroupsUuidGet(groupUuid);
+        var services = patchedGroup.getServices();
+        assertEquals(2, services.size());
+        assertFalse(services.stream().anyMatch(x ->  x.equals(service1.getUuid())));
+        assertTrue(services.stream().anyMatch(x -> x.equals(service2.getUuid())));
+        assertTrue(services.stream().anyMatch(x -> x.equals(service3.getUuid())));
     }
 }

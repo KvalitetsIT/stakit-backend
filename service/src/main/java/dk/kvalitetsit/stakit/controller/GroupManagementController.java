@@ -7,6 +7,8 @@ import org.openapitools.api.GroupManagementApi;
 import org.openapitools.model.CreateResponse;
 import org.openapitools.model.Group;
 import org.openapitools.model.GroupInput;
+
+import org.openapitools.model.GroupPatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -55,6 +57,17 @@ public class GroupManagementController implements GroupManagementApi {
         var group = groupService.getGroup(uuid);
 
         return ResponseEntity.ok(group.map(GroupMapper::mapGroup).orElseThrow(() -> new ResourceNotFoundException("Group with uuid %s not found".formatted(uuid))));
+    }
+
+    @Override
+    public ResponseEntity<Void> v1GroupsUuidPatch(UUID uuid, GroupPatch groupPatch) {
+        var patched = groupService.patchGroup(uuid, GroupMapper.mapPatchGroup(groupPatch));
+
+        if(!patched) {
+            throw new ResourceNotFoundException("Group with uuid %s not found".formatted(uuid));
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override

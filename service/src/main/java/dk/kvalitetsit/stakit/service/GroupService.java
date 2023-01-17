@@ -17,4 +17,6 @@ public interface GroupService {
     boolean deleteGroup(UUID uuid);
 
     Optional<GroupGetModel> getGroup(UUID uuid);
+
+    boolean patchGroup(UUID groupUuid, List<UUID> serviceList);
 }
