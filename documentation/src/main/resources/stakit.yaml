@@ -118,6 +118,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/group'
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
     patch:
       tags:
         - group-management
