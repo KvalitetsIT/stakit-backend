@@ -1,13 +1,16 @@
 package dk.kvalitetsit.stakit.controller;
 
+import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
 import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.GroupService;
+import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.model.GroupGetModel;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.GroupInput;
+import org.openapitools.model.GroupPatch;
 import org.springframework.http.HttpStatus;
 
 import java.util.*;
@@ -160,6 +163,66 @@ public class GroupModelManagementControllerTest {
         assertNotNull(expectedException);
 
         Mockito.verify(groupService, times(1)).getGroup(uuid);
+    }
+
+    @Test
+    public void testPatchGroup(){
+        var uuidGroup = UUID.randomUUID();
+        var uuidService1 = UUID.randomUUID();
+        var uuidService2 = UUID.randomUUID();
+
+        var input = new GroupPatch();
+        input.addServicesItem(uuidService1);
+        input.addServicesItem(uuidService2);
+
+        Mockito.when(groupService.patchGroup(uuidGroup, input.getServices())).thenReturn(true);
+
+        var result = groupManagementController.v1GroupsUuidPatch(uuidGroup, input);
+        assertNotNull(result);
+        assertEquals(204, result.getStatusCodeValue());
+
+        Mockito.verify(groupService, times(1)).patchGroup(uuidGroup, input.getServices());
+    }
+
+    @Test
+    public void testPatchGroupNotFound() {
+        var uuidGroup = UUID.randomUUID();
+        var uuidService1 = UUID.randomUUID();
+        var uuidService2 = UUID.randomUUID();
+
+        var input = new GroupPatch();
+        input.addServicesItem(uuidService1);
+        input.addServicesItem(uuidService2);
+
+        Mockito.when(groupService.patchGroup(uuidGroup, input.getServices())).thenReturn(false);
+
+        var expectedException = assertThrows(ResourceNotFoundException.class, () -> groupManagementController.v1GroupsUuidPatch(uuidGroup, input));
+        assertNotNull(expectedException);
+        assertEquals("Group with uuid %s not found".formatted(uuidGroup), expectedException.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());
+
+        Mockito.verify(groupService, times(1)).patchGroup(uuidGroup, input.getServices());
+    }
+
+    @Test
+    public void testPatchGroupServiceNotFound() {
+        var uuidGroup = UUID.randomUUID();
+        var uuidService1 = UUID.randomUUID();
+        var uuidService2 = UUID.randomUUID();
+
+        var input = new GroupPatch();
+        input.addServicesItem(uuidService1);
+        input.addServicesItem(uuidService2);
+
+
+        Mockito.when(groupService.patchGroup(uuidGroup, input.getServices())).thenThrow(new InvalidDataException("message"));
+
+        var result = assertThrows(BadRequestException.class, () -> groupManagementController.v1GroupsUuidPatch(uuidGroup, input));
+        assertNotNull(result);
+        assertEquals("message", result.getMessage());
+        assertEquals(HttpStatus.BAD_REQUEST, result.getHttpStatus());
+
+        Mockito.verify(groupService, times(1)).patchGroup(uuidGroup, input.getServices());
     }
 
 }
