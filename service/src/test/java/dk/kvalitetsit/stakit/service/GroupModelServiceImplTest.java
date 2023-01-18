@@ -5,6 +5,7 @@ import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntityWithGroupUuid;
+import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -207,6 +208,26 @@ public class GroupModelServiceImplTest {
 
         Mockito.verify(groupDao, times(1)).findByUuid(inputUuid);
 
+    }
 
+    @Test
+    public void testPatchGroupServiceNotFound() {
+        var uuidGroup = UUID.randomUUID();
+
+        var group = new GroupConfigurationEntity(10L, uuidGroup, "some name", 10);
+
+        var uuidService = UUID.randomUUID();
+
+        List<UUID> serviceList = new ArrayList<>();
+        serviceList.add(uuidService);
+
+        Mockito.when(groupDao.findByUuid(uuidGroup)).thenReturn(Optional.of(group));
+
+        var expectedException = assertThrows(InvalidDataException.class, () -> groupService.patchGroup(uuidGroup, serviceList));
+        assertEquals("Service not found: %s".formatted(uuidService), expectedException.getMessage());
+
+        Mockito.verify(groupDao, times(1)).findByUuid(uuidGroup);
+        Mockito.verify(serviceConfigurationDao, times(0)).findByGroupUuid(uuidService);
+        Mockito.verify(serviceConfigurationDao, times(0)).updateByUuid(any());
     }
 }

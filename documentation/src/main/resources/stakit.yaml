@@ -140,8 +140,8 @@ paths:
           description: The group have been patched with success.
         '404':
           $ref: '#/components/responses/404'
-        '401':
-          $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
     put:
       tags:
         - group-management
@@ -552,8 +552,6 @@ components:
 
     group-patch:
       type: object
-      required:
-        - uuid
       properties:
         services:
           description: The complete list of services (uuid) in group.

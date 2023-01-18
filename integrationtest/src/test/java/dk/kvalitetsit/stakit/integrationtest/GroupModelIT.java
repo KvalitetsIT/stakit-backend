@@ -127,13 +127,12 @@ public class GroupModelIT extends AbstractIntegrationTest {
         patch.addServicesItem(service2.getUuid());
         patch.addServicesItem(service3.getUuid());
 
-        assertNotNull(groupPatch);
-
         var response = groupManagementApi.v1GroupsUuidPatchWithHttpInfo(groupUuid, patch);
         assertEquals(204, response.getStatusCode());
 
         var patchedGroup = groupManagementApi.v1GroupsUuidGet(groupUuid);
         var services = patchedGroup.getServices();
+        assertNotNull(services);
         assertEquals(2, services.size());
         assertFalse(services.stream().anyMatch(x ->  x.equals(service1.getUuid())));
         assertTrue(services.stream().anyMatch(x -> x.equals(service2.getUuid())));

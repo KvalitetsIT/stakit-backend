@@ -1,8 +1,10 @@
 package dk.kvalitetsit.stakit.controller;
 
+import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
 import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.controller.mapper.GroupMapper;
 import dk.kvalitetsit.stakit.service.GroupService;
+import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import org.openapitools.api.GroupManagementApi;
 import org.openapitools.model.CreateResponse;
 import org.openapitools.model.Group;
@@ -61,13 +63,21 @@ public class GroupManagementController implements GroupManagementApi {
 
     @Override
     public ResponseEntity<Void> v1GroupsUuidPatch(UUID uuid, GroupPatch groupPatch) {
-        var patched = groupService.patchGroup(uuid, GroupMapper.mapPatchGroup(groupPatch));
+        logger.debug("Patching group");
 
-        if(!patched) {
-            throw new ResourceNotFoundException("Group with uuid %s not found".formatted(uuid));
+        try {
+            var patched = groupService.patchGroup(uuid, GroupMapper.mapPatchGroup(groupPatch));
+
+            if(!patched) {
+                throw new ResourceNotFoundException("Group with uuid %s not found".formatted(uuid));
+            }
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (InvalidDataException e){
+            logger.info("Invalid data. Returning error.", e);
+
+            throw new BadRequestException(e.getMessage());
         }
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override
