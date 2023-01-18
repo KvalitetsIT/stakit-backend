@@ -140,6 +140,8 @@ paths:
           description: The group have been patched with success.
         '404':
           $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
         '400':
           $ref: '#/components/responses/400'
     put:
