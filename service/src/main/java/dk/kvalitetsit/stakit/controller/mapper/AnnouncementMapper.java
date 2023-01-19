@@ -28,6 +28,7 @@ public class AnnouncementMapper {
 
     public static List<AnnouncementsToShow> mapAnnouncementsToShow(List<AnnouncementModel> announcementModels) {
         return announcementModels.stream().map(x -> new AnnouncementsToShow()
+                .uuid(x.uuid())
                 .fromDatetime(x.fromDatetime())
                 .toDatetime(x.toDatetime())
                 .message(x.message())

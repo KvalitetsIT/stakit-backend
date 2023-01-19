@@ -125,7 +125,7 @@ public class AnnouncementModelServiceImplTest {
         assertEquals(announcementEntity.uuid(), result.get().uuid());
         assertEquals(announcementEntity.fromDatetime(), result.get().fromDatetime());
         assertEquals(announcementEntity.toDatetime(), result.get().toDatetime());
-        assertEquals(announcementEntity.uuid(), result.get().uuid());
+        assertEquals(announcementEntity.subject(), result.get().subject());
         assertEquals(announcementEntity.message(), result.get().message());
 
         Mockito.verify(announcementDao, times(1)).getByUuid(Mockito.eq(input));
@@ -159,10 +159,12 @@ public class AnnouncementModelServiceImplTest {
         assertEquals(announcementOne.subject(), result.get(0).subject());
         assertEquals(announcementOne.toDatetime(), result.get(0).toDatetime());
         assertEquals(announcementOne.fromDatetime(), result.get(0).fromDatetime());
+        assertEquals(announcementOne.uuid(), result.get(0).uuid());
 
         assertEquals(announcementTwo.message(), result.get(1).message());
         assertEquals(announcementTwo.subject(), result.get(1).subject());
         assertEquals(announcementTwo.toDatetime(), result.get(1).toDatetime());
         assertEquals(announcementTwo.fromDatetime(), result.get(1).fromDatetime());
+        assertEquals(announcementTwo.uuid(), result.get(1).uuid());
     }
 }
