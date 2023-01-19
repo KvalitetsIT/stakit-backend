@@ -93,6 +93,7 @@ public class StakitController implements StaKitApi {
         var statusGroup = new StatusGroup();
         statusGroup.setName(statusGroupedModel.groupName());
         statusGroup.setServices(new ArrayList<>());
+        statusGroup.setDescription(statusGroupedModel.description());
 
         statusGroupedModel.status().forEach(x -> {
             var s = new org.openapitools.model.ServiceStatus();

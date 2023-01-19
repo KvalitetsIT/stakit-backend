@@ -55,7 +55,7 @@ public class MailQueueServiceImplTest {
         var subscriptionOne = new MailSubscriptionEntity(1L, UUID.randomUUID(), "mailOne", true, true, UUID.randomUUID());
         var subscriptionTwo = new MailSubscriptionEntity(2L, UUID.randomUUID(), "mailTwo", true, true, UUID.randomUUID());
 
-        var groupConfiguration = new GroupConfigurationEntity(10L, UUID.randomUUID(), "group name", 10);
+        var groupConfiguration = new GroupConfigurationEntity(10L, UUID.randomUUID(), "group name", 10, "description");
         var serviceConfiguration = new ServiceConfigurationEntity(1L, UUID.randomUUID(), "service", "name", false, groupConfiguration.id(), "description");
         var serviceStatus = new ServiceStatusEntity(20L, serviceConfiguration.id(), "OK", OffsetDateTime.now(), null);
 

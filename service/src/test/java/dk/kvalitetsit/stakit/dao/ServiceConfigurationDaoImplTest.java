@@ -44,7 +44,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testInsertWithGroupAndDelete() {
-        var groupId = testDataHelper.createGroup("group-name", UUID.randomUUID());
+        var groupId = testDataHelper.createGroup("group-name", UUID.randomUUID(), "group description");
         var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(), "service name", true, groupId, "description");
 
         var id = serviceConfigurationDao.insert(input);
@@ -119,7 +119,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
     public void testFindByUuidWithGroupUuid() {
         var serviceUuid = UUID.randomUUID();
         var groupUuid = UUID.randomUUID();
-        var groupId = testDataHelper.createGroup("group name", groupUuid);
+        var groupId = testDataHelper.createGroup("group name", groupUuid, "group description");
 
         var serviceId = testDataHelper.createServiceConfiguration("service", "service name", true, groupId, serviceUuid, "description");
 
@@ -148,7 +148,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
     public void testUpdateByUuid() {
         var serviceUuid = UUID.randomUUID();
         var groupUuid = UUID.randomUUID();
-        var groupId = testDataHelper.createGroup("group name", groupUuid);
+        var groupId = testDataHelper.createGroup("group name", groupUuid, "group description");
 
         var serviceId = testDataHelper.createServiceConfiguration("service", "service name", true, groupId, serviceUuid, "description");
 
@@ -176,7 +176,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
         var serviceOneUuid = UUID.randomUUID();
         var serviceTwoUuid = UUID.randomUUID();
         var groupUuid = UUID.randomUUID();
-        var groupId = testDataHelper.createGroup("group name", groupUuid);
+        var groupId = testDataHelper.createGroup("group name", groupUuid, "group description");
 
         var serviceOneId = testDataHelper.createServiceConfiguration("service1", "service1 name", true, groupId, serviceOneUuid, "service1 description");
         var serviceTwoId = testDataHelper.createServiceConfiguration("service2", "service2 name", false, defaultGroupId, serviceTwoUuid, "service2 description");
@@ -216,15 +216,15 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
         var input = ServiceConfigurationEntity.createInstance("Service", UUID.randomUUID(),"service name", true, defaultGroupId, null);
         serviceConfigurationDao.insert(input);
 
-        var result = serviceConfigurationDao.findAll();
+        var result = serviceConfigurationDao.findByUuidWithGroupUuid(input.uuid());
         assertNotNull(result);
-        assertNull(result.get(0).description());
+        assertNull(result.get().description());
     }
 
     @Test
     public void testQueryForServiceByGroupUUID() {
         var groupUuid = UUID.randomUUID();
-        var groupId = testDataHelper.createGroup("some group", groupUuid);
+        var groupId = testDataHelper.createGroup("some group", groupUuid, "some description");
 
         var s1Uuid = UUID.randomUUID();
         var s2Uuid = UUID.randomUUID();
