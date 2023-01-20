@@ -6,6 +6,7 @@ import dk.kvalitetsit.stakit.service.GroupService;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.model.GroupGetModel;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
+import dk.kvalitetsit.stakit.service.model.ServiceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -229,6 +230,61 @@ public class GroupModelManagementControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, result.getHttpStatus());
 
         Mockito.verify(groupService, times(1)).patchGroup(uuidGroup, input.getServices());
+    }
+
+    @Test
+    public void testGetServicesInGroup() {
+        var input = UUID.randomUUID();
+        var serviceModelList = new ArrayList<ServiceModel>();
+
+        Mockito.when(groupService.getServicesInGroup(input)).thenReturn(Optional.of(serviceModelList));
+
+        var resultNoServices = groupManagementController.v1GroupsUuidServicesGet(input);
+        assertNotNull(resultNoServices);
+
+        var service = new ServiceModel("serviceName", "serviceIdentifier", true, input, UUID.randomUUID(), "serviceDescription");
+        serviceModelList.add(service);
+
+        Mockito.when(groupService.getServicesInGroup(input)).thenReturn(Optional.of(serviceModelList));
+
+        var result = groupManagementController.v1GroupsUuidServicesGet(input);
+        assertNotNull(result);
+        assertEquals(200, result.getStatusCodeValue());
+        assertEquals(1, result.getBody().size());
+
+        assertEquals(service.name(), result.getBody().get(0).getName());
+        assertEquals(service.serviceIdentifier(), result.getBody().get(0).getServiceIdentifier());
+        assertEquals(service.ignoreServiceName(), result.getBody().get(0).getIgnoreServiceName());
+        assertEquals(service.group(), result.getBody().get(0).getGroup());
+        assertEquals(service.uuid(), result.getBody().get(0).getUuid());
+        assertEquals(service.description(), result.getBody().get(0).getDescription());
+
+    }
+
+    @Test
+    public void testGetServicesInGroupNoServicesInGroup() {
+        var input = UUID.randomUUID();
+        var serviceModelList = new ArrayList<ServiceModel>();
+
+        Mockito.when(groupService.getServicesInGroup(input)).thenReturn(Optional.of(serviceModelList));
+
+        var result = groupManagementController.v1GroupsUuidServicesGet(input);
+        assertNotNull(result);
+        assertEquals(200, result.getStatusCodeValue());
+        assertEquals(0, result.getBody().size());
+    }
+
+    @Test
+    public void testGetServicesInGroupNotFound() {
+        var input = UUID.randomUUID();
+
+        Mockito.when(groupService.getServicesInGroup(input)).thenReturn(Optional.empty());
+
+        var expectedException = assertThrows(ResourceNotFoundException.class, () -> groupManagementController.v1GroupsUuidServicesGet(input));
+        assertNotNull(expectedException);
+        assertEquals("Group with uuid %s not found".formatted(input), expectedException.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());
+
     }
 
 }

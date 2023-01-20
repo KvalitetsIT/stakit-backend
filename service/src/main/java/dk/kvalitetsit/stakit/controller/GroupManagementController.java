@@ -3,14 +3,12 @@ package dk.kvalitetsit.stakit.controller;
 import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
 import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.controller.mapper.GroupMapper;
+import dk.kvalitetsit.stakit.controller.mapper.ServiceManagementMapper;
 import dk.kvalitetsit.stakit.service.GroupService;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import org.openapitools.api.GroupManagementApi;
-import org.openapitools.model.CreateResponse;
-import org.openapitools.model.Group;
-import org.openapitools.model.GroupInput;
+import org.openapitools.model.*;
 
-import org.openapitools.model.GroupPatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -89,5 +87,16 @@ public class GroupManagementController implements GroupManagementApi {
         }
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @Override
+    public ResponseEntity<List<Services>> v1GroupsUuidServicesGet(UUID uuid) {
+        var services = groupService.getServicesInGroup(uuid);
+
+        if (services.isEmpty()) {
+            throw new ResourceNotFoundException("Group with uuid %s not found".formatted(uuid));
+        }
+
+        return ResponseEntity.ok(ServiceManagementMapper.mapServices(services.get()));
     }
 }

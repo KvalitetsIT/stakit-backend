@@ -24,5 +24,5 @@ public interface ServiceConfigurationDao {
 
     boolean delete(UUID input);
 
-    List<UUID> findByGroupUuid(UUID uuid);
+    List<ServiceConfigurationEntityWithGroupUuid> findByGroupUuid(UUID uuid);
 }
