@@ -102,7 +102,7 @@ public class StaKitIT extends AbstractIntegrationTest {
                 .message("message");
 
         announcementApi.v1AnnouncementsPost(announcementOne);
-        announcementApi.v1AnnouncementsPost(announcementTwo);
+        var announcement = announcementApi.v1AnnouncementsPost(announcementTwo);
 
         var result = staKitApi.v1AnnouncementsToShowGet();
         assertNotNull(result);
@@ -112,5 +112,6 @@ public class StaKitIT extends AbstractIntegrationTest {
         assertEquals(announcementTwo.getToDatetime().toInstant(), result.get(0).getToDatetime().toInstant());
         assertEquals(announcementTwo.getSubject(), result.get(0).getSubject());
         assertEquals(announcementTwo.getMessage(), result.get(0).getMessage());
+        assertEquals(announcement.getUuid(), result.get(0).getUuid());
     }
 }

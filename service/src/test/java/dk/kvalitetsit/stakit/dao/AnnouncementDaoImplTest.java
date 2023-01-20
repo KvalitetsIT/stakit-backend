@@ -33,6 +33,7 @@ public class AnnouncementDaoImplTest extends AbstractDaoTest {
         assertEquals(input.toDatetime(), result.get().toDatetime());
         assertEquals(input.subject(), result.get().subject());
         assertEquals(input.message(), result.get().message());
+        assertEquals(input.uuid(), result.get().uuid());
     }
 
     @Test
@@ -55,6 +56,7 @@ public class AnnouncementDaoImplTest extends AbstractDaoTest {
         assertEquals(updateInput.toDatetime(), result.get().toDatetime());
         assertEquals(updateInput.subject(), result.get().subject());
         assertEquals(updateInput.message(), result.get().message());
+        assertEquals(updateInput.uuid(), result.get().uuid());
     }
 
     @Test

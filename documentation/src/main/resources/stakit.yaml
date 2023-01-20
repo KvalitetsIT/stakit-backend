@@ -600,6 +600,7 @@ components:
         - subject
         - message
         - from_datetime
+        - uuid
       properties:
         subject:
           description: Announcement subject/title
@@ -616,6 +617,10 @@ components:
           description: When the announcement is valid to.
           type: string
           format: date-time
+        uuid:
+          description: Announcement UUID.
+          type: string
+          format: uuid
 
     service-status:
       type: object

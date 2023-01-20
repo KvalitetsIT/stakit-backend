@@ -105,11 +105,13 @@ public class StakitControllerTest {
         assertEquals(announcementOne.subject(), body.get(0).getSubject());
         assertEquals(announcementOne.toDatetime(), body.get(0).getToDatetime());
         assertEquals(announcementOne.fromDatetime(), body.get(0).getFromDatetime());
+        assertEquals(announcementOne.uuid(), body.get(0).getUuid());
 
         assertEquals(announcementTwo.message(), body.get(1).getMessage());
         assertEquals(announcementTwo.subject(), body.get(1).getSubject());
         assertEquals(announcementTwo.toDatetime(), body.get(1).getToDatetime());
         assertEquals(announcementTwo.fromDatetime(), body.get(1).getFromDatetime());
+        assertEquals(announcementTwo.uuid(), body.get(1).getUuid());
     }
 
     @Test
