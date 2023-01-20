@@ -524,6 +524,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/service-status"
+        description:
+          description: Description of group
+          type: string
+          example: "Very descriptive"
+          maxLength: 250
 
     group:
       type: object
@@ -551,6 +556,11 @@ components:
           items:
             type: string
             format: uuid
+        description:
+          description: Description of group
+          type: string
+          example: "Very descriptive"
+          maxLength: 250
 
     group-patch:
       type: object
@@ -578,6 +588,11 @@ components:
           type: integer
           maximum: 100
           minimum: 0
+        description:
+          description: Description of group
+          type: string
+          example: "Very descriptive"
+          maxLength: 250
 
     announcements-to-show:
       type: object

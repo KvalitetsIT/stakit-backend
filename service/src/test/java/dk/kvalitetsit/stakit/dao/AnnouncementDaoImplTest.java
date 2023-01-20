@@ -67,7 +67,7 @@ public class AnnouncementDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testFindByUuidNotFound() {
-        var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10);
+        var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10, "description");
 
         var result = announcementDao.getByUuid(group.uuid());
         assertNotNull(result);

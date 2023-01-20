@@ -2,12 +2,11 @@ package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
 import dk.kvalitetsit.stakit.controller.mapper.AnnouncementMapper;
+import dk.kvalitetsit.stakit.controller.mapper.StakitMapper;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
 import dk.kvalitetsit.stakit.service.StatusGroupService;
 import dk.kvalitetsit.stakit.service.SubscriptionService;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
-import dk.kvalitetsit.stakit.service.model.StatusGroupedModel;
-import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
 import dk.kvalitetsit.stakit.session.PublicApi;
 import org.openapitools.api.StaKitApi;
 import org.openapitools.model.*;
@@ -17,10 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 public class StakitController implements StaKitApi {
@@ -54,9 +51,7 @@ public class StakitController implements StaKitApi {
 
         var groupStatus = statusGroupService.getStatusGrouped();
 
-        var mappedResult = groupStatus.stream()
-                .map(this::mapGroup)
-                .collect(Collectors.toList());
+        var mappedResult = StakitMapper.mappedStatusGroups(groupStatus);
 
         return ResponseEntity.ok(mappedResult);
     }
@@ -75,7 +70,7 @@ public class StakitController implements StaKitApi {
         logger.debug("Subscribing to updates.");
 
         try {
-            var result = subscriptionService.subscribe(mapSubscription(subscribe));
+            var result = subscriptionService.subscribe(StakitMapper.mapSubscription(subscribe));
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new CreateResponse().uuid(result));
         } catch(InvalidDataException e) {
@@ -83,26 +78,5 @@ public class StakitController implements StaKitApi {
 
             throw new BadRequestException(e.getMessage());
         }
-    }
-
-    private SubscriptionModel mapSubscription(Subscribe subscribe) {
-        return new SubscriptionModel(subscribe.getEmail(), subscribe.getGroups(), subscribe.getAnnouncements());
-    }
-
-    private StatusGroup mapGroup(StatusGroupedModel statusGroupedModel) {
-        var statusGroup = new StatusGroup();
-        statusGroup.setName(statusGroupedModel.groupName());
-        statusGroup.setServices(new ArrayList<>());
-
-        statusGroupedModel.status().forEach(x -> {
-            var s = new org.openapitools.model.ServiceStatus();
-            s.setName(x.statusName());
-            s.setStatus(org.openapitools.model.ServiceStatus.StatusEnum.fromValue(x.status().toString()));
-            s.setDescription(x.description());
-
-            statusGroup.addServicesItem(s);
-        });
-
-        return statusGroup;
     }
 }

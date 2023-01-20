@@ -16,7 +16,7 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
     @Test
     public void testInsert() {
         var mailSubscriptionId = testDataHelper.createMailSubscription(true, UUID.randomUUID());
-        var groupId = testDataHelper.createGroup("group name", UUID.randomUUID());
+        var groupId = testDataHelper.createGroup("group name", UUID.randomUUID(), "group description");
 
         var input = MailSubscriptionGroupsEntity.createInstance(mailSubscriptionId, groupId);
 

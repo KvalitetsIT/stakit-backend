@@ -42,10 +42,10 @@ public class StakitControllerTest {
 
     @Test
     public void testStatusGetGrouped() {
-        var groupOne = new StatusGroupedModel("Default", new ArrayList<>());
+        var groupOne = new StatusGroupedModel("Default", new ArrayList<>(), null);
         groupOne.status().add(new StatusElementModel(Status.OK, "In Default Group", "Description"));
 
-        var groupTwo = new StatusGroupedModel("Group Two", new ArrayList<>());
+        var groupTwo = new StatusGroupedModel("Group Two", new ArrayList<>(), "Description Two");
         groupTwo.status().add(new StatusElementModel(Status.OK, "Name", "Description One"));
         groupTwo.status().add(new StatusElementModel(Status.NOT_OK, "Name Two", "Description Two"));
 
@@ -66,6 +66,7 @@ public class StakitControllerTest {
         // Assert first one
         var statusGroup = statusGroupList.get(0);
         assertEquals(groupOne.groupName(), statusGroup.getName());
+        assertEquals(groupOne.description(), statusGroup.getDescription());
 
         assertEquals(groupOne.status().get(0).statusName(), statusGroup.getServices().get(0).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());
@@ -74,6 +75,7 @@ public class StakitControllerTest {
         // Assert second one
         statusGroup = statusGroupList.get(1);
         assertEquals(groupTwo.groupName(), statusGroup.getName());
+        assertEquals(groupTwo.description(), statusGroup.getDescription());
 
         assertEquals(groupTwo.status().get(0).statusName(), statusGroup.getServices().get(0).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());

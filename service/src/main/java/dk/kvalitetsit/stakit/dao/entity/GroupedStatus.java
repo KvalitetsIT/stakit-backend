@@ -1,4 +1,4 @@
 package dk.kvalitetsit.stakit.dao.entity;
 
-public record GroupedStatus(String groupName, String status, String serviceName, String description) {
+public record GroupedStatus(String groupName, String status, String serviceName, String groupDescription, String serviceDescription) {
 }

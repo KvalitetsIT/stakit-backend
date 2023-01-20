@@ -33,8 +33,8 @@ public class GroupModelManagementControllerTest {
 
     @Test
     public void testGetGroups() {
-        var groupOne = new GroupGetModel(UUID.randomUUID(), "Name 1", 20, new ArrayList<UUID>());
-        var groupTwo = new GroupGetModel(UUID.randomUUID(), "Name 2", 30, new ArrayList<UUID>());
+        var groupOne = new GroupGetModel(UUID.randomUUID(), "Name 1", 20, new ArrayList<UUID>(), UUID.randomUUID().toString());
+        var groupTwo = new GroupGetModel(UUID.randomUUID(), "Name 2", 30, new ArrayList<UUID>(), UUID.randomUUID().toString());
 
         Mockito.when(groupService.getGroups()).thenReturn(Arrays.asList(groupOne, groupTwo));
 
@@ -49,12 +49,14 @@ public class GroupModelManagementControllerTest {
         assertEquals(groupOne.uuid(), body.get(0).getId());
         assertEquals(groupOne.name(), body.get(0).getName());
         assertEquals(groupOne.displayOrder(), body.get(0).getDisplayOrder());
-        assertEquals(groupOne.services(), groupOne.services());
+        assertEquals(groupOne.services(), body.get(0).getServices());
+        assertEquals(groupOne.description(), body.get(0).getDescription());
 
         assertEquals(groupTwo.uuid(), body.get(1).getId());
         assertEquals(groupTwo.name(), body.get(1).getName());
         assertEquals(groupTwo.displayOrder(), body.get(1).getDisplayOrder());
-        assertEquals(groupTwo.services(), groupTwo.services());
+        assertEquals(groupTwo.services(), body.get(1).getServices());
+        assertEquals(groupTwo.description(), body.get(1).getDescription());
     }
 
     @Test
@@ -62,10 +64,11 @@ public class GroupModelManagementControllerTest {
         var input = new GroupInput();
         input.setName("name");
         input.setDisplayOrder(10);
+        input.setDescription("description");
 
         var expectedUuid = UUID.randomUUID();
 
-        Mockito.when(groupService.createGroup(GroupModel.createInstance(input.getName(), input.getDisplayOrder()))).thenReturn(expectedUuid);
+        Mockito.when(groupService.createGroup(GroupModel.createInstance(input.getName(), input.getDisplayOrder(), input.getDescription()))).thenReturn(expectedUuid);
 
         var result = groupManagementController.v1GroupsPost(input);
         assertNotNull(result);
@@ -80,8 +83,9 @@ public class GroupModelManagementControllerTest {
         var input = new GroupInput();
         input.setName("name");
         input.setDisplayOrder(10);
+        input.setDescription("description");
 
-        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder());
+        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder(), input.getDescription());
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(true);
 
@@ -98,8 +102,9 @@ public class GroupModelManagementControllerTest {
         var input = new GroupInput();
         input.setName("name");
         input.setDisplayOrder(10);
+        input.setDescription("description");
 
-        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder());
+        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder(), input.getDescription());
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(false);
 
@@ -140,7 +145,7 @@ public class GroupModelManagementControllerTest {
         var uuid = UUID.randomUUID();
         var serviceUuid = UUID.randomUUID();
 
-        Mockito.when(groupService.getGroup(uuid)).thenReturn(Optional.of(new GroupGetModel(uuid, "name", 10, Collections.singletonList(serviceUuid))));
+        Mockito.when(groupService.getGroup(uuid)).thenReturn(Optional.of(new GroupGetModel(uuid, "name", 10, Collections.singletonList(serviceUuid), "description")));
 
         var result = groupManagementController.v1GroupsUuidGet(uuid);
         assertNotNull(result);
@@ -151,6 +156,7 @@ public class GroupModelManagementControllerTest {
         assertEquals(10, result.getBody().getDisplayOrder());
         assertEquals(1, result.getBody().getServices().size());
         assertEquals(serviceUuid, result.getBody().getServices().get(0));
+        assertEquals("description", result.getBody().getDescription());
     }
 
     @Test

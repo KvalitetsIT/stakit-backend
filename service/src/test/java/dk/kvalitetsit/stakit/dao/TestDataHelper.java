@@ -34,8 +34,8 @@ public class TestDataHelper {
         serviceStatusDao.insert(ServiceStatusEntity.createInstance(statusConfigurationId, status, statusTime, null));
     }
 
-    long createGroup(String groupName, UUID groupUuid) {
-        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupUuid, groupName, 100));
+    long createGroup(String groupName, UUID groupUuid, String description) {
+        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupUuid, groupName, 100, description));
     }
 
     public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier) {

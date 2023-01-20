@@ -36,7 +36,7 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testGetGrouped() {
-        var groupOne = testDataHelper.createGroup("Group One", UUID.randomUUID());
+        var groupOne = testDataHelper.createGroup("Group One", UUID.randomUUID(), "Group Description One");
 
         var serviceConfigurationOne = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service One", false, groupOne, "Description One");
         var serviceConfigurationTwo = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Two", false, groupOne, "Description Two");
@@ -55,18 +55,21 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
         assertEquals("Service Three", groupedStatus.serviceName());
         assertEquals("Default", groupedStatus.groupName());
         assertEquals("NOT_OK", groupedStatus.status());
-        assertEquals("Description Three", groupedStatus.description());
+        assertEquals("Description Three", groupedStatus.serviceDescription());
+        assertNull(groupedStatus.groupDescription());
 
         groupedStatus = result.get(1);
         assertEquals("Service One", groupedStatus.serviceName());
         assertEquals("Group One", groupedStatus.groupName());
         assertEquals("OK", groupedStatus.status());
-        assertEquals("Description One", groupedStatus.description());
+        assertEquals("Description One", groupedStatus.serviceDescription());
+        assertEquals("Group Description One", groupedStatus.groupDescription());
 
         groupedStatus = result.get(2);
         assertEquals("Service Two", groupedStatus.serviceName());
         assertEquals("Group One", groupedStatus.groupName());
         assertEquals("NOT_OK", groupedStatus.status());
-        assertEquals("Description Two", groupedStatus.description());
+        assertEquals("Description Two", groupedStatus.serviceDescription());
+        assertEquals("Group Description One", groupedStatus.groupDescription());
     }
 }

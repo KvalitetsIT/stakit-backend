@@ -28,7 +28,7 @@ public class GroupServiceImpl implements GroupService {
     public UUID createGroup(GroupModel groupModel) {
         var uuid = UUID.randomUUID();
 
-        groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(uuid, groupModel.name(), groupModel.displayOrder()));
+        groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(uuid, groupModel.name(), groupModel.displayOrder(), groupModel.description()));
 
         return uuid;
     }
@@ -36,7 +36,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public boolean updateGroup(GroupModel groupModel) {
-        return groupConfigurationDao.update(GroupConfigurationEntity.createInstance(groupModel.uuid(), groupModel.name(), groupModel.displayOrder()));
+        return groupConfigurationDao.update(GroupConfigurationEntity.createInstance(groupModel.uuid(), groupModel.name(), groupModel.displayOrder(), groupModel.description()));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class GroupServiceImpl implements GroupService {
     public List<GroupGetModel> getGroups() {
         var dbResult = groupConfigurationDao.findAll();
 
-        return dbResult.stream().map(x -> new GroupGetModel(x.uuid(), x.name(), x.displayOrder(), serviceConfigurationDao.findByGroupUuid(x.uuid()))).collect(Collectors.toList());
+        return dbResult.stream().map(x -> new GroupGetModel(x.uuid(), x.name(), x.displayOrder(), serviceConfigurationDao.findByGroupUuid(x.uuid()), x.description())).collect(Collectors.toList());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class GroupServiceImpl implements GroupService {
         var dbResult = groupConfigurationDao.findByUuid(uuid);
         var services = serviceConfigurationDao.findByGroupUuid(uuid);
 
-        return dbResult.map(x -> new GroupGetModel(x.uuid(), x.name(), x.displayOrder(), services));
+        return dbResult.map(x -> new GroupGetModel(x.uuid(), x.name(), x.displayOrder(), services, x.description()));
     }
 
     @Override
