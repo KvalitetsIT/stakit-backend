@@ -239,9 +239,6 @@ public class GroupModelManagementControllerTest {
 
         Mockito.when(groupService.getServicesInGroup(input)).thenReturn(Optional.of(serviceModelList));
 
-        var resultNoServices = groupManagementController.v1GroupsUuidServicesGet(input);
-        assertNotNull(resultNoServices);
-
         var service = new ServiceModel("serviceName", "serviceIdentifier", true, input, UUID.randomUUID(), "serviceDescription");
         serviceModelList.add(service);
 

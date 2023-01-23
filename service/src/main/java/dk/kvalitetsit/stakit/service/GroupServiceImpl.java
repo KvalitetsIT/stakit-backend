@@ -4,14 +4,12 @@ import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
 import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
-import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntityWithGroupUuid;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.model.GroupGetModel;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
 import dk.kvalitetsit.stakit.service.model.ServiceModel;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -67,22 +65,27 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public boolean patchGroup(UUID groupUuid, List<UUID> serviceList) {
+        var group = groupConfigurationDao.findByUuid(groupUuid);
+        if (group.isEmpty()) {
+            return false;
+        }
+
         var oldServices = serviceConfigurationDao.findByGroupUuid(groupUuid);
         var oldServicesUuid = getServiceUuidList(oldServices);
-        var group = groupConfigurationDao.findByUuid(groupUuid);
-        boolean successGroup = group.isPresent();
+
         //removing services not in serviceList
-        for (ServiceConfigurationEntityWithGroupUuid serviceEntity : oldServices) {
+        for (ServiceConfigurationEntity serviceEntity : oldServices) {
             if (!serviceList.contains(serviceEntity.uuid())) {
                 var updateSuccess = serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(serviceEntity.id(), serviceEntity.uuid(), serviceEntity.service(), serviceEntity.name(), serviceEntity.ignoreServiceName(), groupConfigurationDao.findDefaultGroupId(), serviceEntity.description()));
                 if (!updateSuccess) {
-                    throw new InvalidDataException("Service not found: %s".formatted(serviceEntity));
+                    throw new InvalidDataException("Service not found: %s".formatted(serviceEntity.uuid()));
                 }
             }
         }
+
         //adding services from serviceList
         for (UUID serviceUuid : serviceList) {
-            if (!oldServicesUuid.contains(serviceUuid) && successGroup) {
+            if (!oldServicesUuid.contains(serviceUuid)) {
                 var service = serviceConfigurationDao.findByUuidWithGroupUuid(serviceUuid).orElseThrow(() -> new InvalidDataException("Service not found: %s".formatted(serviceUuid)));
                 var updateSuccess = serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(service.id(), service.uuid(), service.service(), service.name(), service.ignoreServiceName(), group.get().id(), service.description()));
                 if (!updateSuccess) {
@@ -90,7 +93,7 @@ public class GroupServiceImpl implements GroupService {
                 }
             }
         }
-        return successGroup;
+        return true;
     }
 
     @Override
@@ -100,21 +103,11 @@ public class GroupServiceImpl implements GroupService {
             return Optional.empty();
         }
         var dbResult = serviceConfigurationDao.findByGroupUuid(uuid);
-        List<ServiceModel> serviceList = new ArrayList<>();
 
-        for (ServiceConfigurationEntityWithGroupUuid service : dbResult) {
-            var model = new ServiceModel(service.name(), service.service(), service.ignoreServiceName(), uuid, service.uuid(), service.description());
-            serviceList.add(model);
-        }
-
-        return Optional.of(serviceList);
+        return Optional.of(dbResult.stream().map(x -> new ServiceModel(x.name(), x.service(), x.ignoreServiceName(), uuid, x.uuid(), x.description())).toList());
     }
 
-    private List<UUID> getServiceUuidList(List<ServiceConfigurationEntityWithGroupUuid> serviceList){
-        List<UUID> uuidList = new ArrayList<>();
-        for (ServiceConfigurationEntityWithGroupUuid service : serviceList) {
-            uuidList.add(service.uuid());
-        }
-        return uuidList;
+    private List<UUID> getServiceUuidList(List<ServiceConfigurationEntity> serviceList){
+        return serviceList.stream().map(ServiceConfigurationEntity::uuid).toList();
     }
 }

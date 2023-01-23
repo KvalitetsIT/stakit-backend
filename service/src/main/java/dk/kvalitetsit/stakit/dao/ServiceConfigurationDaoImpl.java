@@ -142,18 +142,9 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
     }
 
     @Override
-    public List<ServiceConfigurationEntityWithGroupUuid> findByGroupUuid(UUID uuid) {
-        var sql = "select s.id, " +
-                "         s.uuid, " +
-                "         s.service, " +
-                "         s.name, " +
-                "         s.ignore_service_name, " +
-                "         s.description, " +
-                "         g.uuid as group_uuid " +
-                "   from service_configuration s, " +
-                "   group_configuration g " +
-                "   where g.id = s.group_configuration_id and g.uuid = :uuid ";
+    public List<ServiceConfigurationEntity> findByGroupUuid(UUID uuid) {
+        var sql = "select * from service_configuration s, group_configuration g where g.id = s.group_configuration_id and g.uuid = :uuid ";
 
-        return template.query(sql, Collections.singletonMap("uuid", uuid.toString()), DataClassRowMapper.newInstance(ServiceConfigurationEntityWithGroupUuid.class));
+        return template.query(sql, Collections.singletonMap("uuid", uuid.toString()), DataClassRowMapper.newInstance(ServiceConfigurationEntity.class));
     }
 }

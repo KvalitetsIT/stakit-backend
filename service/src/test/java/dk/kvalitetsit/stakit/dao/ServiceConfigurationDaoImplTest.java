@@ -1,7 +1,6 @@
 package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
-import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntityWithGroupUuid;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,6 +218,7 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
 
         var result = serviceConfigurationDao.findByUuidWithGroupUuid(input.uuid());
         assertNotNull(result);
+        assertTrue(result.isPresent());
         assertNull(result.get().description());
     }
 
@@ -233,8 +233,8 @@ public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
         var s1 = testDataHelper.createServiceConfiguration("s1", "n1", true, groupId, s1Uuid,null);
         var s2 = testDataHelper.createServiceConfiguration("s2", "n2", true, groupId, s2Uuid,null);
 
-        var s1Entity = new ServiceConfigurationEntityWithGroupUuid(s1, s1Uuid, "s1", "n1", true, groupUuid, null);
-        var s2Entity = new ServiceConfigurationEntityWithGroupUuid(s2, s2Uuid, "s2", "n2", true, groupUuid, null);
+        var s1Entity = new ServiceConfigurationEntity(s1, s1Uuid, "s1", "n1", true, groupId, null);
+        var s2Entity = new ServiceConfigurationEntity(s2, s2Uuid, "s2", "n2", true, groupId, null);
 
         var result = serviceConfigurationDao.findByGroupUuid(groupUuid);
         assertNotNull(result);
