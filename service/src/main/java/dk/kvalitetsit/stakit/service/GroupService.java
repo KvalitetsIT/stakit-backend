@@ -3,6 +3,7 @@ package dk.kvalitetsit.stakit.service;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.model.GroupGetModel;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
+import dk.kvalitetsit.stakit.service.model.ServiceModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +21,6 @@ public interface GroupService {
     Optional<GroupGetModel> getGroup(UUID uuid);
 
     boolean patchGroup(UUID groupUuid, List<UUID> serviceList) throws InvalidDataException;
+
+    Optional<List<ServiceModel>> getServicesInGroup(UUID uuid);
 }

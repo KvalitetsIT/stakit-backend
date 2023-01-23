@@ -148,4 +148,50 @@ public class GroupModelIT extends AbstractIntegrationTest {
         assertTrue(services.stream().anyMatch(x -> x.equals(service2.getUuid())));
         assertTrue(services.stream().anyMatch(x -> x.equals(service3.getUuid())));
     }
+
+    @Test
+    public void testGetServicesInGroup() throws ApiException {
+        var group = new GroupInput();
+        group.setName("group with services");
+        group.setDisplayOrder(10);
+        group.setDescription("group with services description");
+
+        var createResponse = groupManagementApi.v1GroupsPost(group);
+
+        var uuid = createResponse.getUuid();
+
+        var input1 = new ServiceCreate();
+        input1.setServiceIdentifier("get service1");
+        input1.setName("get name1");
+        input1.setIgnoreServiceName(true);
+        input1.setGroup(uuid);
+        input1.setDescription("get description1");
+        var service1 = serviceManagementApi.v1ServicesPost(input1);
+
+        var input2 = new ServiceCreate();
+        input2.setServiceIdentifier("get service2");
+        input2.setName("get name2");
+        input2.setIgnoreServiceName(true);
+        input2.setGroup(uuid);
+        input2.setDescription("get description2");
+        var service2 = serviceManagementApi.v1ServicesPost(input2);
+
+        var response = groupManagementApi.v1GroupsUuidServicesGetWithHttpInfo(uuid);
+        assertEquals(200, response.getStatusCode());
+        assertEquals(2, response.getData().size());
+
+        var serv1 = response.getData().get(0);
+        assertEquals(service1.getUuid(), serv1.getUuid());
+        assertEquals(input1.getName(), serv1.getName());
+        assertEquals(input1.getServiceIdentifier(), serv1.getServiceIdentifier());
+        assertEquals(input1.getGroup(), serv1.getGroup());
+        assertEquals(input1.getDescription(), serv1.getDescription());
+
+        var serv2 = response.getData().get(1);
+        assertEquals(service2.getUuid(), serv2.getUuid());
+        assertEquals(input2.getName(), serv2.getName());
+        assertEquals(input2.getServiceIdentifier(), serv2.getServiceIdentifier());
+        assertEquals(input2.getGroup(), serv2.getGroup());
+        assertEquals(input2.getDescription(), serv2.getDescription());
+    }
 }

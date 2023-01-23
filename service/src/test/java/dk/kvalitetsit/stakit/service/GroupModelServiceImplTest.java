@@ -34,8 +34,14 @@ public class GroupModelServiceImplTest {
         var groupOne = new GroupConfigurationEntity(1L, UUID.randomUUID(), "name 1", 10, "description 1");
         var groupTwo = new GroupConfigurationEntity(1L, UUID.randomUUID(), "name 2", 20, "description 2");
 
-        var groupOneServices = new ArrayList<UUID>();
-        var groupTwoServices = new ArrayList<UUID>();
+        var groupOneServices = new ArrayList<ServiceConfigurationEntity>();
+        var groupTwoServices = new ArrayList<ServiceConfigurationEntity>();
+
+        var serviceOne = new ServiceConfigurationEntity(1L, UUID.randomUUID(), "Service in group one", "Name of service group one", true, groupOne.id(), "descriptive one");
+        var serviceTwo = new ServiceConfigurationEntity(1L, UUID.randomUUID(), "Service in group two", "Name of service group two", true, groupTwo.id(), "descriptive two");
+
+        groupOneServices.add(serviceOne);
+        groupTwoServices.add(serviceTwo);
 
         Mockito.when(groupDao.findAll()).thenReturn(Arrays.asList(groupOne, groupTwo));
         Mockito.when(serviceConfigurationDao.findByGroupUuid(groupOne.uuid())).thenReturn(groupOneServices);
@@ -48,13 +54,15 @@ public class GroupModelServiceImplTest {
         assertEquals(groupOne.uuid(), result.get(0).uuid());
         assertEquals(groupOne.name(), result.get(0).name());
         assertEquals(groupOne.displayOrder(), result.get(0).displayOrder());
-        assertEquals(groupOneServices, result.get(0).services());
+        assertEquals(groupOneServices.size(), result.get(0).services().size());
+        assertEquals(groupOneServices.get(0).uuid(), result.get(0).services().get(0));
         assertEquals(groupOne.description(), result.get(0).description());
 
         assertEquals(groupTwo.uuid(), result.get(1).uuid());
         assertEquals(groupTwo.name(), result.get(1).name());
         assertEquals(groupTwo.displayOrder(), result.get(1).displayOrder());
-        assertEquals(groupTwoServices, result.get(1).services());
+        assertEquals(groupTwoServices.size(), result.get(1).services().size());
+        assertEquals(groupTwoServices.get(0).uuid(), result.get(1).services().get(0));
         assertEquals(groupTwo.description(), result.get(1).description());
     }
 
@@ -124,9 +132,11 @@ public class GroupModelServiceImplTest {
     public void testFindGroup() {
         var input = UUID.randomUUID();
 
-        var services = new ArrayList<UUID>();
+        var services = new ArrayList<ServiceConfigurationEntity>();
 
         var groupConfigurationEntity = new GroupConfigurationEntity(10L, input, "name", 10, "description");
+        var service = new ServiceConfigurationEntity(1L, UUID.randomUUID(), "service", "name", true, groupConfigurationEntity.id(), "description");
+        services.add(service);
         Mockito.when(groupDao.findByUuid(input)).thenReturn(Optional.of(groupConfigurationEntity));
         Mockito.when(serviceConfigurationDao.findByGroupUuid(input)).thenReturn(services);
 
@@ -137,7 +147,8 @@ public class GroupModelServiceImplTest {
         assertEquals(groupConfigurationEntity.uuid(), result.get().uuid());
         assertEquals(groupConfigurationEntity.name(), result.get().name());
         assertEquals(groupConfigurationEntity.displayOrder(), result.get().displayOrder());
-        assertEquals(services, result.get().services());
+        assertEquals(services.size(), result.get().services().size());
+        assertEquals(services.get(0).uuid(), result.get().services().get(0));
         assertEquals(groupConfigurationEntity.description(), result.get().description());
 
         Mockito.verify(groupDao, times(1)).findByUuid(input);
@@ -166,25 +177,27 @@ public class GroupModelServiceImplTest {
         var uuidServiceKeep = UUID.randomUUID();
         var uuidServiceDelete = UUID.randomUUID();
 
-        List<UUID> oldServiceList = new ArrayList<>();
-        List<UUID> updatedServiceList = new ArrayList<>();
-        updatedServiceList.add(uuidServiceAdd);
-        updatedServiceList.add(uuidServiceKeep);
-        oldServiceList.add(uuidServiceKeep);
-        oldServiceList.add(uuidServiceDelete);
+        List<ServiceConfigurationEntity> oldServiceList = new ArrayList<>();
+
+        List<UUID> patchServiceList = new ArrayList<>();
+        patchServiceList.add(uuidServiceAdd);
+        patchServiceList.add(uuidServiceKeep);
 
         Mockito.when(serviceConfigurationDao.findByGroupUuid(uuidGroup)).thenReturn(oldServiceList);
         Mockito.when(serviceConfigurationDao.updateByUuid(any())).thenReturn(true);
         Mockito.when(groupDao.findByUuid(uuidGroup)).thenReturn(Optional.of(group));
 
-        ServiceConfigurationEntityWithGroupUuid addService = new ServiceConfigurationEntityWithGroupUuid(10L, uuidServiceAdd, "add service", "add name", true, null, "description add");
-        ServiceConfigurationEntityWithGroupUuid keepService = new ServiceConfigurationEntityWithGroupUuid(10L, uuidServiceKeep, "keep service", "keep name", true, uuidGroup, "description keep");
-        ServiceConfigurationEntityWithGroupUuid deleteService = new ServiceConfigurationEntityWithGroupUuid(10L, uuidServiceDelete, "delete service", "delete name", true, uuidGroup, "description delete");
-        Mockito.when(serviceConfigurationDao.findByUuidWithGroupUuid(uuidServiceAdd)).thenReturn(Optional.of(addService));
-        Mockito.when(serviceConfigurationDao.findByUuidWithGroupUuid(uuidServiceKeep)).thenReturn(Optional.of(keepService));
-        Mockito.when(serviceConfigurationDao.findByUuidWithGroupUuid(uuidServiceDelete)).thenReturn(Optional.of(deleteService));
+        ServiceConfigurationEntity addService = new ServiceConfigurationEntity(10L, uuidServiceAdd, "add service", "add name", true, null, "description add");
+        ServiceConfigurationEntity keepService = new ServiceConfigurationEntity(10L, uuidServiceKeep, "keep service", "keep name", true, group.id(), "description keep");
+        ServiceConfigurationEntity deleteService = new ServiceConfigurationEntity(10L, uuidServiceDelete, "delete service", "delete name", true, group.id(), "description delete");
+        oldServiceList.add(keepService);
+        oldServiceList.add(deleteService);
 
-        var result = groupService.patchGroup(uuidGroup, updatedServiceList);
+        Mockito.when(serviceConfigurationDao.findByUuidWithGroupUuid(uuidServiceAdd)).thenReturn(Optional.of(new ServiceConfigurationEntityWithGroupUuid(addService.id(), addService.uuid(), addService.service(), addService.name(), addService.ignoreServiceName(), null, addService.description())));
+        Mockito.when(serviceConfigurationDao.findByUuidWithGroupUuid(uuidServiceKeep)).thenReturn(Optional.of(new ServiceConfigurationEntityWithGroupUuid(keepService.id(), keepService.uuid(), keepService.service(), keepService.name(), keepService.ignoreServiceName(), uuidGroup, keepService.description())));
+        Mockito.when(serviceConfigurationDao.findByUuidWithGroupUuid(uuidServiceDelete)).thenReturn(Optional.of(new ServiceConfigurationEntityWithGroupUuid(deleteService.id(), deleteService.uuid(), deleteService.service(), deleteService.name(), deleteService.ignoreServiceName(), uuidGroup, deleteService.description())));
+
+        var result = groupService.patchGroup(uuidGroup, patchServiceList);
         assertTrue(result);
         
         Mockito.verify(serviceConfigurationDao, times(1)).updateByUuid(new ServiceConfigurationEntity(addService.id(), addService.uuid(), addService.service(), addService.name(), addService.ignoreServiceName(), group.id(), addService.description()));
@@ -231,5 +244,77 @@ public class GroupModelServiceImplTest {
         Mockito.verify(groupDao, times(1)).findByUuid(uuidGroup);
         Mockito.verify(serviceConfigurationDao, times(0)).findByGroupUuid(uuidService);
         Mockito.verify(serviceConfigurationDao, times(0)).updateByUuid(any());
+    }
+
+    @Test
+    public void testGetServicesInGroup() {
+        var input = UUID.randomUUID();
+
+        var services = new ArrayList<ServiceConfigurationEntity>();
+
+        var groupConfigurationEntity = new GroupConfigurationEntity(10L, input, "name", 10, "description");
+
+        var uuidService1 = UUID.randomUUID();
+        var uuidService2 = UUID.randomUUID();
+
+        Mockito.when(serviceConfigurationDao.findByGroupUuid(input)).thenReturn(services);
+        Mockito.when(groupDao.findByUuid(input)).thenReturn(Optional.of(groupConfigurationEntity));
+
+        ServiceConfigurationEntity service1 = new ServiceConfigurationEntity(10L, uuidService1, "service 1", "name 1", true, groupConfigurationEntity.id(), "description 1");
+        ServiceConfigurationEntity service2 = new ServiceConfigurationEntity(10L, uuidService2, "service 2", "name 2", true, groupConfigurationEntity.id(), "description 2");
+
+        services.add(service1);
+        services.add(service2);
+
+        Mockito.when(serviceConfigurationDao.findByUuidWithGroupUuid(uuidService1)).thenReturn(Optional.of(new ServiceConfigurationEntityWithGroupUuid(10L, uuidService1, "service 1", "name 1", true, input, "description 1")));
+        Mockito.when(serviceConfigurationDao.findByUuidWithGroupUuid(uuidService2)).thenReturn(Optional.of(new ServiceConfigurationEntityWithGroupUuid(10L, uuidService2, "service 2", "name 2", true, input, "description 2")));
+
+        var result = groupService.getServicesInGroup(input);
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.get().size());
+
+        assertEquals(uuidService1, result.get().get(0).uuid());
+        assertEquals(service1.name(), result.get().get(0).name());
+        assertEquals(service1.service(), result.get().get(0).serviceIdentifier());
+        assertEquals(service1.ignoreServiceName(), result.get().get(0).ignoreServiceName());
+        assertEquals(input, result.get().get(0).group());
+        assertEquals(service1.description(), result.get().get(0).description());
+
+        assertEquals(uuidService2, result.get().get(1).uuid());
+        assertEquals(service2.name(), result.get().get(1).name());
+        assertEquals(service2.service(), result.get().get(1).serviceIdentifier());
+        assertEquals(service2.ignoreServiceName(), result.get().get(1).ignoreServiceName());
+        assertEquals(input, result.get().get(1).group());
+        assertEquals(service2.description(), result.get().get(1).description());
+    }
+
+    @Test
+    public void testGetServicesInGroupNoServicesInGroup() {
+        var input = UUID.randomUUID();
+
+        var services = new ArrayList<ServiceConfigurationEntity>();
+
+        var groupConfigurationEntity = new GroupConfigurationEntity(10L, input, "name", 10, "description");
+
+        Mockito.when(serviceConfigurationDao.findByGroupUuid(input)).thenReturn(services);
+        Mockito.when(groupDao.findByUuid(input)).thenReturn(Optional.of(groupConfigurationEntity));
+
+        var result = groupService.getServicesInGroup(input);
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(0, result.get().size());
+    }
+
+    @Test
+    public void testGetServicesInGroupNotFound() {
+        var input = UUID.randomUUID();
+
+        Mockito.when(groupDao.findByUuid(input)).thenReturn(Optional.empty());
+
+        var result = groupService.getServicesInGroup(input);
+        assertTrue(result.isEmpty());
+        Mockito.verify(groupDao, times(1)).findByUuid(input);
+        Mockito.verify(serviceConfigurationDao, times(0)).findByGroupUuid(any());
     }
 }

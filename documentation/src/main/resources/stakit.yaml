@@ -178,6 +178,28 @@ paths:
         '401':
           $ref: '#/components/responses/401'
 
+  /v1/groups/{uuid}/services:
+    get:
+      tags:
+        - group-management
+      summary: Get services in group
+      description: API to get all services in single group
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        '200':
+          description: Array of all services in the group with the given uuid.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/services'
+        '404':
+          $ref: '#/components/responses/404'
+        '401':
+          $ref: '#/components/responses/401'
+
   /v1/services:
     get:
       tags:
