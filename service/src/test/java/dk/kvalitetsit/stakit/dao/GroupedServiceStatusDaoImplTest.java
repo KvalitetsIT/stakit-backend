@@ -38,9 +38,9 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
     public void testGetGrouped() {
         var groupOne = testDataHelper.createGroup("Group One", UUID.randomUUID(), "Group Description One");
 
-        var serviceConfigurationOne = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service One", false, groupOne, "Description One");
-        var serviceConfigurationTwo = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Two", false, groupOne, "Description Two");
-        var serviceConfigurationThree = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Three", false, defaultGroupId, "Description Three");
+        var serviceConfigurationOne = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service One", false, groupOne, "OK", "Description One");
+        var serviceConfigurationTwo = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Two", false, groupOne, "OK", "Description Two");
+        var serviceConfigurationThree = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Three", false, defaultGroupId, "OK", "Description Three");
 
         testDataHelper.createServiceStatus(serviceConfigurationOne, "NOT_OK", OffsetDateTime.now());
         testDataHelper.createServiceStatus(serviceConfigurationOne, "OK", OffsetDateTime.now());

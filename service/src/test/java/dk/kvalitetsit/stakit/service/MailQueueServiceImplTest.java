@@ -56,7 +56,7 @@ public class MailQueueServiceImplTest {
         var subscriptionTwo = new MailSubscriptionEntity(2L, UUID.randomUUID(), "mailTwo", true, true, UUID.randomUUID());
 
         var groupConfiguration = new GroupConfigurationEntity(10L, UUID.randomUUID(), "group name", 10, "description");
-        var serviceConfiguration = new ServiceConfigurationEntity(1L, UUID.randomUUID(), "service", "name", false, groupConfiguration.id(), "description");
+        var serviceConfiguration = new ServiceConfigurationEntity(1L, UUID.randomUUID(), "service", "name", false, groupConfiguration.id(), "OK", "description");
         var serviceStatus = new ServiceStatusEntity(20L, serviceConfiguration.id(), "OK", OffsetDateTime.now(), null);
 
         Mockito.when(mailSubscriptionDao.findSubscriptionsByServiceConfigurationId(1L)).thenReturn(Arrays.asList(subscriptionOne, subscriptionTwo));
@@ -79,7 +79,7 @@ public class MailQueueServiceImplTest {
     public void testSubscriptionNoGroup() {
         var subscriptionOne = new MailSubscriptionEntity(1L, UUID.randomUUID(), "mailOne", true, true, UUID.randomUUID());
 
-        var serviceConfiguration = new ServiceConfigurationEntity(1L, UUID.randomUUID(), "service", "name", false, null, "description");
+        var serviceConfiguration = new ServiceConfigurationEntity(1L, UUID.randomUUID(), "service", "name", false, null, "OK","description");
         var serviceStatus = new ServiceStatusEntity(20L, serviceConfiguration.id(), "OK", OffsetDateTime.now(), null);
 
         Mockito.when(mailSubscriptionDao.findSubscriptionsByServiceConfigurationId(1L)).thenReturn(Collections.singletonList(subscriptionOne));

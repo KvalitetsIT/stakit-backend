@@ -43,30 +43,57 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
 
     @Override
     public List<ServiceConfigurationEntity> findAll() {
-        var sql = "select * from service_configuration";
+        var sql = "select sc.name as name, " +
+                "         sc.id as id, " +
+                "         sc.uuid as uuid, " +
+                "         sc.service as service, " +
+                "         sc.ignore_service_name, " +
+                "         sc.description as description, " +
+                "         sc.group_configuration_id as group_configuration_id, " +
+                "         status " +
+                "   from service_configuration sc " +
+                "   left outer join service_status s " +
+                "        on s.service_configuration_id = sc.id and " +
+                "           s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id)";
 
         return template.query(sql, new DataClassRowMapper<>(ServiceConfigurationEntity.class));
     }
 
     @Override
     public ServiceConfigurationEntity findByService(String service) {
-        return template.queryForObject("select * from service_configuration where service = :service", Collections.singletonMap("service", service), new DataClassRowMapper<>(ServiceConfigurationEntity.class));
+        var sql = "select sc.name as name, " +
+                "         sc.id as id, " +
+                "         sc.uuid as uuid, " +
+                "         sc.service as service, " +
+                "         sc.ignore_service_name, " +
+                "         sc.description as description, " +
+                "         sc.group_configuration_id as group_configuration_id, " +
+                "         status " +
+                "   from service_configuration sc " +
+                "   left outer join service_status s " +
+                "        on s.service_configuration_id = sc.id and " +
+                "           s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) and sc.service = :service";
+
+        return template.queryForObject(sql, Collections.singletonMap("service", service), new DataClassRowMapper<>(ServiceConfigurationEntity.class));
     }
 
     @Override
     public Optional<ServiceConfigurationEntityWithGroupUuid> findByUuidWithGroupUuid(UUID serviceUuid) {
-        var sql = "select s.id, " +
-                "         s.uuid, " +
-                "         s.service, " +
-                "         s.name, " +
-                "         s.ignore_service_name, " +
-                "         s.description, " +
-                "         g.uuid as group_uuid " +
-                "   from service_configuration s " +
-                "   left outer join group_configuration g " +
-                "        on g.id = s.group_configuration_id " +
-                "   where s.uuid = :uuid " +
-                "  order by g.display_order";
+        var sql = "select sc.id, " +
+                "         sc.uuid, " +
+                "         sc.service, " +
+                "         sc.name, " +
+                "         sc.ignore_service_name, " +
+                "         ss.status, " +
+                "         sc.description, " +
+                "         gc.uuid as group_uuid " +
+                "   from service_configuration sc " +
+                "   left outer join group_configuration gc " +
+                "        on gc.id = sc.group_configuration_id " +
+                "   left outer join service_status ss " +
+                "        on ss.service_configuration_id = sc.id " +
+                "   where sc.uuid = :uuid " +
+                "  order by gc.display_order";
 
         try {
             var dbResult = template.queryForObject(sql, Collections.singletonMap("uuid", serviceUuid.toString()), DataClassRowMapper.newInstance(ServiceConfigurationEntityWithGroupUuid.class));
@@ -104,17 +131,20 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
     @Override
 
     public List<ServiceConfigurationEntityWithGroupUuid> findAllWithGroupId() {
-        var sql = "select s.id, " +
-                "         s.uuid, " +
-                "         s.service, " +
-                "         s.name, " +
-                "         s.ignore_service_name, " +
-                "         s.description, " +
-                "         g.uuid as group_uuid " +
-                "    from service_configuration s " +
-                "    left outer join group_configuration g " +
-                "         on g.id = s.group_configuration_id " +
-                "   order by g.display_order";
+        var sql = "select sc.id, " +
+                "         sc.uuid, " +
+                "         sc.service, " +
+                "         sc.name, " +
+                "         sc.ignore_service_name, " +
+                "         ss.status, " +
+                "         sc.description, " +
+                "         gc.uuid as group_uuid " +
+                "    from service_configuration sc " +
+                "    left outer join group_configuration gc " +
+                "         on gc.id = sc.group_configuration_id " +
+                "   left outer join service_status ss " +
+                "        on ss.service_configuration_id = sc.id " +
+                "   order by gc.display_order";
 
         return template.query(sql, DataClassRowMapper.newInstance(ServiceConfigurationEntityWithGroupUuid.class));
     }
@@ -122,7 +152,18 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
     @Override
     public Optional<ServiceConfigurationEntity> findById(long id) {
 
-        var sql = "select * from service_configuration where id = :id";
+        var sql = "select sc.name as name, " +
+                "         sc.id as id, " +
+                "         sc.uuid as uuid, " +
+                "         sc.service as service, " +
+                "         sc.ignore_service_name, " +
+                "         sc.description as description, " +
+                "         sc.group_configuration_id as group_configuration_id, " +
+                "         status " +
+                "   from service_configuration sc " +
+                "   left outer join service_status s " +
+                "        on s.service_configuration_id = sc.id and " +
+                "           s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) and sc.id = :id";
 
         try {
             return Optional.ofNullable(template.queryForObject(sql, Collections.singletonMap("id", id), DataClassRowMapper.newInstance(ServiceConfigurationEntity.class)));
@@ -143,7 +184,21 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
 
     @Override
     public List<ServiceConfigurationEntity> findByGroupUuid(UUID uuid) {
-        var sql = "select * from service_configuration s, group_configuration g where g.id = s.group_configuration_id and g.uuid = :uuid ";
+        var sql = "select sc.name as name, " +
+                "         sc.id as id, " +
+                "         sc.uuid as uuid, " +
+                "         sc.service as service, " +
+                "         sc.ignore_service_name, " +
+                "         sc.description as description, " +
+                "         sc.group_configuration_id as group_configuration_id, " +
+                "         status " +
+                "   from service_configuration sc " +
+                "   left outer join group_configuration gc" +
+                "        on sc.group_configuration_id = gc.id" +
+                "   left outer join service_status s " +
+                "        on s.service_configuration_id = sc.id and " +
+                "           s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) " +
+                " where gc.id = sc.group_configuration_id and gc.uuid = :uuid";
 
         return template.query(sql, Collections.singletonMap("uuid", uuid.toString()), DataClassRowMapper.newInstance(ServiceConfigurationEntity.class));
     }

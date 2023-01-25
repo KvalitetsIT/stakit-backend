@@ -90,7 +90,7 @@ public class GroupManagementController implements GroupManagementApi {
     }
 
     @Override
-    public ResponseEntity<List<Services>> v1GroupsUuidServicesGet(UUID uuid) {
+    public ResponseEntity<List<Service>> v1GroupsUuidServicesGet(UUID uuid) {
         var services = groupService.getServicesInGroup(uuid);
 
         if (services.isEmpty()) {

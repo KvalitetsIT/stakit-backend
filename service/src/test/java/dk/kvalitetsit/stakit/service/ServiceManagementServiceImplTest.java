@@ -2,6 +2,7 @@ package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
 import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
+import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntityWithGroupUuid;
 import dk.kvalitetsit.stakit.service.model.ServiceModel;
@@ -23,18 +24,20 @@ public class ServiceManagementServiceImplTest {
     private ServiceConfigurationDao serviceConfigurationDao;
     private ServiceManagementServiceImpl serviceManagementService;
     private GroupConfigurationDao groupConfigurationDao;
+    private ServiceStatusDao serviceStatusDao;
 
     @Before
     public void setup() {
         serviceConfigurationDao = Mockito.mock(ServiceConfigurationDao.class);
         groupConfigurationDao = Mockito.mock(GroupConfigurationDao.class);
-        serviceManagementService = new ServiceManagementServiceImpl(serviceConfigurationDao, groupConfigurationDao);
+        serviceStatusDao = Mockito.mock(ServiceStatusDao.class);
+        serviceManagementService = new ServiceManagementServiceImpl(serviceConfigurationDao, groupConfigurationDao, serviceStatusDao);
     }
 
     @Test
     public void testGetService() {
         var serviceUuid = UUID.randomUUID();
-        var serviceConfigurationEntity = new ServiceConfigurationEntityWithGroupUuid(1L, UUID.randomUUID(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID().toString());
+        var serviceConfigurationEntity = new ServiceConfigurationEntityWithGroupUuid(1L, UUID.randomUUID(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), "OK", UUID.randomUUID().toString());
 
         Mockito.when(serviceConfigurationDao.findByUuidWithGroupUuid(serviceUuid)).thenReturn(Optional.of(serviceConfigurationEntity));
 
@@ -45,6 +48,7 @@ public class ServiceManagementServiceImplTest {
         assertEquals(serviceConfigurationEntity.service(), result.get().serviceIdentifier());
         assertEquals(serviceConfigurationEntity.groupUuid(), result.get().group());
         assertEquals(serviceConfigurationEntity.ignoreServiceName(), result.get().ignoreServiceName());
+        assertEquals(serviceConfigurationEntity.status(), result.get().status());
         assertEquals(serviceConfigurationEntity.description(), result.get().description());
 
         Mockito.verify(serviceConfigurationDao, times(1)).findByUuidWithGroupUuid(serviceUuid);
@@ -66,7 +70,7 @@ public class ServiceManagementServiceImplTest {
     @Test
     public void testCreateService() {
         var groupId = 10L;
-        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null, UUID.randomUUID().toString());
+        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null, "OK", UUID.randomUUID().toString());
 
         var groupConfigurationEntity = new GroupConfigurationEntity(groupId, UUID.randomUUID(), "group name", 10, "group description");
         Mockito.when(groupConfigurationDao.findByUuid(serviceCreate.group())).thenReturn(Optional.of(groupConfigurationEntity));
@@ -80,6 +84,7 @@ public class ServiceManagementServiceImplTest {
             assertEquals(serviceCreate.ignoreServiceName(), x.ignoreServiceName());
             assertEquals(groupId, x.groupConfigurationId());
             assertNotNull(x.uuid());
+            assertEquals(serviceCreate.status(), x.status());
             assertEquals(serviceCreate.description(), x.description());
 
             return true;
@@ -89,7 +94,7 @@ public class ServiceManagementServiceImplTest {
 
     @Test
     public void testCreateServiceGroupNotFound() {
-        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null, UUID.randomUUID().toString());
+        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null, "OK", UUID.randomUUID().toString());
 
         Mockito.when(groupConfigurationDao.findByUuid(serviceCreate.group())).thenReturn(Optional.empty());
 
@@ -106,7 +111,7 @@ public class ServiceManagementServiceImplTest {
 
         Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
 
-        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, UUID.randomUUID().toString());
+        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, "OK", UUID.randomUUID().toString());
 
         var result = serviceManagementService.createService(serviceCreate);
         assertNotNull(result);
@@ -117,6 +122,7 @@ public class ServiceManagementServiceImplTest {
             assertEquals(serviceCreate.ignoreServiceName(), x.ignoreServiceName());
             assertEquals(groupId, x.groupConfigurationId());
             assertNotNull(x.uuid());
+            assertEquals(serviceCreate.status(), x.status());
             assertEquals(serviceCreate.description(), x.description());
 
             return true;
@@ -130,7 +136,7 @@ public class ServiceManagementServiceImplTest {
         var groupId = 10L;
         var serviceUuid = UUID.randomUUID();
 
-        var serviceUpdate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, UUID.randomUUID().toString());
+        var serviceUpdate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, "OK", UUID.randomUUID().toString());
 
         Mockito.when(serviceConfigurationDao.updateByUuid(Mockito.any())).thenReturn(false);
         Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
@@ -144,6 +150,7 @@ public class ServiceManagementServiceImplTest {
             assertEquals(serviceUpdate.ignoreServiceName(), x.ignoreServiceName());
             assertEquals(groupId, x.groupConfigurationId());
             assertEquals(serviceUuid, x.uuid());
+            assertEquals(serviceUpdate.status(), x.status());
             assertEquals(serviceUpdate.description(), x.description());
 
             return true;
@@ -156,7 +163,7 @@ public class ServiceManagementServiceImplTest {
     public void testUpdateService() {
         var groupId = 10L;
         var serviceUuid = UUID.randomUUID();
-        var serviceUpdate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null, UUID.randomUUID().toString());
+        var serviceUpdate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null, "OK", UUID.randomUUID().toString());
 
         var groupConfigurationEntity = new GroupConfigurationEntity(groupId, UUID.randomUUID(), "group name", 10, "group description");
         Mockito.when(groupConfigurationDao.findByUuid(serviceUpdate.group())).thenReturn(Optional.of(groupConfigurationEntity));
@@ -172,6 +179,7 @@ public class ServiceManagementServiceImplTest {
             assertEquals(serviceUpdate.ignoreServiceName(), x.ignoreServiceName());
             assertEquals(groupId, x.groupConfigurationId());
             assertEquals(serviceUuid, x.uuid());
+            assertEquals(serviceUpdate.status(), x.status());
             assertEquals(serviceUpdate.description(), x.description());
 
             return true;
@@ -182,7 +190,7 @@ public class ServiceManagementServiceImplTest {
     @Test
     public void testUpdateServiceGroupNotFound() {
         var serviceUuid = UUID.randomUUID();
-        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null, UUID.randomUUID().toString());
+        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null, "OK", UUID.randomUUID().toString());
 
         Mockito.when(groupConfigurationDao.findByUuid(serviceCreate.group())).thenReturn(Optional.empty());
 
@@ -196,7 +204,7 @@ public class ServiceManagementServiceImplTest {
     public void testUpdateServiceNoGroup() {
         var serviceUuid = UUID.randomUUID();
 
-        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, UUID.randomUUID().toString());
+        var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, "OK", UUID.randomUUID().toString());
         var groupId = 10L;
 
         Mockito.when(serviceConfigurationDao.updateByUuid(Mockito.any())).thenReturn(true);
@@ -211,6 +219,7 @@ public class ServiceManagementServiceImplTest {
             assertEquals(serviceCreate.ignoreServiceName(), x.ignoreServiceName());
             assertEquals(groupId, x.groupConfigurationId());
             assertNotNull(x.uuid());
+            assertEquals(serviceCreate.status(), x.status());
             assertEquals(serviceCreate.description(), x.description());
 
             return true;
@@ -220,8 +229,8 @@ public class ServiceManagementServiceImplTest {
 
     @Test
     public void testGetServices() {
-        var serviceOne = new ServiceConfigurationEntityWithGroupUuid(10L, UUID.randomUUID(), "service 1", "service name 1", true, UUID.randomUUID(), "description 1");
-        var serviceTwo = new ServiceConfigurationEntityWithGroupUuid(20L, UUID.randomUUID(), "service 2", "service name 2", false, null, "description 2");
+        var serviceOne = new ServiceConfigurationEntityWithGroupUuid(10L, UUID.randomUUID(), "service 1", "service name 1", true, UUID.randomUUID(), "OK", "description 1");
+        var serviceTwo = new ServiceConfigurationEntityWithGroupUuid(20L, UUID.randomUUID(), "service 2", "service name 2", false, null, "OK", "description 2");
 
         Mockito.when(serviceConfigurationDao.findAllWithGroupId()).thenReturn(Arrays.asList(serviceOne, serviceTwo));
 
@@ -234,6 +243,7 @@ public class ServiceManagementServiceImplTest {
         assertEquals(serviceOne.ignoreServiceName(), firstResult.ignoreServiceName());
         assertEquals(serviceOne.service(), firstResult.serviceIdentifier());
         assertEquals(serviceOne.groupUuid(), firstResult.group());
+        assertEquals(serviceOne.status(), firstResult.status());
         assertEquals(serviceOne.description(), firstResult.description());
 
         var secondResult = result.get(1);
@@ -241,6 +251,7 @@ public class ServiceManagementServiceImplTest {
         assertEquals(serviceTwo.ignoreServiceName(), secondResult.ignoreServiceName());
         assertEquals(serviceTwo.service(), secondResult.serviceIdentifier());
         assertEquals(serviceTwo.groupUuid(), secondResult.group());
+        assertEquals(serviceTwo.status(), secondResult.status());
         assertEquals(serviceTwo.description(), secondResult.description());
     }
 

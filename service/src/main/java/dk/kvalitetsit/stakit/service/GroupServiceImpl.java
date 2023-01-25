@@ -76,7 +76,7 @@ public class GroupServiceImpl implements GroupService {
         //removing services not in serviceList
         for (ServiceConfigurationEntity serviceEntity : oldServices) {
             if (!serviceList.contains(serviceEntity.uuid())) {
-                var updateSuccess = serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(serviceEntity.id(), serviceEntity.uuid(), serviceEntity.service(), serviceEntity.name(), serviceEntity.ignoreServiceName(), groupConfigurationDao.findDefaultGroupId(), serviceEntity.description()));
+                var updateSuccess = serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(serviceEntity.id(), serviceEntity.uuid(), serviceEntity.service(), serviceEntity.name(), serviceEntity.ignoreServiceName(), groupConfigurationDao.findDefaultGroupId(), serviceEntity.status(), serviceEntity.description()));
                 if (!updateSuccess) {
                     throw new InvalidDataException("Service not found: %s".formatted(serviceEntity.uuid()));
                 }
@@ -87,7 +87,7 @@ public class GroupServiceImpl implements GroupService {
         for (UUID serviceUuid : serviceList) {
             if (!oldServicesUuid.contains(serviceUuid)) {
                 var service = serviceConfigurationDao.findByUuidWithGroupUuid(serviceUuid).orElseThrow(() -> new InvalidDataException("Service not found: %s".formatted(serviceUuid)));
-                var updateSuccess = serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(service.id(), service.uuid(), service.service(), service.name(), service.ignoreServiceName(), group.get().id(), service.description()));
+                var updateSuccess = serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(service.id(), service.uuid(), service.service(), service.name(), service.ignoreServiceName(), group.get().id(), service.status(), service.description()));
                 if (!updateSuccess) {
                     throw new InvalidDataException("Service not found: %s".formatted(serviceUuid));
                 }
@@ -104,7 +104,7 @@ public class GroupServiceImpl implements GroupService {
         }
         var dbResult = serviceConfigurationDao.findByGroupUuid(uuid);
 
-        return Optional.of(dbResult.stream().map(x -> new ServiceModel(x.name(), x.service(), x.ignoreServiceName(), uuid, x.uuid(), x.description())).toList());
+        return Optional.of(dbResult.stream().map(x -> new ServiceModel(x.name(), x.service(), x.ignoreServiceName(), uuid, x.uuid(), x.status(), x.description())).toList());
     }
 
     private List<UUID> getServiceUuidList(List<ServiceConfigurationEntity> serviceList){
