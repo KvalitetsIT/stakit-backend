@@ -72,7 +72,8 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
                 "   from service_configuration sc " +
                 "   left outer join service_status s " +
                 "        on s.service_configuration_id = sc.id and " +
-                "           s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) and sc.service = :service";
+                "           s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) " +
+                "   where sc.service = :service";
 
         return template.queryForObject(sql, Collections.singletonMap("service", service), new DataClassRowMapper<>(ServiceConfigurationEntity.class));
     }
@@ -163,7 +164,8 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
                 "   from service_configuration sc " +
                 "   left outer join service_status s " +
                 "        on s.service_configuration_id = sc.id and " +
-                "           s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) and sc.id = :id";
+                "           s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) " +
+                "   where sc.id = :id";
 
         try {
             return Optional.ofNullable(template.queryForObject(sql, Collections.singletonMap("id", id), DataClassRowMapper.newInstance(ServiceConfigurationEntity.class)));
@@ -198,7 +200,7 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
                 "   left outer join service_status s " +
                 "        on s.service_configuration_id = sc.id and " +
                 "           s.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) " +
-                " where gc.id = sc.group_configuration_id and gc.uuid = :uuid";
+                "   where gc.id = sc.group_configuration_id and gc.uuid = :uuid";
 
         return template.query(sql, Collections.singletonMap("uuid", uuid.toString()), DataClassRowMapper.newInstance(ServiceConfigurationEntity.class));
     }
