@@ -27,14 +27,16 @@ public class StatusGroupServiceImpl implements StatusGroupService {
     private List<StatusGroupedModel> mapStatus(List<GroupedStatus> statusData) {
         var groupMap = new HashMap<String, StatusGroupedModel>();
         statusData.forEach(x -> {
-
             var groupName =  x.groupName();
             var groupDescription = x.groupDescription();
             var statusGroupModel = groupMap.computeIfAbsent(groupName, k -> new StatusGroupedModel(groupName, new ArrayList<>(), groupDescription));
-            if(x.status() != null) {
+            var status = x.status();
+            if(x.serviceName() != null) {
+                if(status == null) {
+                    status = "OK";
+                }
                 statusGroupModel.status()
-                        .add(new StatusElementModel(Status.valueOf(x.status()), x.serviceName(), x.serviceDescription()));
-
+                        .add(new StatusElementModel(Status.valueOf(status), x.serviceName(), x.serviceDescription()));
             }
         });
 
