@@ -92,7 +92,8 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
                 "   left outer join group_configuration gc " +
                 "        on gc.id = sc.group_configuration_id " +
                 "   left outer join service_status ss " +
-                "        on ss.service_configuration_id = sc.id " +
+                "        on ss.service_configuration_id = sc.id and " +
+                "           ss.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) " +
                 "   where sc.uuid = :uuid " +
                 "  order by gc.display_order";
 
@@ -144,7 +145,8 @@ public class ServiceConfigurationDaoImpl implements ServiceConfigurationDao {
                 "    left outer join group_configuration gc " +
                 "         on gc.id = sc.group_configuration_id " +
                 "   left outer join service_status ss " +
-                "        on ss.service_configuration_id = sc.id " +
+                "        on ss.service_configuration_id = sc.id and " +
+                "           ss.id = (select max(id) from service_status where sc.id = service_status.service_configuration_id) " +
                 "   order by gc.display_order";
 
         return template.query(sql, DataClassRowMapper.newInstance(ServiceConfigurationEntityWithGroupUuid.class));
