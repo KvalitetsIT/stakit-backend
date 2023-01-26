@@ -4,18 +4,17 @@ import org.junit.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.JSON;
+import org.openapitools.client.api.AdapterApi;
 import org.openapitools.client.api.GroupManagementApi;
 import org.openapitools.client.api.ServiceManagementApi;
-import org.openapitools.client.model.BasicError;
-import org.openapitools.client.model.GroupInput;
-import org.openapitools.client.model.ServiceCreate;
-import org.openapitools.client.model.ServiceUpdate;
+import org.openapitools.client.model.*;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,14 +22,20 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ServiceModelManagementIT extends AbstractIntegrationTest {
     private final GroupManagementApi groupManagementApi;
     private final ServiceManagementApi serviceManagementApi;
+    private final AdapterApi adapterApi;
 
     public ServiceModelManagementIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
         apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());
 
+        var adapterClient = new ApiClient();
+        adapterClient.setBasePath(getApiBasePath());
+        adapterClient.addDefaultHeader("X-API-KEY", ServiceStarter.API_KEY);
+
         groupManagementApi = new GroupManagementApi(apiClient);
         serviceManagementApi = new ServiceManagementApi(apiClient);
+        adapterApi = new AdapterApi(adapterClient);
     }
 
     @Test
@@ -75,13 +80,14 @@ public class ServiceModelManagementIT extends AbstractIntegrationTest {
         assertEquals(input.getServiceIdentifier(), result.getServiceIdentifier());
         assertEquals(input.getName(), result.getName());
         assertEquals(input.getIgnoreServiceName(), result.getIgnoreServiceName());
+        assertNull(result.getStatus());
         assertEquals(input.getDescription(), result.getDescription());
     }
 
     @Test
     public void testUpdateAndGetAll() throws ApiException {
         var groupInput = new GroupInput();
-        groupInput.setName("group");
+        groupInput.setName(UUID.randomUUID().toString());
         groupInput.setDisplayOrder(10);
 
         var groupResult = groupManagementApi.v1GroupsPostWithHttpInfo(groupInput);
@@ -89,7 +95,7 @@ public class ServiceModelManagementIT extends AbstractIntegrationTest {
 
         var input = new ServiceCreate();
         input.setServiceIdentifier(UUID.randomUUID().toString());
-        input.setName("name");
+        input.setName(UUID.randomUUID().toString());
         input.setIgnoreServiceName(true);
         input.setDescription("description");
 
@@ -151,6 +157,29 @@ public class ServiceModelManagementIT extends AbstractIntegrationTest {
 
         var serviceResult = serviceManagementApi.v1ServicesPostWithHttpInfo(input);
         var serviceUuid = serviceResult.getData().getUuid();
+
+        var result = serviceManagementApi.v1ServicesUuidDeleteWithHttpInfo(serviceUuid);
+        assertNotNull(result);
+        assertEquals(204, result.getStatusCode());
+    }
+
+    @Test
+    public void testCreateAndDeleteServiceWithStatus() throws ApiException {
+        var input = new ServiceCreate();
+        input.setServiceIdentifier(UUID.randomUUID().toString());
+        input.setName("name");
+        input.setIgnoreServiceName(true);
+        input.setDescription("description");
+
+        var statusUpdate = new StatusUpdate();
+        statusUpdate.setService(input.getServiceIdentifier());
+        statusUpdate.setServiceName(input.getName());
+        statusUpdate.setStatus(StatusUpdate.StatusEnum.OK);
+        statusUpdate.setStatusTime(OffsetDateTime.now());
+
+        var serviceResult = serviceManagementApi.v1ServicesPostWithHttpInfo(input);
+        var serviceUuid = serviceResult.getData().getUuid();
+        adapterApi.v1StatusPost(statusUpdate);
 
         var result = serviceManagementApi.v1ServicesUuidDeleteWithHttpInfo(serviceUuid);
         assertNotNull(result);

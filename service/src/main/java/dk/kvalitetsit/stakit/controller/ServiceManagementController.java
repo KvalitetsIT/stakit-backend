@@ -21,7 +21,7 @@ public class ServiceManagementController implements ServiceManagementApi {
     }
 
     @Override
-    public ResponseEntity<List<Services>> v1ServicesGet() {
+    public ResponseEntity<List<Service>> v1ServicesGet() {
         var services = serviceManagementService.getServices();
         return ResponseEntity.ok(ServiceManagementMapper.mapServices(services));
     }

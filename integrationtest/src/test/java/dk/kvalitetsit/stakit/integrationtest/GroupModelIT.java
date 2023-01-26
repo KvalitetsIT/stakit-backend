@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,12 +98,12 @@ public class GroupModelIT extends AbstractIntegrationTest {
     @Test
     public void testPatchGroup() throws ApiException {
         var group = new GroupInput();
-        group.setName("patchName");
+        group.setName(UUID.randomUUID().toString());
         group.setDisplayOrder(10);
         group.setDescription("group patch description");
-        var groupPatch = groupManagementApi.v1GroupsPost(group);
+        var groupToPatch = groupManagementApi.v1GroupsPost(group);
 
-        var groupUuid = groupPatch.getUuid();
+        var groupUuid = groupToPatch.getUuid();
 
         var input1 = new ServiceCreate();
         input1.setServiceIdentifier("patch service1");

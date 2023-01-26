@@ -11,10 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ServiceStatusDaoImpl implements ServiceStatusDao {
     private static final Logger logger = LoggerFactory.getLogger(ServiceStatusDaoImpl.class);
@@ -75,5 +72,12 @@ public class ServiceStatusDaoImpl implements ServiceStatusDao {
 
             return Optional.empty();
         }
+    }
+
+    @Override
+    public boolean deleteFromServiceConfigurationUuid(UUID uuid) {
+        var sql = "delete from service_status where service_configuration_id = (select sc.id from service_configuration sc where sc.uuid = :uuid)";
+
+        return template.update(sql, Collections.singletonMap("uuid", uuid.toString())) > 0;
     }
 }

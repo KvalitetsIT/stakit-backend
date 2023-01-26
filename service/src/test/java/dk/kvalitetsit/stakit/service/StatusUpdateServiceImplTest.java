@@ -70,7 +70,7 @@ public class StatusUpdateServiceImplTest {
         var serviceStatus = new ServiceStatusEntity(10L, 10L, "NOT_OK", OffsetDateTime.now(), "message");
 
         Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenThrow(DuplicateKeyException.class);
-        Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null, "description"));
+        Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null, "OK", "description"));
         Mockito.when(serviceStatusDao.findLatest(Mockito.any())).thenReturn(Optional.of(serviceStatus));
         Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
 
@@ -103,7 +103,7 @@ public class StatusUpdateServiceImplTest {
         var serviceStatus = new ServiceStatusEntity(10L, 10L, "NOT_OK", OffsetDateTime.now(), "message");
 
         Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenThrow(DuplicateKeyException.class);
-        Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null, "description"));
+        Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null, "OK", "description"));
         Mockito.when(serviceStatusDao.findLatest(Mockito.any())).thenReturn(Optional.of(serviceStatus));
         Mockito.when(serviceStatusDao.insert(Mockito.any())).thenReturn(11L);
         Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
@@ -116,6 +116,7 @@ public class StatusUpdateServiceImplTest {
             assertFalse(x.ignoreServiceName());
             assertEquals(groupId, x.groupConfigurationId());
             assertNotNull(x.uuid());
+            assertEquals(input.status(), Status.valueOf(x.status()));
             assertNull(x.description());
 
             return true;

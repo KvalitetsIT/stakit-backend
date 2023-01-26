@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServiceStatusDaoImplTest extends AbstractDaoTest {
     @Autowired
@@ -25,7 +27,7 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testFindById() {
-        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false, defaultGroupId, "description");
+        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name",false, defaultGroupId, "OK", "description");
 
         var input = ServiceStatusEntity.createInstance(statusConfigurationId,  "OK", OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS), "SOME MESSAGE");
 
@@ -44,7 +46,7 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testInsert() {
-        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name", false, defaultGroupId, "description");
+        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name", false, defaultGroupId, "OK", "description");
 
         var input = ServiceStatusEntity.createInstance(statusConfigurationId,  "OK", OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS), "SOME MESSAGE");
 
@@ -63,7 +65,7 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testGetLatest() {
-        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false, defaultGroupId, "description");
+        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false, defaultGroupId, "OK", "description");
 
         var now = OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS);
 
@@ -78,5 +80,32 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
         assertEquals("OK", latest.get().status());
         assertEquals(now, latest.get().statusTime());
         assertNull(latest.get().message());
+    }
+
+    @Test
+    public void testDelete() {
+        var serviceUuid = UUID.randomUUID();
+        var statusConfigurationId = testDataHelper.createServiceConfiguration("service", "service name", false, defaultGroupId, serviceUuid, "OK", "description");
+
+        var input = ServiceStatusEntity.createInstance(statusConfigurationId,  "OK", OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS), "SOME MESSAGE");
+
+        var serviceStatusId = serviceStatusDao.insert(input);
+
+        var result = serviceStatusDao.findAll();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        // Delete
+        var deleted = serviceStatusDao.deleteFromServiceConfigurationUuid(serviceUuid);
+        assertTrue(deleted);
+
+        assertTrue(serviceStatusDao.findById(serviceStatusId).isEmpty());
+
+    }
+
+    @Test
+    public void testDeleteNotFound() {
+        var result = serviceStatusDao.deleteFromServiceConfigurationUuid(UUID.randomUUID());
+        assertFalse(result);
     }
 }

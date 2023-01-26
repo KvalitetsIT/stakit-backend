@@ -2,6 +2,7 @@ package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
 import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
+import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.service.mapper.ServiceMapper;
 import dk.kvalitetsit.stakit.service.model.ServiceModel;
@@ -15,10 +16,12 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
 
     private final ServiceConfigurationDao serviceConfigurationDao;
     private final GroupConfigurationDao groupConfigurationDao;
+    private final ServiceStatusDao serviceStatusDao;
 
-    public ServiceManagementServiceImpl(ServiceConfigurationDao serviceConfigurationDao, GroupConfigurationDao groupConfigurationDao) {
+    public ServiceManagementServiceImpl(ServiceConfigurationDao serviceConfigurationDao, GroupConfigurationDao groupConfigurationDao, ServiceStatusDao serviceStatusDao) {
         this.serviceConfigurationDao = serviceConfigurationDao;
         this.groupConfigurationDao = groupConfigurationDao;
+        this.serviceStatusDao = serviceStatusDao;
     }
 
     @Override
@@ -72,6 +75,7 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
     @Override
     @Transactional
     public boolean deleteService(UUID uuid) {
+        serviceStatusDao.deleteFromServiceConfigurationUuid(uuid);
         return serviceConfigurationDao.delete(uuid);
     }
 }

@@ -194,7 +194,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/services'
+                  $ref: '#/components/schemas/service'
         '404':
           $ref: '#/components/responses/404'
         '401':
@@ -214,7 +214,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/services'
+                  $ref: '#/components/schemas/service'
         '401':
           $ref: '#/components/responses/401'
     post:
@@ -667,36 +667,6 @@ components:
     service:
       type: object
       required:
-        - service
-        - name
-        - ignore_service_name
-      properties:
-        service_identifier:
-          description: Unique identifier of the service.
-          type: string
-          example: "4fa59cef25fbcab4155e6eb5201a27ce1eb010408e4550b1313f1126"
-          maxLength: 100
-        name:
-          description: The name of the service.
-          type: string
-          example: "My Cool Service"
-          maxLength: 100
-        ignore_service_name:
-          description: False if the service name from the status update adapter should be used.
-          type: boolean
-        group:
-          description: Group the service belongs to.
-          type: string
-          format: uuid
-        description:
-          description: Description of service
-          type: string
-          example: "Very descriptive"
-          maxLength: 250
-
-    services:
-      type: object
-      required:
         - uuid
         - service
         - name
@@ -719,6 +689,10 @@ components:
         ignore_service_name:
           description: False if the service name from the status update adapter should be used.
           type: boolean
+        status:
+          description: Status of service.
+          type: string
+          enum: [ OK, NOT_OK ]
         group:
           description: Group the service belongs to.
           type: string

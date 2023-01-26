@@ -80,8 +80,9 @@ public class StakitConfiguration implements WebMvcConfigurer {
 
     @Bean
     public ServiceManagementService serviceManagementService(ServiceConfigurationDao serviceConfigurationDao,
-                                                             GroupConfigurationDao groupConfigurationDao) {
-        return new ServiceManagementServiceImpl(serviceConfigurationDao, groupConfigurationDao);
+                                                             GroupConfigurationDao groupConfigurationDao,
+                                                             ServiceStatusDao serviceStatusDao) {
+        return new ServiceManagementServiceImpl(serviceConfigurationDao, groupConfigurationDao, serviceStatusDao);
     }
 
     @Bean

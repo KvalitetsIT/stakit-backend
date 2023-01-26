@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.GroupInput;
 import org.openapitools.model.GroupPatch;
+import org.openapitools.model.Service;
 import org.springframework.http.HttpStatus;
 
 import java.util.*;
@@ -239,7 +240,7 @@ public class GroupModelManagementControllerTest {
 
         Mockito.when(groupService.getServicesInGroup(input)).thenReturn(Optional.of(serviceModelList));
 
-        var service = new ServiceModel("serviceName", "serviceIdentifier", true, input, UUID.randomUUID(), "serviceDescription");
+        var service = new ServiceModel("serviceName", "serviceIdentifier", true, input, UUID.randomUUID(), "OK", "serviceDescription");
         serviceModelList.add(service);
 
         Mockito.when(groupService.getServicesInGroup(input)).thenReturn(Optional.of(serviceModelList));
@@ -254,6 +255,7 @@ public class GroupModelManagementControllerTest {
         assertEquals(service.ignoreServiceName(), result.getBody().get(0).getIgnoreServiceName());
         assertEquals(service.group(), result.getBody().get(0).getGroup());
         assertEquals(service.uuid(), result.getBody().get(0).getUuid());
+        assertEquals(Service.StatusEnum.valueOf(service.status()), result.getBody().get(0).getStatus());
         assertEquals(service.description(), result.getBody().get(0).getDescription());
 
     }

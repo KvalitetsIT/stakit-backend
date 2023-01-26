@@ -6,6 +6,7 @@ import dk.kvalitetsit.stakit.service.model.ServiceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openapitools.model.Service;
 import org.openapitools.model.ServiceCreate;
 import org.openapitools.model.ServiceUpdate;
 import org.springframework.http.HttpStatus;
@@ -32,8 +33,8 @@ public class ServiceModelManagementControllerTest {
 
     @Test
     public void testGetAllServices() {
-        var serviceOne = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID().toString());
-        var serviceTwo = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, UUID.randomUUID(), UUID.randomUUID().toString());
+        var serviceOne = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID(),"OK", UUID.randomUUID().toString());
+        var serviceTwo = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, UUID.randomUUID(), "OK", UUID.randomUUID().toString());
 
         Mockito.when(serviceManagementService.getServices()).thenReturn(Arrays.asList(serviceOne, serviceTwo));
 
@@ -50,6 +51,7 @@ public class ServiceModelManagementControllerTest {
         assertEquals(serviceOne.serviceIdentifier(), firstBodyElement.getServiceIdentifier());
         assertEquals(serviceOne.ignoreServiceName(), firstBodyElement.getIgnoreServiceName());
         assertEquals(serviceOne.group(), firstBodyElement.getGroup());
+        assertEquals(Service.StatusEnum.valueOf(serviceOne.status()), firstBodyElement.getStatus());
         assertEquals(serviceOne.description(), firstBodyElement.getDescription());
 
         var secondBodyElement = body.get(1);
@@ -57,6 +59,7 @@ public class ServiceModelManagementControllerTest {
         assertEquals(serviceTwo.serviceIdentifier(), secondBodyElement.getServiceIdentifier());
         assertEquals(serviceTwo.ignoreServiceName(), secondBodyElement.getIgnoreServiceName());
         assertNull(secondBodyElement.getGroup());
+        assertEquals(Service.StatusEnum.valueOf(serviceTwo.status()), secondBodyElement.getStatus());
         assertEquals(serviceTwo.description(), secondBodyElement.getDescription());
 
         Mockito.verify(serviceManagementService, times(1)).getServices();
@@ -80,7 +83,7 @@ public class ServiceModelManagementControllerTest {
     @Test
     public void testGetService() {
         var serviceUuid = UUID.randomUUID();
-        var service = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID().toString());
+        var service = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), UUID.randomUUID(), "OK", UUID.randomUUID().toString());
 
         Mockito.when(serviceManagementService.getService(serviceUuid)).thenReturn(Optional.of(service));
 
@@ -95,6 +98,7 @@ public class ServiceModelManagementControllerTest {
         assertEquals(service.serviceIdentifier(), body.getServiceIdentifier());
         assertEquals(service.ignoreServiceName(), body.getIgnoreServiceName());
         assertEquals(service.group(), body.getGroup());
+        assertEquals(Service.StatusEnum.valueOf(service.status()), body.getStatus());
         assertEquals(service.description(), body.getDescription());
 
         Mockito.verify(serviceManagementService, times(1)).getService(serviceUuid);
