@@ -64,6 +64,8 @@ public class StaKitIT extends AbstractIntegrationTest {
 
         assertNotNull(result);
 
+        assertTrue(result.stream().allMatch(x -> x.getUuid() != null));
+
         var group = result.stream().filter(x ->x.getName().equals("Default")).findFirst().orElseThrow();
         assertEquals("Default", group.getName());
 

@@ -42,10 +42,10 @@ public class StakitControllerTest {
 
     @Test
     public void testStatusGetGrouped() {
-        var groupOne = new StatusGroupedModel("Default", new ArrayList<>(), null);
+        var groupOne = new StatusGroupedModel("Default", new ArrayList<>(), null, UUID.randomUUID());
         groupOne.status().add(new StatusElementModel(Status.OK, "In Default Group", "Description"));
 
-        var groupTwo = new StatusGroupedModel("Group Two", new ArrayList<>(), "Description Two");
+        var groupTwo = new StatusGroupedModel("Group Two", new ArrayList<>(), "Description Two", UUID.randomUUID());
         groupTwo.status().add(new StatusElementModel(Status.OK, "Name", "Description One"));
         groupTwo.status().add(new StatusElementModel(Status.NOT_OK, "Name Two", "Description Two"));
 
@@ -67,6 +67,7 @@ public class StakitControllerTest {
         var statusGroup = statusGroupList.get(0);
         assertEquals(groupOne.groupName(), statusGroup.getName());
         assertEquals(groupOne.description(), statusGroup.getDescription());
+        assertEquals(groupOne.groupUuid(), statusGroup.getUuid());
 
         assertEquals(groupOne.status().get(0).statusName(), statusGroup.getServices().get(0).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());
@@ -76,6 +77,7 @@ public class StakitControllerTest {
         statusGroup = statusGroupList.get(1);
         assertEquals(groupTwo.groupName(), statusGroup.getName());
         assertEquals(groupTwo.description(), statusGroup.getDescription());
+        assertEquals(groupTwo.groupUuid(), statusGroup.getUuid());
 
         assertEquals(groupTwo.status().get(0).statusName(), statusGroup.getServices().get(0).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());

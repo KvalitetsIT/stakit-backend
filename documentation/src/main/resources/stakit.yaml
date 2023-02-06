@@ -541,6 +541,10 @@ components:
           type: string
           example: "My Cool Group Of Services"
           maxLength: 100
+        uuid:
+          description: Group UUID
+          type: string
+          format: uuid
         services:
           description: Array of services and their status.
           type: array
