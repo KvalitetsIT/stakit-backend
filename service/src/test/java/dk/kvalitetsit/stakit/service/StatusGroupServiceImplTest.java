@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
@@ -26,7 +27,7 @@ public class StatusGroupServiceImplTest {
 
     @Test
     public void testGetNoServices() {
-        var daoResult = new GroupedStatus("Default", null, null, null, null);
+        var daoResult = new GroupedStatus("Default", null, null, null, null, UUID.randomUUID());
         Mockito.when(groupStatusDao.getGroupedStatus()).thenReturn(Collections.singletonList(daoResult));
 
         var result = statusGroupServiceImpl.getStatusGrouped();
@@ -37,15 +38,18 @@ public class StatusGroupServiceImplTest {
         assertEquals("Default", group.groupName());
         assertTrue(group.status().isEmpty());
         assertNull(group.description());
+        assertEquals(daoResult.groupUuid(), group.groupUuid());
 
         Mockito.verify(groupStatusDao, times(1)).getGroupedStatus();
     }
 
     @Test
     public void testGetServices() {
-        var groupOne = new GroupedStatus("Default", "OK", "Service One", "Group Description One", "Service Description One");
-        var groupTwo = new GroupedStatus("Group One", "NOT_OK", "Service Two", "Group Description Two", "Service Description Two");
-        var groupThree = new GroupedStatus("Group One", "OK", "Service Three", "Group Description Two", "Service Description Three");
+        var groupUuidDefault = UUID.randomUUID();
+        var groupUuidOne = UUID.randomUUID();
+        var groupOne = new GroupedStatus("Default", "OK", "Service One", "Group Description One", "Service Description One", groupUuidDefault);
+        var groupTwo = new GroupedStatus("Group One", "NOT_OK", "Service Two", "Group Description Two", "Service Description Two", groupUuidOne);
+        var groupThree = new GroupedStatus("Group One", "OK", "Service Three", "Group Description Two", "Service Description Three", groupUuidOne);
 
         var dbResult = Arrays.asList(groupOne, groupTwo, groupThree);
         Mockito.when(groupStatusDao.getGroupedStatus()).thenReturn(dbResult);
@@ -61,12 +65,13 @@ public class StatusGroupServiceImplTest {
         assertEquals(Status.OK, firstGroupResult.status().get(0).status());
         assertEquals(groupOne.serviceName(), firstGroupResult.status().get(0).statusName());
         assertEquals(groupOne.serviceDescription(), firstGroupResult.status().get(0).description());
-
+        assertEquals(groupUuidDefault, firstGroupResult.groupUuid());
 
         var secondGroupResult = result.get(0);
         assertEquals("Group One", secondGroupResult.groupName());
         assertEquals(2, secondGroupResult.status().size());
         assertEquals("Group Description Two", secondGroupResult.description());
+        assertEquals(groupUuidOne, secondGroupResult.groupUuid());
 
         assertEquals(Status.NOT_OK, secondGroupResult.status().get(0).status());
         assertEquals(groupTwo.serviceName(), secondGroupResult.status().get(0).statusName());

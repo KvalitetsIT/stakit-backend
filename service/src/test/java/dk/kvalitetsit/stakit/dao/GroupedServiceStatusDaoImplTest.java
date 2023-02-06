@@ -36,7 +36,9 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testGetGrouped() {
-        var groupOne = testDataHelper.createGroup("Group One", UUID.randomUUID(), "Group Description One");
+        var groupUuid = UUID.randomUUID();
+        var groupOne = testDataHelper.createGroup("Group One", groupUuid, "Group Description One");
+
 
         var serviceConfigurationOne = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service One", false, groupOne, "OK", "Description One");
         var serviceConfigurationTwo = testDataHelper.createServiceConfiguration(UUID.randomUUID().toString(), "Service Two", false, groupOne, "OK", "Description Two");
@@ -56,6 +58,7 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
         assertEquals("Default", groupedStatus.groupName());
         assertEquals("NOT_OK", groupedStatus.status());
         assertEquals("Description Three", groupedStatus.serviceDescription());
+        assertNotNull(groupedStatus.groupUuid());
         assertNull(groupedStatus.groupDescription());
 
         groupedStatus = result.get(1);
@@ -64,6 +67,7 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
         assertEquals("OK", groupedStatus.status());
         assertEquals("Description One", groupedStatus.serviceDescription());
         assertEquals("Group Description One", groupedStatus.groupDescription());
+        assertEquals(groupUuid, groupedStatus.groupUuid());
 
         groupedStatus = result.get(2);
         assertEquals("Service Two", groupedStatus.serviceName());
@@ -71,5 +75,6 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
         assertEquals("NOT_OK", groupedStatus.status());
         assertEquals("Description Two", groupedStatus.serviceDescription());
         assertEquals("Group Description One", groupedStatus.groupDescription());
+        assertEquals(groupUuid, groupedStatus.groupUuid());
     }
 }
