@@ -559,12 +559,12 @@ components:
     group:
       type: object
       required:
-        - id
+        - uuid
         - name
         - display_order
       properties:
-        id:
-          description: Group name
+        uuid:
+          description: Group uuid
           type: string
           format: uuid
         name:

@@ -67,7 +67,7 @@ public class GroupModelIT extends AbstractIntegrationTest {
         assertNotNull(result);
         assertEquals(groupUpdate.getName(), result.getName());
         assertEquals(groupUpdate.getDisplayOrder(), result.getDisplayOrder());
-        assertEquals(response.getUuid(), result.getId());
+        assertEquals(response.getUuid(), result.getUuid());
         assertEquals(groupUpdate.getDescription(), result.getDescription());
     }
 

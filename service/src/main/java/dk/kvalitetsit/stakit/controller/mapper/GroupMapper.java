@@ -26,7 +26,7 @@ public class GroupMapper {
     public static Group mapGroup(GroupGetModel groupModel) {
         return new Group()
                 .displayOrder(groupModel.displayOrder())
-                .id(groupModel.uuid())
+                .uuid(groupModel.uuid())
                 .name(groupModel.name())
                 .services(groupModel.services())
                 .description(groupModel.description());
