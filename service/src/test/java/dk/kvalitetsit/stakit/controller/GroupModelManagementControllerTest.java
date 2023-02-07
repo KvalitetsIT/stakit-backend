@@ -48,13 +48,13 @@ public class GroupModelManagementControllerTest {
         assertNotNull(body);
         assertEquals(2, body.size());
 
-        assertEquals(groupOne.uuid(), body.get(0).getId());
+        assertEquals(groupOne.uuid(), body.get(0).getUuid());
         assertEquals(groupOne.name(), body.get(0).getName());
         assertEquals(groupOne.displayOrder(), body.get(0).getDisplayOrder());
         assertEquals(groupOne.services(), body.get(0).getServices());
         assertEquals(groupOne.description(), body.get(0).getDescription());
 
-        assertEquals(groupTwo.uuid(), body.get(1).getId());
+        assertEquals(groupTwo.uuid(), body.get(1).getUuid());
         assertEquals(groupTwo.name(), body.get(1).getName());
         assertEquals(groupTwo.displayOrder(), body.get(1).getDisplayOrder());
         assertEquals(groupTwo.services(), body.get(1).getServices());
@@ -153,7 +153,7 @@ public class GroupModelManagementControllerTest {
         assertNotNull(result);
         assertNotNull(result.getBody());
 
-        assertEquals(uuid, result.getBody().getId());
+        assertEquals(uuid, result.getBody().getUuid());
         assertEquals("name", result.getBody().getName());
         assertEquals(10, result.getBody().getDisplayOrder());
         assertEquals(1, result.getBody().getServices().size());
