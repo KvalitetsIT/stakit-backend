@@ -43,11 +43,11 @@ public class StakitControllerTest {
     @Test
     public void testStatusGetGrouped() {
         var groupOne = new StatusGroupedModel("Default", new ArrayList<>(), null, UUID.randomUUID());
-        groupOne.status().add(new StatusElementModel(Status.OK, "In Default Group", "Description"));
+        groupOne.status().add(new StatusElementModel(Status.OK, "In Default Group", "Description", UUID.randomUUID()));
 
         var groupTwo = new StatusGroupedModel("Group Two", new ArrayList<>(), "Description Two", UUID.randomUUID());
-        groupTwo.status().add(new StatusElementModel(Status.OK, "Name", "Description One"));
-        groupTwo.status().add(new StatusElementModel(Status.NOT_OK, "Name Two", "Description Two"));
+        groupTwo.status().add(new StatusElementModel(Status.OK, "Name", "Description One", UUID.randomUUID()));
+        groupTwo.status().add(new StatusElementModel(Status.NOT_OK, "Name Two", "Description Two", UUID.randomUUID()));
 
         var serviceResponse = new ArrayList<StatusGroupedModel>();
         serviceResponse.add(groupOne);
@@ -72,6 +72,7 @@ public class StakitControllerTest {
         assertEquals(groupOne.status().get(0).statusName(), statusGroup.getServices().get(0).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());
         assertEquals(groupOne.status().get(0).description(), statusGroup.getServices().get(0).getDescription());
+        assertEquals(groupOne.status().get(0).uuid(), statusGroup.getServices().get(0).getUuid());
 
         // Assert second one
         statusGroup = statusGroupList.get(1);
@@ -82,10 +83,13 @@ public class StakitControllerTest {
         assertEquals(groupTwo.status().get(0).statusName(), statusGroup.getServices().get(0).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.OK, statusGroup.getServices().get(0).getStatus());
         assertEquals(groupTwo.status().get(0).description(), statusGroup.getServices().get(0).getDescription());
+        assertEquals(groupTwo.status().get(0).uuid(), statusGroup.getServices().get(0).getUuid());
 
         assertEquals(groupTwo.status().get(1).statusName(), statusGroup.getServices().get(1).getName());
         assertEquals(org.openapitools.model.ServiceStatus.StatusEnum.NOT_OK, statusGroup.getServices().get(1).getStatus());
         assertEquals(groupTwo.status().get(1).description(), statusGroup.getServices().get(1).getDescription());
+        assertEquals(groupTwo.status().get(1).uuid(), statusGroup.getServices().get(1).getUuid());
+
     }
 
     @Test

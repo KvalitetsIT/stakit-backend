@@ -32,6 +32,7 @@ public class StakitMapper {
             s.setName(x.statusName());
             s.setStatus(org.openapitools.model.ServiceStatus.StatusEnum.fromValue(x.status().toString()));
             s.setDescription(x.description());
+            s.setUuid(x.uuid());
 
             statusGroup.addServicesItem(s);
         });

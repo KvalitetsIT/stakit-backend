@@ -36,7 +36,7 @@ public class StatusGroupServiceImpl implements StatusGroupService {
                     status = "OK";
                 }
                 statusGroupModel.status()
-                        .add(new StatusElementModel(Status.valueOf(status), x.serviceName(), x.serviceDescription()));
+                        .add(new StatusElementModel(Status.valueOf(status), x.serviceName(), x.serviceDescription(), x.serviceUuid()));
             }
         });
 
