@@ -7,10 +7,7 @@ import org.openapitools.client.api.AdapterApi;
 import org.openapitools.client.api.AnnouncementsApi;
 import org.openapitools.client.api.GroupManagementApi;
 import org.openapitools.client.api.StaKitApi;
-import org.openapitools.client.model.AnnouncementCreate;
-import org.openapitools.client.model.GroupInput;
-import org.openapitools.client.model.ServiceStatus;
-import org.openapitools.client.model.StatusUpdate;
+import org.openapitools.client.model.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -65,6 +62,7 @@ public class StaKitIT extends AbstractIntegrationTest {
         assertNotNull(result);
 
         assertTrue(result.stream().allMatch(x -> x.getUuid() != null));
+        assertTrue(result.stream().flatMap(x -> x.getServices().stream()).allMatch(x -> x.getUuid() != null));
 
         var group = result.stream().filter(x ->x.getName().equals("Default")).findFirst().orElseThrow();
         assertEquals("Default", group.getName());

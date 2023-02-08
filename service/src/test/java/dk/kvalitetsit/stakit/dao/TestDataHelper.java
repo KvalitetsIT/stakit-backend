@@ -21,9 +21,13 @@ public class TestDataHelper {
 
     @Autowired
     private GroupConfigurationDao groupConfigurationDao;
-    
+
+    long createServiceConfiguration(UUID serviceUuid, String service, String serviceName, boolean ignoreServiceName, long groupConfigurationId, String status, String description) {
+        return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, serviceUuid, serviceName, ignoreServiceName, groupConfigurationId, status, description));
+    }
+
     long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName, long groupConfigurationId, String status, String description) {
-        return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, UUID.randomUUID(), serviceName, ignoreServiceName, groupConfigurationId, status, description));
+        return createServiceConfiguration(UUID.randomUUID(), service, serviceName, ignoreServiceName, groupConfigurationId,  status, description);
     }
 
     long createServiceConfiguration(String service, String serviceName, boolean ignoreServiceName, Long groupConfigurationId, UUID serviceUuid, String status, String description) {
