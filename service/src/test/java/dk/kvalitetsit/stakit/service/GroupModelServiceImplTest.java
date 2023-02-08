@@ -109,11 +109,36 @@ public class GroupModelServiceImplTest {
         var input = UUID.randomUUID();
 
         Mockito.when(groupDao.delete(input)).thenReturn(true);
+        Mockito.when(serviceConfigurationDao.findByGroupUuid(input)).thenReturn(Collections.emptyList());
 
         var result = groupService.deleteGroup(input);
         assertTrue(result);
 
         Mockito.verify(groupDao, times(1)).delete(input);
+        Mockito.verify(groupDao, times(1)).findDefaultGroupId();
+        Mockito.verify(serviceConfigurationDao, times(1)).findByGroupUuid(input);
+
+        Mockito.verifyNoMoreInteractions(groupDao, serviceConfigurationDao);
+    }
+
+    @Test
+    public void testDeleteServicesMoved() {
+        var input = UUID.randomUUID();
+
+        var serviceConfigurationEntity = new ServiceConfigurationEntity(1L, UUID.randomUUID(), "service", "name", true, 10L, "OK", "desc");
+
+        Mockito.when(groupDao.delete(input)).thenReturn(true);
+        Mockito.when(groupDao.findDefaultGroupId()).thenReturn(11L);
+        Mockito.when(serviceConfigurationDao.findByGroupUuid(input)).thenReturn(Collections.singletonList(serviceConfigurationEntity));
+
+        var result = groupService.deleteGroup(input);
+        assertTrue(result);
+
+        Mockito.verify(groupDao, times(1)).delete(input);
+        Mockito.verify(groupDao, times(1)).findDefaultGroupId();
+        Mockito.verify(serviceConfigurationDao, times(1)).findByGroupUuid(input);
+        Mockito.verify(serviceConfigurationDao, times(1)).updateByUuid(new ServiceConfigurationEntity(serviceConfigurationEntity.id(), serviceConfigurationEntity.uuid(), serviceConfigurationEntity.service(), serviceConfigurationEntity.name(), serviceConfigurationEntity.ignoreServiceName(), 11L, null, serviceConfigurationEntity.description()));
+        Mockito.verifyNoMoreInteractions(groupDao, serviceConfigurationDao);
     }
 
     @Test
@@ -126,6 +151,10 @@ public class GroupModelServiceImplTest {
         assertFalse(result);
 
         Mockito.verify(groupDao, times(1)).delete(input);
+        Mockito.verify(serviceConfigurationDao, times(1)).findByGroupUuid(input);
+        Mockito.verify(groupDao, times(1)).findDefaultGroupId();
+
+        Mockito.verifyNoMoreInteractions(groupDao, serviceConfigurationDao);
     }
 
     @Test

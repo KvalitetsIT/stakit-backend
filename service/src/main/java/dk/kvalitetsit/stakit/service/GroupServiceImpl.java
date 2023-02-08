@@ -51,6 +51,12 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public boolean deleteGroup(UUID uuid) {
+        var servicesInGroup = serviceConfigurationDao.findByGroupUuid(uuid);
+        var defaultGroup = groupConfigurationDao.findDefaultGroupId();
+        servicesInGroup.forEach(x -> {
+            serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(x.id(), x.uuid(), x.service(), x.name(), x.ignoreServiceName(), defaultGroup, null, x.description()));
+        });
+
         return groupConfigurationDao.delete(uuid);
     }
 
