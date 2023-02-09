@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 
-public class GroupModelManagementControllerTest {
+public class GroupManagementControllerTest {
     private GroupManagementController groupManagementController;
     private GroupService groupService;
 

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 
-public class GroupModelServiceImplTest {
+public class GroupServiceImplTest {
     private GroupConfigurationDao groupDao;
     private GroupService groupService;
     private ServiceConfigurationDao serviceConfigurationDao;
