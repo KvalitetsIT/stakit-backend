@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 
-public class GroupModelManagementControllerTest {
+public class GroupManagementControllerTest {
     private GroupManagementController groupManagementController;
     private GroupService groupService;
 
@@ -67,10 +67,11 @@ public class GroupModelManagementControllerTest {
         input.setName("name");
         input.setDisplayOrder(10);
         input.setDescription("description");
+        input.setServices(Collections.singletonList(UUID.randomUUID()));
 
         var expectedUuid = UUID.randomUUID();
 
-        Mockito.when(groupService.createGroup(GroupModel.createInstance(input.getName(), input.getDisplayOrder(), input.getDescription()))).thenReturn(expectedUuid);
+        Mockito.when(groupService.createGroup(GroupModel.createInstance(input.getName(), input.getDisplayOrder(), input.getDescription(), input.getServices()))).thenReturn(expectedUuid);
 
         var result = groupManagementController.v1GroupsPost(input);
         assertNotNull(result);
@@ -86,8 +87,9 @@ public class GroupModelManagementControllerTest {
         input.setName("name");
         input.setDisplayOrder(10);
         input.setDescription("description");
+        input.setServices(Collections.singletonList(UUID.randomUUID()));
 
-        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder(), input.getDescription());
+        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder(), input.getDescription(), input.getServices());
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(true);
 
@@ -106,11 +108,11 @@ public class GroupModelManagementControllerTest {
         input.setDisplayOrder(10);
         input.setDescription("description");
 
-        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder(), input.getDescription());
+        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder(), input.getDescription(), Collections.emptyList());
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(false);
 
-        var expectedException = assertThrows(ResourceNotFoundException.class, () ->groupManagementController.v1GroupsUuidPut(uuid, input));
+        var expectedException = assertThrows(ResourceNotFoundException.class, () -> groupManagementController.v1GroupsUuidPut(uuid, input));
         assertNotNull(expectedException);
         assertEquals("Group with uuid %s not found".formatted(uuid), expectedException.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());
@@ -285,5 +287,4 @@ public class GroupModelManagementControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());
 
     }
-
 }

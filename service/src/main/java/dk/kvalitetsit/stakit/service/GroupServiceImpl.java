@@ -29,7 +29,12 @@ public class GroupServiceImpl implements GroupService {
     public UUID createGroup(GroupModel groupModel) {
         var uuid = UUID.randomUUID();
 
-        groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(uuid, groupModel.name(), groupModel.displayOrder(), groupModel.description()));
+        var id = groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(uuid, groupModel.name(), groupModel.displayOrder(), groupModel.description()));
+
+        groupModel.services().forEach(x -> {
+            var serviceConfiguration = serviceConfigurationDao.findByUuidWithGroupUuid(x).orElseThrow(() -> new InvalidDataException("Service with UUID %s not found.".formatted(x)));
+            serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(serviceConfiguration.id(), serviceConfiguration.uuid(), serviceConfiguration.service(), serviceConfiguration.name(), serviceConfiguration.ignoreServiceName(), id, null, serviceConfiguration.description()));
+        });
 
         return uuid;
     }
@@ -37,6 +42,18 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public boolean updateGroup(GroupModel groupModel) {
+        if(!groupModel.services().isEmpty()) {
+            var groupConfiguration = groupConfigurationDao.findByUuid(groupModel.uuid());
+            if(groupConfiguration.isEmpty()) {
+                return true;
+            }
+
+            groupModel.services().forEach(x -> {
+                var serviceConfiguration = serviceConfigurationDao.findByUuidWithGroupUuid(x).orElseThrow(() -> new InvalidDataException("Service with UUID %s not found.".formatted(x)));
+                serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(serviceConfiguration.id(), serviceConfiguration.uuid(), serviceConfiguration.service(), serviceConfiguration.name(), serviceConfiguration.ignoreServiceName(), groupConfiguration.get().id(), null, serviceConfiguration.description()));
+            });
+        }
+
         return groupConfigurationDao.update(GroupConfigurationEntity.createInstance(groupModel.uuid(), groupModel.name(), groupModel.displayOrder(), groupModel.description()));
     }
 

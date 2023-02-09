@@ -85,6 +85,8 @@ paths:
                 $ref: '#/components/schemas/create-response'
         '401':
           $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
 
     get:
       tags:
@@ -164,6 +166,8 @@ paths:
           $ref: '#/components/responses/404'
         '401':
           $ref: '#/components/responses/401'
+        '400':
+          $ref: '#/components/responses/400'
     delete:
       tags:
         - group-management
@@ -604,6 +608,7 @@ components:
       required:
         - name
         - display_order
+        - services
       properties:
         name:
           description: Group name
@@ -619,6 +624,13 @@ components:
           type: string
           example: "Very descriptive"
           maxLength: 250
+        services:
+          description: Array of UUID's for the services in the group.
+          type: array
+          items:
+            type: string
+            format: uuid
+            description: Service UUID.
 
     announcements-to-show:
       type: object

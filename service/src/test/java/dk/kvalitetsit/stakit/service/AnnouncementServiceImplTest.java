@@ -16,7 +16,7 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 
-public class AnnouncementModelServiceImplTest {
+public class AnnouncementServiceImplTest {
     private AnnouncementDao announcementDao;
     private AnnouncementServiceImpl announcementService;
 
