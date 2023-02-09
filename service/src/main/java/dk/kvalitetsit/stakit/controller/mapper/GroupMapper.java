@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 
 public class GroupMapper {
     public static GroupModel mapCreateGroup(GroupInput from) {
-        return GroupModel.createInstance(from.getName(), from.getDisplayOrder(), from.getDescription());
+        return GroupModel.createInstance(from.getName(), from.getDisplayOrder(), from.getDescription(), from.getServices());
     }
 
     public static GroupModel mapUpdateGroup(UUID uuid, GroupInput from) {
-        return new GroupModel(uuid, from.getName(), from.getDisplayOrder(), from.getDescription());
+        return new GroupModel(uuid, from.getName(), from.getDisplayOrder(), from.getDescription(), from.getServices());
     }
 
     public static List<org.openapitools.model.Group> mapGetGroups(List<GroupGetModel> from) {

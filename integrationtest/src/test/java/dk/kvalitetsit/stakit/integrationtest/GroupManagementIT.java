@@ -17,11 +17,11 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GroupModelIT extends AbstractIntegrationTest {
+public class GroupManagementIT extends AbstractIntegrationTest {
     private final GroupManagementApi groupManagementApi;
     private final ServiceManagementApi serviceManagementApi;
 
-    public GroupModelIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
+    public GroupManagementIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
         apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());
@@ -52,6 +52,66 @@ public class GroupModelIT extends AbstractIntegrationTest {
         assertNotNull(result);
         assertTrue(result.stream().anyMatch(x -> groupUpdate.getDisplayOrder().equals(x.getDisplayOrder()) &&
                groupUpdate.getName().equals(x.getName()) && groupUpdate.getDescription().equals(x.getDescription())));
+    }
+
+    @Test
+    public void testCreateUpdateAndGetGroupWithServices() throws ApiException {
+        var serviceInput = new ServiceCreate()
+                .ignoreServiceName(false)
+                .serviceIdentifier(UUID.randomUUID().toString())
+                .name(UUID.randomUUID().toString());
+
+        var service = serviceManagementApi.v1ServicesPost(serviceInput);
+
+        var groupUpdate = new GroupInput();
+        groupUpdate.setName("name");
+        groupUpdate.setDisplayOrder(20);
+        groupUpdate.setDescription("description");
+
+        var response = groupManagementApi.v1GroupsPostWithHttpInfo(groupUpdate);
+        assertEquals(201, response.getStatusCode());
+
+        var uuid = response.getData().getUuid();
+        assertEquals(uuid.toString(), response.getHeaders().get("Location").get(0));
+
+        groupUpdate.setDisplayOrder(10);
+        groupUpdate.setName("name updated");
+        groupUpdate.setDescription("description updated");
+        groupUpdate.addServicesItem(service.getUuid());
+        groupManagementApi.v1GroupsUuidPut(uuid, groupUpdate);
+
+        var result = groupManagementApi.v1GroupsGet();
+        assertNotNull(result);
+        assertTrue(result.stream().anyMatch(x -> groupUpdate.getDisplayOrder().equals(x.getDisplayOrder()) &&
+                groupUpdate.getName().equals(x.getName()) &&
+                groupUpdate.getServices().stream().allMatch(s -> s.equals(service.getUuid())) &&
+                groupUpdate.getDescription().equals(x.getDescription())));
+    }
+
+    @Test
+    public void testCreateGetGroupWithServices() throws ApiException {
+        var serviceInput = new ServiceCreate()
+                .ignoreServiceName(false)
+                .serviceIdentifier(UUID.randomUUID().toString())
+                .name(UUID.randomUUID().toString());
+
+        var service = serviceManagementApi.v1ServicesPost(serviceInput);
+
+        var groupUpdate = new GroupInput();
+        groupUpdate.setName("name");
+        groupUpdate.setDisplayOrder(20);
+        groupUpdate.setDescription("description");
+        groupUpdate.addServicesItem(service.getUuid());
+
+        var response = groupManagementApi.v1GroupsPostWithHttpInfo(groupUpdate);
+        assertEquals(201, response.getStatusCode());
+
+        var result = groupManagementApi.v1GroupsGet();
+        assertNotNull(result);
+        assertTrue(result.stream().anyMatch(x -> groupUpdate.getDisplayOrder().equals(x.getDisplayOrder()) &&
+                groupUpdate.getName().equals(x.getName()) &&
+                groupUpdate.getServices().stream().allMatch(s -> s.equals(service.getUuid())) &&
+                groupUpdate.getDescription().equals(x.getDescription())));
     }
 
     @Test
