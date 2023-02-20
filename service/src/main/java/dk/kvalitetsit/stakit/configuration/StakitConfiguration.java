@@ -143,10 +143,8 @@ public class StakitConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public JwtTokenParser jwtTokenParser(@Value("${JWT_SIGNING_KEY}") String publicKey) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
-        var pemPublicKey = Files.readString(Path.of(publicKey));
-
-        return new JwtTokenParser(pemPublicKey);
+    public JwtTokenParser jwtTokenParser(@Value("${JWT_SIGNING_KEY}") String publicKey) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        return new JwtTokenParser(publicKey);
     }
 
     @Bean

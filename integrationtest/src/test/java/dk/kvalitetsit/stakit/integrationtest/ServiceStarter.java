@@ -29,6 +29,16 @@ public class ServiceStarter {
     private int smtpWebPort;
     private int smtpPort;
 
+    public final String jwtSigningKey = "-----BEGIN PUBLIC KEY-----\n" +
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2mtNppdwimPy/XBbv672\n" +
+            "34QXh3dX5VCKKJIFZU2m1o54PgQioNLh5ETDkDoMtbii7BGlEn6DpEtt656nuMMw\n" +
+            "WsZRlmU2nXmwoXvSkbIXwchZRgGQSjdPhJxIrAFs0iAD4Qy35vh/D76sGi+2M0Ek\n" +
+            "R1vNDYaBNjt6r2nODsHlnejU25FPxcB6nA4No2RfB9B8Fqc0Gmj01G2FKiKvezbt\n" +
+            "Ag25b1R/NIn9nfzcF0DbMAqYl4nFZC7KJw2XWjo2/ybLdll+mMPJZKiN8HrND7PR\n" +
+            "QceW/9S28ZtELFPMWIbHrvvRYb6fMLwxDZuL7zeoZ2Hgy+HHWCC0lmrEfPe9l38G\n" +
+            "XQIDAQAB\n" +
+            "-----END PUBLIC KEY-----\n";
+
     public void startServices() {
         dockerNetwork = Network.newNetwork();
 
@@ -47,7 +57,7 @@ public class ServiceStarter {
         System.setProperty("STATUS_UPDATE_SUBJECT_TEMPLATE", "Subject");
         System.setProperty("STATUS_UPDATE_BODY_TEMPLATE", "Mail body.");
         System.setProperty("ADAPTER_API_KEY", API_KEY);
-        System.setProperty("JWT_SIGNING_KEY", "src/test/resources/key.pub" );
+        System.setProperty("JWT_SIGNING_KEY", jwtSigningKey );
         System.setProperty("ALLOWED_ORIGINS", "*");
 
         SpringApplication.run((Application.class));
@@ -118,9 +128,7 @@ public class ServiceStarter {
                 .withEnv("STATUS_UPDATE_BODY_TEMPLATE", "Mail body.")
                 .withEnv("ADAPTER_API_KEY", API_KEY)
                 .withEnv("ALLOWED_ORIGINS", "*")
-                .withEnv("JWT_SIGNING_KEY", "/tmp/signing.pub" )
-
-                .withClasspathResourceMapping("key.pub", "/tmp/signing.pub", BindMode.READ_ONLY)
+                .withEnv("JWT_SIGNING_KEY", jwtSigningKey )
 
                 .withEnv("spring.flyway.locations", "classpath:db/migration,filesystem:/app/sql")
                 .withClasspathResourceMapping("db/migration/V901__extra_data_for_integration_test.sql", "/app/sql/V901__extra_data_for_integration_test.sql", BindMode.READ_ONLY)

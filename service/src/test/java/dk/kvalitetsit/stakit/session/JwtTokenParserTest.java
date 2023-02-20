@@ -30,13 +30,20 @@ public class JwtTokenParserTest {
     private JwtTokenParser tokenParser;
 
     private final String trustedKey = "key.pkcs8";
-    private final String trustedPublicCertificate = "key.pub";
+    private final String trustedPublicCertificate = "-----BEGIN PUBLIC KEY-----\n" +
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2mtNppdwimPy/XBbv672\n" +
+            "34QXh3dX5VCKKJIFZU2m1o54PgQioNLh5ETDkDoMtbii7BGlEn6DpEtt656nuMMw\n" +
+            "WsZRlmU2nXmwoXvSkbIXwchZRgGQSjdPhJxIrAFs0iAD4Qy35vh/D76sGi+2M0Ek\n" +
+            "R1vNDYaBNjt6r2nODsHlnejU25FPxcB6nA4No2RfB9B8Fqc0Gmj01G2FKiKvezbt\n" +
+            "Ag25b1R/NIn9nfzcF0DbMAqYl4nFZC7KJw2XWjo2/ybLdll+mMPJZKiN8HrND7PR\n" +
+            "QceW/9S28ZtELFPMWIbHrvvRYb6fMLwxDZuL7zeoZ2Hgy+HHWCC0lmrEfPe9l38G\n" +
+            "XQIDAQAB\n" +
+            "-----END PUBLIC KEY-----\n";
     private final String untrustedKey = "untrusted.pkcs8";
 
     @Before
     public void setup() throws URISyntaxException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, CertificateException {
-        var privateKeyString = Files.readString(Paths.get(ClassLoader.getSystemResource(trustedPublicCertificate).toURI()));
-        tokenParser = new JwtTokenParser(privateKeyString);
+        tokenParser = new JwtTokenParser(trustedPublicCertificate);
     }
 
     @Test
