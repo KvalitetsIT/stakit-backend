@@ -64,4 +64,5 @@ In the docker-compose setup is also an example on how to set custom endpoints fo
 | STATUS_UPDATE_BODY_TEMPLATE | Template to use for body in status update mails.                                                    | Yes |
 | STATUS_UPDATE_SUBJECT_TEMPLATE | Template to use for subject in status update mails.                                                  | Yes | 
 | ADAPTER_API_KEY | API Key to use in adapter API.                                                                       | Yes |
+| JWT_SIGNING_KEY | Path to public key in PEM format that was used to sign JWT tokens. | Yes |
 | ALLOWED_ORIGINS | Allowed origins. Normally set to frontend endpoint. | Yes |

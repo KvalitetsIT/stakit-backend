@@ -26,9 +26,11 @@ services:
       - STATUS_UPDATE_BODY_TEMPLATE="This is a mail template."
       - STATUS_UPDATE_SUBJECT_TEMPLATE=Subject
       - ADAPTER_API_KEY=API-KEY
+      - JWT_SIGNING_KEY=/tmp/signing.pub
       - ALLOWED_ORIGINS=*
      volumes:
       - ./body.template:/tmp/body.template:ro
+      - ../../../integrationtest/src/test/resources/key.pub:/tmp/signing.pub:ro
      depends_on:
       mariadb:
        condition: service_healthy
