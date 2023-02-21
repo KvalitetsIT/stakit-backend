@@ -30,6 +30,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Transactional
     public UUID subscribe(SubscriptionModel mapSubscriptionModel) {
         var subscriptionEntity = SubscriptionMapper.mapSubscription(mapSubscriptionModel);
+        mailSubscriptionGroupDao.deleteByEmail(mapSubscriptionModel.email());
+        subscriptionDao.deleteByEmail(mapSubscriptionModel.email());
         var subscriptionId = subscriptionDao.insert(subscriptionEntity);
 
         mapSubscriptionModel.groups().stream()

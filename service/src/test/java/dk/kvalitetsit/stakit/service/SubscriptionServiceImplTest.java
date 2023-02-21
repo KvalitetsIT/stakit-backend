@@ -57,6 +57,8 @@ public class SubscriptionServiceImplTest {
         Mockito.verify(mailSubscriptionGroupDao, times(1)).insert(MailSubscriptionGroupsEntity.createInstance(10L, 1L));
         Mockito.verify(mailSubscriptionGroupDao, times(1)).insert(MailSubscriptionGroupsEntity.createInstance(10L, 2L));
         Mockito.verify(mailSenderService, times(1)).sendMail(Mockito.eq(input.email()), Mockito.anyString(), Mockito.anyString());
+        Mockito.verify(subscriptionDao, times(1)).deleteByEmail(input.email());
+        Mockito.verify(mailSubscriptionGroupDao, times(1)).deleteByEmail(input.email());
     }
 
     @Test
@@ -76,6 +78,8 @@ public class SubscriptionServiceImplTest {
         Mockito.verify(subscriptionDao, times(1)).insert(Mockito.any());
         Mockito.verify(mailSubscriptionGroupDao, times(1)).insert(Mockito.any());
         Mockito.verify(mailSubscriptionGroupDao, times(0)).insert(MailSubscriptionGroupsEntity.createInstance(10L, 2L));
+        Mockito.verify(subscriptionDao, times(1)).deleteByEmail(input.email());
+        Mockito.verify(mailSubscriptionGroupDao, times(1)).deleteByEmail(input.email());
         Mockito.verifyNoInteractions(mailSenderService);
     }
 

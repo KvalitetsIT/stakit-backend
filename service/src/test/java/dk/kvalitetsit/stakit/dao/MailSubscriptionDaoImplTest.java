@@ -53,4 +53,11 @@ public class MailSubscriptionDaoImplTest extends AbstractDaoTest {
         var updated = mailSubscriptionDao.updateConfirmedByConfirmationUuid(confirmationIdentifier);
         assertFalse(updated);
     }
+
+    @Test
+    public void testDeleteByEmail() {
+        testDataHelper.createMailSubscription(true, UUID.randomUUID());
+
+        mailSubscriptionDao.deleteByEmail("email");
+    }
 }

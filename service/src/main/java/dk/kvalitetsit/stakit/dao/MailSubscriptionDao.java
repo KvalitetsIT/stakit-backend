@@ -11,4 +11,6 @@ public interface MailSubscriptionDao {
     List<MailSubscriptionEntity> findSubscriptionsByServiceConfigurationId(long serviceConfigurationId);
 
     boolean updateConfirmedByConfirmationUuid(UUID confirmationUuid);
+
+    void deleteByEmail(String email);
 }

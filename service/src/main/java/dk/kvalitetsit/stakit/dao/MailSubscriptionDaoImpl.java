@@ -57,4 +57,11 @@ public class MailSubscriptionDaoImpl implements MailSubscriptionDao {
 
         return updateCount > 0;
     }
+
+    @Override
+    public void deleteByEmail(String email) {
+        var sql = "delete from mail_subscription where email = :email";
+
+        template.update(sql, Collections.singletonMap("email", email));
+    }
 }
