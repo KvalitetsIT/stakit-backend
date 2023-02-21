@@ -26,6 +26,7 @@ public class SubscriptionServiceImplTest {
     private MailSubscriptionDao subscriptionDao;
     private MailSubscriptionGroupDao mailSubscriptionGroupDao;
     private MailSenderService mailSenderService;
+    private BaseUrlProvider baseUrlProvider;
 
     @Before
     public void setup() {
@@ -33,8 +34,9 @@ public class SubscriptionServiceImplTest {
         subscriptionDao = Mockito.mock(MailSubscriptionDao.class);
         mailSubscriptionGroupDao = Mockito.mock(MailSubscriptionGroupDao.class);
         mailSenderService = Mockito.mock(MailSenderService.class);
+        baseUrlProvider = Mockito.mock(BaseUrlProvider.class);
 
-        subscriptionService = new SubscriptionServiceImpl(groupConfigurationDao, subscriptionDao, mailSubscriptionGroupDao, mailSenderService);
+        subscriptionService = new SubscriptionServiceImpl(groupConfigurationDao, subscriptionDao, mailSubscriptionGroupDao, mailSenderService, baseUrlProvider);
     }
 
     @Test
@@ -47,6 +49,7 @@ public class SubscriptionServiceImplTest {
         Mockito.when(subscriptionDao.insert(Mockito.any())).thenReturn(10L);
         Mockito.when(groupConfigurationDao.findByUuid(input.groups().get(0))).thenReturn(Optional.of(groupOne));
         Mockito.when(groupConfigurationDao.findByUuid(input.groups().get(1))).thenReturn(Optional.of(groupTwo));
+        Mockito.when(baseUrlProvider.getBaseUrl()).thenReturn("baseUrl");
 
         var result = subscriptionService.subscribe(input);
 
@@ -65,6 +68,7 @@ public class SubscriptionServiceImplTest {
         Mockito.when(subscriptionDao.insert(Mockito.any())).thenReturn(10L);
         Mockito.when(groupConfigurationDao.findByUuid(input.groups().get(0))).thenReturn(Optional.of(groupOne));
         Mockito.when(groupConfigurationDao.findByUuid(input.groups().get(1))).thenReturn(Optional.empty());
+        Mockito.when(baseUrlProvider.getBaseUrl()).thenReturn("baseUrl");
 
         var expectedException = assertThrows(InvalidDataException.class, () -> subscriptionService.subscribe(input));
         assertEquals("Group not found: %s".formatted(input.groups().get(1)), expectedException.getMessage());
