@@ -16,9 +16,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final MailSubscriptionDao subscriptionDao;
     private final MailSubscriptionGroupDao mailSubscriptionGroupDao;
     private final MailSenderService mailSenderService;
-    private BaseUrlProvider baseUrl;
+    private String baseUrl;
 
-    public SubscriptionServiceImpl(GroupConfigurationDao groupConfigurationDao, MailSubscriptionDao subscriptionDao, MailSubscriptionGroupDao mailSubscriptionGroupDao, MailSenderService mailSenderService, BaseUrlProvider baseUrl) {
+    public SubscriptionServiceImpl(GroupConfigurationDao groupConfigurationDao, MailSubscriptionDao subscriptionDao, MailSubscriptionGroupDao mailSubscriptionGroupDao, MailSenderService mailSenderService, String baseUrl) {
         this.groupConfigurationDao = groupConfigurationDao;
         this.subscriptionDao = subscriptionDao;
         this.mailSubscriptionGroupDao = mailSubscriptionGroupDao;
@@ -42,8 +42,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .append("For at bekræfte din tilmelding til statusopdateringer klik på nedenstående link.")
                 .append("\n")
                 .append("\n")
-                .append(baseUrl.getBaseUrl())
-                .append("/")
+                .append(baseUrl)
+                .append("/subscribe/")
                 .append(subscriptionEntity.confirmIdentifier());
 
         mailSenderService.sendMail(mapSubscriptionModel.email(), "Bekræft tilmelding til statusopdateringer", bodyBuilder.toString());
