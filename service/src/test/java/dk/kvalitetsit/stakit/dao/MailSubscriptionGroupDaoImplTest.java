@@ -22,4 +22,16 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
 
         mailSubscriptionGroupDao.insert(input);
     }
+
+    @Test
+    public void testDeleteByEmail() {
+        var mailSubscriptionId = testDataHelper.createMailSubscription(true, UUID.randomUUID());
+        var groupId = testDataHelper.createGroup("group name", UUID.randomUUID(), "group description");
+
+        var input = MailSubscriptionGroupsEntity.createInstance(mailSubscriptionId, groupId);
+
+        mailSubscriptionGroupDao.insert(input);
+
+        mailSubscriptionGroupDao.deleteByEmail("email");
+    }
 }

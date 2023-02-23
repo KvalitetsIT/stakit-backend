@@ -26,6 +26,7 @@ public class SubscriptionServiceImplTest {
     private MailSubscriptionDao subscriptionDao;
     private MailSubscriptionGroupDao mailSubscriptionGroupDao;
     private MailSenderService mailSenderService;
+    private String baseUrl;
 
     @Before
     public void setup() {
@@ -33,8 +34,9 @@ public class SubscriptionServiceImplTest {
         subscriptionDao = Mockito.mock(MailSubscriptionDao.class);
         mailSubscriptionGroupDao = Mockito.mock(MailSubscriptionGroupDao.class);
         mailSenderService = Mockito.mock(MailSenderService.class);
+        baseUrl = "baseUrl";
 
-        subscriptionService = new SubscriptionServiceImpl(groupConfigurationDao, subscriptionDao, mailSubscriptionGroupDao, mailSenderService);
+        subscriptionService = new SubscriptionServiceImpl(groupConfigurationDao, subscriptionDao, mailSubscriptionGroupDao, mailSenderService, baseUrl);
     }
 
     @Test
@@ -54,6 +56,8 @@ public class SubscriptionServiceImplTest {
         Mockito.verify(mailSubscriptionGroupDao, times(1)).insert(MailSubscriptionGroupsEntity.createInstance(10L, 1L));
         Mockito.verify(mailSubscriptionGroupDao, times(1)).insert(MailSubscriptionGroupsEntity.createInstance(10L, 2L));
         Mockito.verify(mailSenderService, times(1)).sendMail(Mockito.eq(input.email()), Mockito.anyString(), Mockito.anyString());
+        Mockito.verify(subscriptionDao, times(1)).deleteByEmail(input.email());
+        Mockito.verify(mailSubscriptionGroupDao, times(1)).deleteByEmail(input.email());
     }
 
     @Test
@@ -72,6 +76,8 @@ public class SubscriptionServiceImplTest {
         Mockito.verify(subscriptionDao, times(1)).insert(Mockito.any());
         Mockito.verify(mailSubscriptionGroupDao, times(1)).insert(Mockito.any());
         Mockito.verify(mailSubscriptionGroupDao, times(0)).insert(MailSubscriptionGroupsEntity.createInstance(10L, 2L));
+        Mockito.verify(subscriptionDao, times(1)).deleteByEmail(input.email());
+        Mockito.verify(mailSubscriptionGroupDao, times(1)).deleteByEmail(input.email());
         Mockito.verifyNoInteractions(mailSenderService);
     }
 

@@ -49,9 +49,9 @@ public class SubscriptionIT extends AbstractIntegrationTest {
                 .body("total", equalTo(currentMailCount+1));
 
         var body = validatableResponse.extract().body().asString();
-        Pattern pattern = Pattern.compile(".*https:\\/\\/some\\/url\\/(.*?)\".*", Pattern.DOTALL);
+        Pattern pattern = Pattern.compile(".*http:\\/\\/.+:\\d+\\/subscribe\\/(.*?)\".*", Pattern.DOTALL);
         var matcher = pattern.matcher(body);
-        assertTrue(matcher.matches());
+        assertTrue(body, matcher.matches());
         var uuid = matcher.group(1);
 
         var confirmResult = staKitApi.v1SubscribeConfirmUuidGetWithHttpInfo(UUID.fromString(uuid));

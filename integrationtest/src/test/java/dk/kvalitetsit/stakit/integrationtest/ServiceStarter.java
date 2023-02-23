@@ -59,6 +59,7 @@ public class ServiceStarter {
         System.setProperty("ADAPTER_API_KEY", API_KEY);
         System.setProperty("JWT_SIGNING_KEY", jwtSigningKey );
         System.setProperty("ALLOWED_ORIGINS", "*");
+        System.setProperty("BASE_URL", "http://baseUrl:8080");
 
         SpringApplication.run((Application.class));
     }
@@ -129,6 +130,7 @@ public class ServiceStarter {
                 .withEnv("ADAPTER_API_KEY", API_KEY)
                 .withEnv("ALLOWED_ORIGINS", "*")
                 .withEnv("JWT_SIGNING_KEY", jwtSigningKey )
+                .withEnv("BASE_URL", "http://base_url:8080")
 
                 .withEnv("spring.flyway.locations", "classpath:db/migration,filesystem:/app/sql")
                 .withClasspathResourceMapping("db/migration/V901__extra_data_for_integration_test.sql", "/app/sql/V901__extra_data_for_integration_test.sql", BindMode.READ_ONLY)

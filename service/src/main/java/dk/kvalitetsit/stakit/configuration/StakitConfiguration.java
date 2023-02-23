@@ -105,8 +105,9 @@ public class StakitConfiguration implements WebMvcConfigurer {
     public SubscriptionService subscriptionService(GroupConfigurationDao groupConfigurationDao,
                                                    MailSubscriptionDao subscriptionDao,
                                                    MailSubscriptionGroupDao subscriptionGroupDao,
-                                                   MailSenderService mailSenderService) {
-        return new SubscriptionServiceImpl(groupConfigurationDao, subscriptionDao, subscriptionGroupDao, mailSenderService);
+                                                   MailSenderService mailSenderService,
+                                                   @Value("${BASE_URL}") String baseUrl) {
+        return new SubscriptionServiceImpl(groupConfigurationDao, subscriptionDao, subscriptionGroupDao, mailSenderService, baseUrl);
     }
 
     @Bean

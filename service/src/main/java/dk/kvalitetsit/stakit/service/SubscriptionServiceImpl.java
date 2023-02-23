@@ -16,18 +16,22 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final MailSubscriptionDao subscriptionDao;
     private final MailSubscriptionGroupDao mailSubscriptionGroupDao;
     private final MailSenderService mailSenderService;
+    private String baseUrl;
 
-    public SubscriptionServiceImpl(GroupConfigurationDao groupConfigurationDao, MailSubscriptionDao subscriptionDao, MailSubscriptionGroupDao mailSubscriptionGroupDao, MailSenderService mailSenderService) {
+    public SubscriptionServiceImpl(GroupConfigurationDao groupConfigurationDao, MailSubscriptionDao subscriptionDao, MailSubscriptionGroupDao mailSubscriptionGroupDao, MailSenderService mailSenderService, String baseUrl) {
         this.groupConfigurationDao = groupConfigurationDao;
         this.subscriptionDao = subscriptionDao;
         this.mailSubscriptionGroupDao = mailSubscriptionGroupDao;
         this.mailSenderService = mailSenderService;
+        this.baseUrl = baseUrl;
     }
 
     @Override
     @Transactional
     public UUID subscribe(SubscriptionModel mapSubscriptionModel) {
         var subscriptionEntity = SubscriptionMapper.mapSubscription(mapSubscriptionModel);
+        mailSubscriptionGroupDao.deleteByEmail(mapSubscriptionModel.email());
+        subscriptionDao.deleteByEmail(mapSubscriptionModel.email());
         var subscriptionId = subscriptionDao.insert(subscriptionEntity);
 
         mapSubscriptionModel.groups().stream()
@@ -38,7 +42,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .append("For at bekræfte din tilmelding til statusopdateringer klik på nedenstående link.")
                 .append("\n")
                 .append("\n")
-                .append("https://some/url/")
+                .append(baseUrl)
+                .append("/subscribe/")
                 .append(subscriptionEntity.confirmIdentifier());
 
         mailSenderService.sendMail(mapSubscriptionModel.email(), "Bekræft tilmelding til statusopdateringer", bodyBuilder.toString());
