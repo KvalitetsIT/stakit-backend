@@ -1,6 +1,8 @@
 package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -12,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class MailSubscriptionDaoImpl implements MailSubscriptionDao {
+    private static final Logger logger = LoggerFactory.getLogger(MailSubscriptionDaoImpl.class);
+
     private final NamedParameterJdbcTemplate template;
     public MailSubscriptionDaoImpl(DataSource dataSource) {
         template = new NamedParameterJdbcTemplate(dataSource);
@@ -54,6 +58,7 @@ public class MailSubscriptionDaoImpl implements MailSubscriptionDao {
         var sql = "update mail_subscription set confirmed = 1 where confirm_identifier = :uuid";
 
         var updateCount = template.update(sql, Collections.singletonMap("uuid", confirmationUuid.toString()));
+        logger.debug("Updating mail confirmation with uuid {}. Number of rows updated: {}.", confirmationUuid.toString(), updateCount);
 
         return updateCount > 0;
     }

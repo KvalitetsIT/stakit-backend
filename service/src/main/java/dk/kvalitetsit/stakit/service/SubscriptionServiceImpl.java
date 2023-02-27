@@ -7,16 +7,19 @@ import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionGroupsEntity;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.mapper.SubscriptionMapper;
 import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 public class SubscriptionServiceImpl implements SubscriptionService {
+    private static final Logger logger = LoggerFactory.getLogger(SubscriptionServiceImpl.class);
     private final GroupConfigurationDao groupConfigurationDao;
     private final MailSubscriptionDao subscriptionDao;
     private final MailSubscriptionGroupDao mailSubscriptionGroupDao;
     private final MailSenderService mailSenderService;
-    private String baseUrl;
+    private final String baseUrl;
 
     public SubscriptionServiceImpl(GroupConfigurationDao groupConfigurationDao, MailSubscriptionDao subscriptionDao, MailSubscriptionGroupDao mailSubscriptionGroupDao, MailSenderService mailSenderService, String baseUrl) {
         this.groupConfigurationDao = groupConfigurationDao;
@@ -54,6 +57,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     @Transactional
     public void confirmSubscription(UUID confirmationUuid) {
+        logger.debug("Updating mail subscription for confirmation uuid: {}.", confirmationUuid);
         subscriptionDao.updateConfirmedByConfirmationUuid(confirmationUuid);
     }
 }
