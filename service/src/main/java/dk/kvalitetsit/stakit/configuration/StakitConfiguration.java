@@ -22,9 +22,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
@@ -117,9 +114,10 @@ public class StakitConfiguration implements WebMvcConfigurer {
                                         GroupConfigurationDao groupConfigurationDao,
                                         ServiceStatusDao serviceStatusDao,
                                         @Value("${STATUS_UPDATE_SUBJECT_TEMPLATE}") String templateSubject,
-                                        @Value("${STATUS_UPDATE_BODY_TEMPLATE}") String templateBody) throws IOException {
+                                        @Value("${STATUS_UPDATE_BODY_TEMPLATE}") String templateBody,
+                                        @Value("${BASE_URL}") String baseUrl) {
 
-        return new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, templateBody, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao);
+        return new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, templateBody, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao, baseUrl);
     }
 
     @Bean
