@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.Collections;
+import java.util.UUID;
 
 public class MailSubscriptionGroupDaoImpl implements MailSubscriptionGroupDao {
     private final NamedParameterJdbcTemplate template;
@@ -30,5 +31,12 @@ public class MailSubscriptionGroupDaoImpl implements MailSubscriptionGroupDao {
         var sql = "delete from mail_subscription_group where mail_subscription_id = (select id from mail_subscription where email = :email)";
 
         template.update(sql, Collections.singletonMap("email", email));
+    }
+
+    @Override
+    public void deleteByUuid(UUID uuid) {
+        var sql = "delete from mail_subscription_group where mail_subscription_id = (select id from mail_subscription where uuid = :uuid)";
+
+        template.update(sql, Collections.singletonMap("uuid", uuid.toString()));
     }
 }

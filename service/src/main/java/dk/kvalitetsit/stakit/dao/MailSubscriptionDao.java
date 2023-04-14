@@ -13,4 +13,6 @@ public interface MailSubscriptionDao {
     boolean updateConfirmedByConfirmationUuid(UUID confirmationUuid);
 
     void deleteByEmail(String email);
+
+    int deleteByUuid(UUID uuid);
 }

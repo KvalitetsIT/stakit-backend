@@ -9,4 +9,6 @@ public interface SubscriptionService {
     UUID subscribe(SubscriptionModel mapSubscriptionModel) throws InvalidDataException;
 
     void confirmSubscription(UUID confirmationUuid);
+
+    boolean delete(UUID uuid);
 }

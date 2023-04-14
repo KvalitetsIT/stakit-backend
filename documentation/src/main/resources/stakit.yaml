@@ -453,6 +453,19 @@ paths:
         '400':
           $ref: '#components/responses/400'
 
+  /v1/subscribe/{uuid}:
+    delete:
+      tags:
+        - StaKit
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      security: []
+      summary: Delete a subscription
+      description: API to delete a subscription. This is public so the unsubscribe link works in emails.
+      responses:
+        '201':
+          $ref: '#/components/responses/201'
+
   /v1/subscribe-confirm/{uuid}:
     get:
       tags:
