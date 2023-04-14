@@ -34,7 +34,7 @@ public class SubscriptionIT extends AbstractIntegrationTest {
         subscribeInput.setEmail("email");
         subscribeInput.setAnnouncements(true);
 
-:wq        var subscribeResponse = staKitApi.v1SubscriptionsPost(subscribeInput);
+        var subscribeResponse = staKitApi.v1SubscriptionsPost(subscribeInput);
         assertNotNull(subscribeResponse);
         assertNotNull(subscribeResponse.getUuid());
 
