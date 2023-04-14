@@ -132,7 +132,7 @@ public class StakitControllerTest {
 
         Mockito.when(subscriptionService.subscribe(Mockito.any())).thenReturn(subscriptionUuid);
 
-        var result = stakitController.v1SubscribePost(input);
+        var result = stakitController.v1SubscriptionsPost(input);
         assertNotNull(result);
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertEquals(subscriptionUuid, result.getBody().getUuid());
@@ -155,7 +155,7 @@ public class StakitControllerTest {
 
         Mockito.when(subscriptionService.subscribe(Mockito.any())).thenThrow(new InvalidDataException("message"));
 
-        var result = assertThrows(BadRequestException.class, () -> stakitController.v1SubscribePost(input));
+        var result = assertThrows(BadRequestException.class, () -> stakitController.v1SubscriptionsPost(input));
         assertNotNull(result);
         assertEquals("message", result.getMessage());
 
@@ -183,7 +183,7 @@ public class StakitControllerTest {
 
         Mockito.when(subscriptionService.delete(uuid)).thenReturn(true);
 
-        stakitController.v1SubscribeUuidDelete(uuid);
+        stakitController.v1SubscriptionsUuidDelete(uuid);
 
         Mockito.verify(subscriptionService, times(1)).delete(uuid);
     }
@@ -194,7 +194,7 @@ public class StakitControllerTest {
 
         Mockito.when(subscriptionService.delete(uuid)).thenReturn(false);
 
-        var exception = assertThrows(ResourceNotFoundException.class, () ->stakitController.v1SubscribeUuidDelete(uuid));
+        var exception = assertThrows(ResourceNotFoundException.class, () ->stakitController.v1SubscriptionsUuidDelete(uuid));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
 

@@ -67,7 +67,7 @@ public class StakitController implements StaKitApi {
 
     @Override
     @PublicApi
-    public ResponseEntity<CreateResponse> v1SubscribePost(Subscribe subscribe) {
+    public ResponseEntity<CreateResponse> v1SubscriptionsPost(Subscribe subscribe) {
         logger.debug("Subscribing to updates.");
 
         try {
@@ -83,7 +83,7 @@ public class StakitController implements StaKitApi {
 
     @Override
     @PublicApi
-    public ResponseEntity<Void> v1SubscribeUuidDelete(UUID uuid) {
+    public ResponseEntity<Void> v1SubscriptionsUuidDelete(UUID uuid) {
         logger.debug("Deleting subscription");
 
         if(subscriptionService.delete(uuid)) {

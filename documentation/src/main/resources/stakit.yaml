@@ -424,7 +424,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/announcements-to-show'
 
-  /v1/subscribe:
+  /v1/subscriptions:
     post:
       tags:
         - StaKit
@@ -453,7 +453,7 @@ paths:
         '400':
           $ref: '#components/responses/400'
 
-  /v1/subscribe/{uuid}:
+  /v1/subscriptions/{uuid}:
     delete:
       tags:
         - StaKit
