@@ -90,7 +90,8 @@ public class StakitController implements StaKitApi {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         else {
-            throw new ResourceNotFoundException("Subscription with uuid %s not found".formatted(uuid));
+            logger.info("Subscription {} not found during unsubscribe.", uuid);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
     }
 }
