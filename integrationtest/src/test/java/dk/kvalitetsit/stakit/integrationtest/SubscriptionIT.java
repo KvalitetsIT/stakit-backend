@@ -34,7 +34,7 @@ public class SubscriptionIT extends AbstractIntegrationTest {
         subscribeInput.setEmail("email");
         subscribeInput.setAnnouncements(true);
 
-        var subscribeResponse = staKitApi.v1SubscribePost(subscribeInput);
+:wq        var subscribeResponse = staKitApi.v1SubscriptionsPost(subscribeInput);
         assertNotNull(subscribeResponse);
         assertNotNull(subscribeResponse.getUuid());
 
@@ -57,7 +57,7 @@ public class SubscriptionIT extends AbstractIntegrationTest {
         var confirmResult = staKitApi.v1SubscribeConfirmUuidGetWithHttpInfo(UUID.fromString(uuid));
         assertEquals(201, confirmResult.getStatusCode());
 
-        var deleteResult = staKitApi.v1SubscribeUuidDeleteWithHttpInfo(subscribeResponse.getUuid());
+        var deleteResult = staKitApi.v1SubscriptionsUuidDeleteWithHttpInfo(subscribeResponse.getUuid());
         assertEquals(204, deleteResult.getStatusCode());
     }
 }
