@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
@@ -90,5 +92,31 @@ public class SubscriptionServiceImplTest {
         subscriptionService.confirmSubscription(input);
 
         Mockito.verify(subscriptionDao, times(1)).updateConfirmedByConfirmationUuid(input);
+    }
+
+    @Test
+    public void testUnsubscribe() {
+        var input = UUID.randomUUID();
+
+        Mockito.when(subscriptionDao.deleteByUuid(Mockito.any())).thenReturn(1);
+
+        var result = subscriptionService.delete(input);
+        assertTrue(result);
+
+        Mockito.verify(subscriptionDao, times(1)).deleteByUuid(input);
+        Mockito.verify(mailSubscriptionGroupDao, times(1)).deleteByUuid(input);
+    }
+
+    @Test
+    public void testUnsubscribeNotFound() {
+        var input = UUID.randomUUID();
+
+        Mockito.when(subscriptionDao.deleteByUuid(Mockito.any())).thenReturn(0);
+
+        var result = subscriptionService.delete(input);
+        assertFalse(result);
+
+        Mockito.verify(subscriptionDao, times(1)).deleteByUuid(input);
+        Mockito.verify(mailSubscriptionGroupDao, times(1)).deleteByUuid(input);
     }
 }

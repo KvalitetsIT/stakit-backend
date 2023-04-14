@@ -1,6 +1,7 @@
 package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
 import dk.kvalitetsit.stakit.service.StatusGroupService;
 import dk.kvalitetsit.stakit.service.SubscriptionService;
@@ -174,5 +175,29 @@ public class StakitControllerTest {
         stakitController.v1SubscribeConfirmUuidGet(confirmationUuid);
 
         Mockito.verify(subscriptionService, times(1)).confirmSubscription(confirmationUuid);
+    }
+
+    @Test
+    public void testUnsubscribe() {
+        var uuid = UUID.randomUUID();
+
+        Mockito.when(subscriptionService.delete(uuid)).thenReturn(true);
+
+        stakitController.v1SubscribeUuidDelete(uuid);
+
+        Mockito.verify(subscriptionService, times(1)).delete(uuid);
+    }
+
+    @Test
+    public void testUnsubscribeNotFound() {
+        var uuid = UUID.randomUUID();
+
+        Mockito.when(subscriptionService.delete(uuid)).thenReturn(false);
+
+        var exception = assertThrows(ResourceNotFoundException.class, () ->stakitController.v1SubscribeUuidDelete(uuid));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+
+        Mockito.verify(subscriptionService, times(1)).delete(uuid);
     }
 }

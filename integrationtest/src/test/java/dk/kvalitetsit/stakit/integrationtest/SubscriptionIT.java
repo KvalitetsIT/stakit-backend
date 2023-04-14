@@ -28,7 +28,7 @@ public class SubscriptionIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testSubScribeAndConfirm() throws ApiException {
+    public void testSubScribeAndConfirmAndDelete() throws ApiException {
         int currentMailCount = getCurrentMailCount();
         var subscribeInput = new Subscribe();
         subscribeInput.setEmail("email");
@@ -56,5 +56,8 @@ public class SubscriptionIT extends AbstractIntegrationTest {
 
         var confirmResult = staKitApi.v1SubscribeConfirmUuidGetWithHttpInfo(UUID.fromString(uuid));
         assertEquals(201, confirmResult.getStatusCode());
+
+        var deleteResult = staKitApi.v1SubscribeUuidDeleteWithHttpInfo(subscribeResponse.getUuid());
+        assertEquals(204, deleteResult.getStatusCode());
     }
 }

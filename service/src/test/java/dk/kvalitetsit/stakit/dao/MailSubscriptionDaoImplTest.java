@@ -60,4 +60,13 @@ public class MailSubscriptionDaoImplTest extends AbstractDaoTest {
 
         mailSubscriptionDao.deleteByEmail("email");
     }
+
+    @Test
+    public void testDeleteByUuid() {
+        var uuid = UUID.randomUUID();
+        testDataHelper.createMailSubscription(true, UUID.randomUUID(), uuid);
+
+        var result = mailSubscriptionDao.deleteByUuid(uuid);
+        assertEquals(1, result);
+    }
 }

@@ -60,4 +60,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         logger.debug("Updating mail subscription for confirmation uuid: {}.", confirmationUuid);
         subscriptionDao.updateConfirmedByConfirmationUuid(confirmationUuid);
     }
+
+    @Override
+    public boolean delete(UUID uuid) {
+        logger.debug("Deleting subscription %s.".formatted(uuid));
+
+        mailSubscriptionGroupDao.deleteByUuid(uuid);
+        return subscriptionDao.deleteByUuid(uuid) > 0;
+    }
 }

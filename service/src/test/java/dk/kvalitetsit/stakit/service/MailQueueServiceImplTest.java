@@ -29,18 +29,20 @@ public class MailQueueServiceImplTest {
     private GroupConfigurationDao groupConfigurationDao;
     private ServiceStatusDao serviceStatusDao;
     private MailQueueServiceImpl mailQueue;
+    private String baseUrl;
 
     @Before
     public void setup() {
         mailSubscriptionDao = Mockito.mock(MailSubscriptionDao.class);
         mailSenderService = Mockito.mock(MailSenderService.class);
         templateSubject = "subject group ${group_name}";
-        templateBody = "Body ${service_name} - ${status} - ${status_time} - ${group_name}.";
+        templateBody = "Body ${service_name} - ${status} - ${status_time} - ${group_name} - ${unsubscribe_url}.";
         serviceConfigurationDao = Mockito.mock(ServiceConfigurationDao.class);
         groupConfigurationDao = Mockito.mock(GroupConfigurationDao.class);
         serviceStatusDao = Mockito.mock(ServiceStatusDao.class);
+        baseUrl = "base_url";
 
-        mailQueue = new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, templateBody, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao);
+        mailQueue = new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, templateBody, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao, baseUrl);
     }
 
     @Test
@@ -66,8 +68,8 @@ public class MailQueueServiceImplTest {
 
         mailQueue.queueStatusUpdatedMail(1L, 2L);
 
-        Mockito.verify(mailSenderService, times(1)).sendMailAsync(Mockito.eq(subscriptionOne.email()), Mockito.eq("subject group group name"), Mockito.eq("Body name - OK - %s - group name.".formatted(serviceStatus.statusTime())));
-        Mockito.verify(mailSenderService, times(1)).sendMailAsync(Mockito.eq(subscriptionTwo.email()), Mockito.eq("subject group group name"), Mockito.eq("Body name - OK - %s - group name.".formatted(serviceStatus.statusTime())));
+        Mockito.verify(mailSenderService, times(1)).sendMailAsync(Mockito.eq(subscriptionOne.email()), Mockito.eq("subject group group name"), Mockito.eq("Body name - OK - %s - group name - base_url/unsubscribe/%s.".formatted(serviceStatus.statusTime(), subscriptionOne.uuid())));
+        Mockito.verify(mailSenderService, times(1)).sendMailAsync(Mockito.eq(subscriptionTwo.email()), Mockito.eq("subject group group name"), Mockito.eq("Body name - OK - %s - group name - base_url/unsubscribe/%s.".formatted(serviceStatus.statusTime(), subscriptionTwo.uuid())));
         Mockito.verify(serviceConfigurationDao, times(1)).findById(1L);
         Mockito.verify(serviceStatusDao, times(1)).findById(2L);
         Mockito.verify(groupConfigurationDao, times(1)).findById(groupConfiguration.id());
@@ -88,7 +90,7 @@ public class MailQueueServiceImplTest {
 
         mailQueue.queueStatusUpdatedMail(1L, 2L);
 
-        Mockito.verify(mailSenderService, times(1)).sendMailAsync(Mockito.eq(subscriptionOne.email()), Mockito.eq("subject group Default"), Mockito.eq("Body name - OK - %s - Default.".formatted(serviceStatus.statusTime())));
+        Mockito.verify(mailSenderService, times(1)).sendMailAsync(Mockito.eq(subscriptionOne.email()), Mockito.eq("subject group Default"), Mockito.eq("Body name - OK - %s - Default - base_url/unsubscribe/%s.".formatted(serviceStatus.statusTime(), subscriptionOne.uuid())));
         Mockito.verify(serviceConfigurationDao, times(1)).findById(1L);
         Mockito.verify(serviceStatusDao, times(1)).findById(2L);
 

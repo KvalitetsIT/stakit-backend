@@ -1,6 +1,7 @@
 package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.controller.mapper.AnnouncementMapper;
 import dk.kvalitetsit.stakit.controller.mapper.StakitMapper;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
@@ -77,6 +78,19 @@ public class StakitController implements StaKitApi {
             logger.info("Invalid data. Returning error.", e);
 
             throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @Override
+    @PublicApi
+    public ResponseEntity<Void> v1SubscribeUuidDelete(UUID uuid) {
+        logger.debug("Deleting subscription");
+
+        if(subscriptionService.delete(uuid)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        else {
+            throw new ResourceNotFoundException("Subscription with uuid %s not found".formatted(uuid));
         }
     }
 }

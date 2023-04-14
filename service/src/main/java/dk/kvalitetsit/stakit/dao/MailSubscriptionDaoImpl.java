@@ -69,4 +69,11 @@ public class MailSubscriptionDaoImpl implements MailSubscriptionDao {
 
         template.update(sql, Collections.singletonMap("email", email));
     }
+
+    @Override
+    public int deleteByUuid(UUID uuid) {
+        var sql = "delete from mail_subscription where uuid = :uuid";
+
+        return template.update(sql, Collections.singletonMap("uuid", uuid.toString()));
+    }
 }
