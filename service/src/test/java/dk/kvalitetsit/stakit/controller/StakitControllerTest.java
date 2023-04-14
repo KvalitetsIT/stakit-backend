@@ -22,8 +22,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
 public class StakitControllerTest {
@@ -183,7 +182,8 @@ public class StakitControllerTest {
 
         Mockito.when(subscriptionService.delete(uuid)).thenReturn(true);
 
-        stakitController.v1SubscriptionsUuidDelete(uuid);
+        var result = stakitController.v1SubscriptionsUuidDelete(uuid);
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
 
         Mockito.verify(subscriptionService, times(1)).delete(uuid);
     }
@@ -194,9 +194,9 @@ public class StakitControllerTest {
 
         Mockito.when(subscriptionService.delete(uuid)).thenReturn(false);
 
-        var exception = assertThrows(ResourceNotFoundException.class, () ->stakitController.v1SubscriptionsUuidDelete(uuid));
+        var result = stakitController.v1SubscriptionsUuidDelete(uuid);
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
 
         Mockito.verify(subscriptionService, times(1)).delete(uuid);
     }
