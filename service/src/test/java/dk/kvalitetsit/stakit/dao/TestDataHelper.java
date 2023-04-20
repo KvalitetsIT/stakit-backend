@@ -39,7 +39,7 @@ public class TestDataHelper {
     }
 
     long createGroup(String groupName, UUID groupUuid, String description) {
-        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupUuid, groupName, 100, description));
+        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupUuid, groupName, 100, description, true));
     }
 
     public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier, UUID uuid) {

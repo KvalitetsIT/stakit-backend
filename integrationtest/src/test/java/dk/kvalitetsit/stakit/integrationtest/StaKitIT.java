@@ -78,7 +78,7 @@ public class StaKitIT extends AbstractIntegrationTest {
     public void testReturnEmptyGroupsInGroupedStatus() throws ApiException {
         GroupInput groupInput = new GroupInput()
                 .displayOrder(10)
-                .name(UUID.randomUUID().toString());
+                .name(UUID.randomUUID().toString()).display(true);
         groupApi.v1GroupsPost(groupInput);
 
         var result = staKitApi.v1ServiceStatusGroupedGet();

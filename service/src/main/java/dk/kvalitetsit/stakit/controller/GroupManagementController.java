@@ -36,6 +36,7 @@ public class GroupManagementController implements GroupManagementApi {
 
     @Override
     public ResponseEntity<CreateResponse> v1GroupsPost(GroupInput groupUpdate) {
+
         var resource = groupService.createGroup(GroupMapper.mapCreateGroup(groupUpdate));
 
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", resource.toString()).body(new CreateResponse().uuid(resource)); // TODO Jeg skal nok være en rigtig URL.
