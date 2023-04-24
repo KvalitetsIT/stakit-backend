@@ -43,8 +43,13 @@ public class TestDataHelper {
     }
 
     public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier, UUID uuid) {
-        return mailSubscriptionDao.insert(MailSubscriptionEntity.createInstance(uuid, "email", true, true, confirmationIdentifier));
+        return createMailSubscription(confirmed, confirmationIdentifier, uuid, true, "email");
     }
+
+    public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier, UUID uuid, String email) {
+        return createMailSubscription(confirmed, confirmationIdentifier, uuid, true, email);
+    }
+
 
     public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier) {
         return createMailSubscription(confirmed, confirmationIdentifier, UUID.randomUUID());
@@ -56,5 +61,9 @@ public class TestDataHelper {
 
     public long findDefaultGroupId() {
         return groupConfigurationDao.findDefaultGroupId();
+    }
+
+    public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier, UUID uuid, boolean announcements, String email) {
+        return mailSubscriptionDao.insert(MailSubscriptionEntity.createInstance(uuid, email, announcements, true, confirmationIdentifier));
     }
 }

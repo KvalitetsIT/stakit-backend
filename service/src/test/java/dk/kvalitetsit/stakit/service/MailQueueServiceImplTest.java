@@ -1,22 +1,13 @@
 package dk.kvalitetsit.stakit.service;
 
-import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
-import dk.kvalitetsit.stakit.dao.MailSubscriptionDao;
-import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
-import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
-import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
-import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionEntity;
-import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
-import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
+import dk.kvalitetsit.stakit.dao.*;
+import dk.kvalitetsit.stakit.dao.entity.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.mockito.Mockito.times;
 
@@ -30,6 +21,7 @@ public class MailQueueServiceImplTest {
     private ServiceStatusDao serviceStatusDao;
     private MailQueueServiceImpl mailQueue;
     private String baseUrl;
+    private AnnouncementDao announcementDao;
 
     @Before
     public void setup() {
@@ -41,8 +33,19 @@ public class MailQueueServiceImplTest {
         groupConfigurationDao = Mockito.mock(GroupConfigurationDao.class);
         serviceStatusDao = Mockito.mock(ServiceStatusDao.class);
         baseUrl = "base_url";
+        announcementDao = Mockito.mock(AnnouncementDao.class);
 
-        mailQueue = new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, templateBody, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao, baseUrl);
+        mailQueue = new MailQueueServiceImpl(
+                mailSubscriptionDao,
+                mailSenderService,
+                templateSubject,
+                templateBody,
+                serviceConfigurationDao,
+                groupConfigurationDao,
+                serviceStatusDao,
+                baseUrl,
+                announcementDao
+        );
     }
 
     @Test
@@ -96,5 +99,37 @@ public class MailQueueServiceImplTest {
 
         Mockito.verifyNoMoreInteractions(mailSenderService, serviceConfigurationDao, serviceStatusDao);
         Mockito.verifyNoInteractions(groupConfigurationDao);
+    }
+
+    @Test
+    public void testAnnouncementNoSubscriptions() {
+        mailQueue.queueAnnouncementMail(1L);
+
+        Mockito.verify(mailSubscriptionDao, times(1)).findAnnouncementSubscriptions();
+        Mockito.verifyNoInteractions(mailSenderService);
+    }
+
+    @Test
+    public void testAnnouncement() {
+        var subscriptionOne = new MailSubscriptionEntity(1L, UUID.randomUUID(), "mailOne", true, true, UUID.randomUUID());
+        var subscriptionTwo = new MailSubscriptionEntity(2L, UUID.randomUUID(), "mailTwo", true, true, UUID.randomUUID());
+        Mockito.when(mailSubscriptionDao.findAnnouncementSubscriptions()).thenReturn(List.of(subscriptionOne, subscriptionTwo));
+
+        var announcementId = 10L;
+        var announcement = new AnnouncementEntity(announcementId, UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject", "message");
+        Mockito.when(announcementDao.getById(announcementId)).thenReturn(Optional.of(announcement));
+
+        mailQueue.queueAnnouncementMail(announcementId);
+
+        Mockito.verify(mailSenderService, times(1)).sendMailAsync(Mockito.eq(subscriptionOne.email()), Mockito.eq("Stakit Announcement"), Mockito.eq("message\n" +
+                "\n" +
+                "base_url/unsubscribe/%s".formatted(subscriptionOne.uuid())));
+        Mockito.verify(mailSenderService, times(1)).sendMailAsync(Mockito.eq(subscriptionTwo.email()), Mockito.eq("Stakit Announcement"), Mockito.eq("message\n" +
+                "\n" +
+                "base_url/unsubscribe/%s".formatted(subscriptionTwo.uuid())));
+        Mockito.verify(announcementDao, times(1)).getById(announcementId);
+        Mockito.verify(mailSubscriptionDao, times(1)).findAnnouncementSubscriptions();
+
+        Mockito.verifyNoMoreInteractions(mailSenderService, serviceConfigurationDao, serviceStatusDao, groupConfigurationDao);
     }
 }

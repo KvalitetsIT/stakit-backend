@@ -76,4 +76,11 @@ public class MailSubscriptionDaoImpl implements MailSubscriptionDao {
 
         return template.update(sql, Collections.singletonMap("uuid", uuid.toString()));
     }
+
+    @Override
+    public List<MailSubscriptionEntity> findAnnouncementSubscriptions() {
+        var sql = "select * from mail_subscription where confirmed = 1 and announcements = 1";
+
+        return template.query(sql, DataClassRowMapper.newInstance(MailSubscriptionEntity.class));
+    }
 }

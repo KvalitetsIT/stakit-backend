@@ -15,4 +15,6 @@ public interface MailSubscriptionDao {
     void deleteByEmail(String email);
 
     int deleteByUuid(UUID uuid);
+
+    List<MailSubscriptionEntity> findAnnouncementSubscriptions();
 }
