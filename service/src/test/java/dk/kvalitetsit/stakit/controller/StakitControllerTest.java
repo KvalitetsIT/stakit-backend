@@ -42,10 +42,10 @@ public class StakitControllerTest {
 
     @Test
     public void testStatusGetGrouped() {
-        var groupOne = new StatusGroupedModel("Default", new ArrayList<>(), null, UUID.randomUUID());
+        var groupOne = new StatusGroupedModel("Default", new ArrayList<>(), null, UUID.randomUUID(), true);
         groupOne.status().add(new StatusElementModel(Status.OK, "In Default Group", "Description", UUID.randomUUID()));
 
-        var groupTwo = new StatusGroupedModel("Group Two", new ArrayList<>(), "Description Two", UUID.randomUUID());
+        var groupTwo = new StatusGroupedModel("Group Two", new ArrayList<>(), "Description Two", UUID.randomUUID(), true);
         groupTwo.status().add(new StatusElementModel(Status.OK, "Name", "Description One", UUID.randomUUID()));
         groupTwo.status().add(new StatusElementModel(Status.NOT_OK, "Name Two", "Description Two", UUID.randomUUID()));
 

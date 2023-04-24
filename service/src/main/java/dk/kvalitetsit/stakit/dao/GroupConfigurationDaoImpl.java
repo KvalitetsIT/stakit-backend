@@ -24,13 +24,15 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
     public long insert(GroupConfigurationEntity groupConfigurationEntity) {
         logger.debug("Inserting new group.");
 
-        var sql = "insert group_configuration(uuid, name, display_order, description) values(:uuid, :group_name, :display_order, :description)";
+        var sql = "insert group_configuration(uuid, name, display_order, description, display) values(:uuid, :group_name, :display_order, :description, :display)";
 
         var parameters = new MapSqlParameterSource()
                 .addValue("uuid", groupConfigurationEntity.uuid().toString())
                 .addValue("group_name", groupConfigurationEntity.name())
                 .addValue("display_order", groupConfigurationEntity.displayOrder())
-                .addValue("description", groupConfigurationEntity.description());
+                .addValue("description", groupConfigurationEntity.description())
+                .addValue("display", groupConfigurationEntity.display());
+
 
         var keyHolder = new GeneratedKeyHolder();
         template.update(sql, parameters, keyHolder);
@@ -48,13 +50,14 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
 
     @Override
     public boolean update(GroupConfigurationEntity groupConfigurationEntity) {
-        var sql = "update group_configuration set name = :group_name, display_order = :display_order, description = :description where uuid = :uuid";
+        var sql = "update group_configuration set name = :group_name, display_order = :display_order, description = :description, display = :display where uuid = :uuid";
 
         var parameterMap = new HashMap<String, Object>();
         parameterMap.put("group_name", groupConfigurationEntity.name());
         parameterMap.put("display_order", groupConfigurationEntity.displayOrder());
         parameterMap.put("uuid", groupConfigurationEntity.uuid().toString());
         parameterMap.put("description", groupConfigurationEntity.description());
+        parameterMap.put("display", groupConfigurationEntity.display());
 
 
         return template.update(sql, parameterMap) != 0;

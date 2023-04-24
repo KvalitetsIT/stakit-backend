@@ -27,9 +27,10 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public UUID createGroup(GroupModel groupModel) {
+
         var uuid = UUID.randomUUID();
 
-        var id = groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(uuid, groupModel.name(), groupModel.displayOrder(), groupModel.description()));
+        var id = groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(uuid, groupModel.name(), groupModel.displayOrder(), groupModel.description(), groupModel.display()));
 
         groupModel.services().forEach(x -> {
             var serviceConfiguration = serviceConfigurationDao.findByUuidWithGroupUuid(x).orElseThrow(() -> new InvalidDataException("Service with UUID %s not found.".formatted(x)));
@@ -54,7 +55,7 @@ public class GroupServiceImpl implements GroupService {
             });
         }
 
-        return groupConfigurationDao.update(GroupConfigurationEntity.createInstance(groupModel.uuid(), groupModel.name(), groupModel.displayOrder(), groupModel.description()));
+        return groupConfigurationDao.update(GroupConfigurationEntity.createInstance(groupModel.uuid(), groupModel.name(), groupModel.displayOrder(), groupModel.description(),groupModel.display()));
     }
 
     @Override
@@ -62,7 +63,7 @@ public class GroupServiceImpl implements GroupService {
     public List<GroupGetModel> getGroups() {
         var dbResult = groupConfigurationDao.findAll();
 
-        return dbResult.stream().map(x -> new GroupGetModel(x.uuid(), x.name(), x.displayOrder(), getServiceUuidList(serviceConfigurationDao.findByGroupUuid(x.uuid())), x.description())).collect(Collectors.toList());
+        return dbResult.stream().map(x -> new GroupGetModel(x.uuid(), x.name(), x.displayOrder(), getServiceUuidList(serviceConfigurationDao.findByGroupUuid(x.uuid())), x.description(), x.display())).collect(Collectors.toList());
     }
 
     @Override
@@ -82,7 +83,7 @@ public class GroupServiceImpl implements GroupService {
         var dbResult = groupConfigurationDao.findByUuid(uuid);
         var services = serviceConfigurationDao.findByGroupUuid(uuid);
 
-        return dbResult.map(x -> new GroupGetModel(x.uuid(), x.name(), x.displayOrder(), getServiceUuidList(services), x.description()));
+        return dbResult.map(x -> new GroupGetModel(x.uuid(), x.name(), x.displayOrder(), getServiceUuidList(services), x.description(), x.display()));
     }
 
     @Override

@@ -19,7 +19,7 @@ public class GroupConfigurationDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testFindByIdAndDelete() {
-        var input = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "group-name", 0, "description");
+        var input = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "group-name", 0, "description", true);
 
         var id = groupConfigurationDao.insert(input);
 
@@ -41,7 +41,7 @@ public class GroupConfigurationDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testInsertAndGetAll() {
-        var input = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "group-name", 0, "description");
+        var input = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "group-name", 0, "description", true);
 
         var id = groupConfigurationDao.insert(input);
 
@@ -62,11 +62,11 @@ public class GroupConfigurationDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testUpdate() {
-        var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10, "description");
+        var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10, "description", true);
 
         var id = groupConfigurationDao.insert(group);
 
-        var updatedGroup = new GroupConfigurationEntity(id, group.uuid(), "another name", 20, "another description");
+        var updatedGroup = new GroupConfigurationEntity(id, group.uuid(), "another name", 20, "another description", true);
         var result = groupConfigurationDao.update(updatedGroup);
         assertTrue(result);
 
@@ -75,14 +75,14 @@ public class GroupConfigurationDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testUpdateNotFound() {
-        var groupUpdate = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "another name", 20, "another description");
+        var groupUpdate = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "another name", 20, "another description", true);
         var result = groupConfigurationDao.update(groupUpdate);
         assertFalse(result);
     }
 
     @Test
     public void testFindByUuid() {
-        var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10, "description");
+        var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10, "description", true);
 
         var groupId = groupConfigurationDao.insert(group);
 
@@ -95,11 +95,12 @@ public class GroupConfigurationDaoImplTest extends AbstractDaoTest {
         assertEquals(group.uuid(), result.get().uuid());
         assertEquals(group.displayOrder(), result.get().displayOrder());
         assertEquals(group.description(), result.get().description());
+
     }
 
     @Test
     public void testFindByUuidNotFound() {
-        var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10, "description");
+        var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10, "description", true);
 
         var result = groupConfigurationDao.findByUuid(group.uuid());
         assertNotNull(result);
@@ -114,7 +115,7 @@ public class GroupConfigurationDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testDescriptionMayBeNull() {
-        var input = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "Group", 10, null);
+        var input = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "Group", 10, null, true);
         groupConfigurationDao.insert(input);
 
         var result = groupConfigurationDao.findByUuid(input.uuid());

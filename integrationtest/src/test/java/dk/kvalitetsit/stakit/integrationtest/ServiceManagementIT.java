@@ -58,7 +58,7 @@ public class ServiceManagementIT extends AbstractIntegrationTest {
         var groupInput = new GroupInput();
         groupInput.setName("group");
         groupInput.setDisplayOrder(10);
-
+        groupInput.display(true);
         var groupResult = groupManagementApi.v1GroupsPostWithHttpInfo(groupInput);
         var groupUuid = groupResult.getData().getUuid();
 
@@ -89,7 +89,7 @@ public class ServiceManagementIT extends AbstractIntegrationTest {
         var groupInput = new GroupInput();
         groupInput.setName(UUID.randomUUID().toString());
         groupInput.setDisplayOrder(10);
-
+        groupInput.setDisplay(true);
         var groupResult = groupManagementApi.v1GroupsPostWithHttpInfo(groupInput);
         var groupUuid = groupResult.getData().getUuid();
 
