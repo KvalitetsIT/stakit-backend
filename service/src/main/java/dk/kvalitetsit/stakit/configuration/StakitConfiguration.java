@@ -88,8 +88,8 @@ public class StakitConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public AnnouncementService announcementService(AnnouncementDao announcementDao) {
-        return new AnnouncementServiceImpl(announcementDao);
+    public AnnouncementService announcementService(AnnouncementDao announcementDao, MailQueueService mailQueueService) {
+        return new AnnouncementServiceImpl(announcementDao, mailQueueService);
     }
 
     @Bean
@@ -115,9 +115,10 @@ public class StakitConfiguration implements WebMvcConfigurer {
                                         ServiceStatusDao serviceStatusDao,
                                         @Value("${STATUS_UPDATE_SUBJECT_TEMPLATE}") String templateSubject,
                                         @Value("${STATUS_UPDATE_BODY_TEMPLATE}") String templateBody,
-                                        @Value("${BASE_URL}") String baseUrl) {
+                                        @Value("${BASE_URL}") String baseUrl,
+                                        AnnouncementDao announcementDao) {
 
-        return new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, templateBody, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao, baseUrl);
+        return new MailQueueServiceImpl(mailSubscriptionDao, mailSenderService, templateSubject, templateBody, serviceConfigurationDao, groupConfigurationDao, serviceStatusDao, baseUrl, announcementDao);
     }
 
     @Bean

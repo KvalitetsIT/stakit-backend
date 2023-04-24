@@ -89,4 +89,17 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
 
         return template.query(sql, Collections.singletonMap("to_datetime", toDatetime), DataClassRowMapper.newInstance(AnnouncementEntity.class));
     }
+
+    @Override
+    public Optional<AnnouncementEntity> getById(long announcementId) {
+        var sql = "select * from announcement where id = :id";
+
+        try {
+            return Optional.ofNullable(template.queryForObject(sql, Collections.singletonMap("id", announcementId), DataClassRowMapper.newInstance(AnnouncementEntity.class)));
+        }
+        catch(EmptyResultDataAccessException e) {
+            logger.info("Announcement not found {}.", announcementId);
+            return Optional.empty();
+        }
+    }
 }

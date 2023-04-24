@@ -26,7 +26,7 @@ public class MailSubscriptionDaoImplTest extends AbstractDaoTest {
     public void testFindSubscriptionsByServiceConfigurationId() {
         var groupId = testDataHelper.createGroup("group name", UUID.randomUUID(), "group description");
         var serviceConfigurationId = testDataHelper.createServiceConfiguration("service", "service name", true, groupId, "OK", "description");
-        var mailSubscriptionId = testDataHelper.createMailSubscription(true, UUID.randomUUID());
+        var mailSubscriptionId = testDataHelper.createMailSubscription(true, UUID.randomUUID(), UUID.randomUUID(), "email");
         testDataHelper.createMailSubscriptionGroup(mailSubscriptionId, groupId);
 
         var result = mailSubscriptionDao.findSubscriptionsByServiceConfigurationId(serviceConfigurationId);
@@ -68,5 +68,16 @@ public class MailSubscriptionDaoImplTest extends AbstractDaoTest {
 
         var result = mailSubscriptionDao.deleteByUuid(uuid);
         assertEquals(1, result);
+    }
+
+    @Test
+    public void testFindAnnouncementSubscriptions() {
+        var announcementsId = testDataHelper.createMailSubscription(true, UUID.randomUUID(), UUID.randomUUID(), true, "email1");
+        testDataHelper.createMailSubscription(true, UUID.randomUUID(), UUID.randomUUID(), false, "email2");
+
+        var result = mailSubscriptionDao.findAnnouncementSubscriptions();
+
+        assertEquals(1, result.size());
+        assertEquals(announcementsId, result.get(0).id());
     }
 }

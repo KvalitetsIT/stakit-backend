@@ -13,4 +13,5 @@ public interface AnnouncementDao {
     boolean updateByUuid(AnnouncementEntity announcementEntity);
     boolean deleteByUuid(UUID uuid);
     List<AnnouncementEntity> getAnnouncements(OffsetDateTime toDatetime);
+    Optional<AnnouncementEntity> getById(long announcementId);
 }

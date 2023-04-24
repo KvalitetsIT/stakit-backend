@@ -1,9 +1,6 @@
 package dk.kvalitetsit.stakit.service;
 
-import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
-import dk.kvalitetsit.stakit.dao.MailSubscriptionDao;
-import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
-import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
+import dk.kvalitetsit.stakit.dao.*;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
@@ -24,6 +21,7 @@ public class MailQueueServiceImpl implements MailQueueService {
     private final GroupConfigurationDao groupConfigurationDao;
     private final ServiceStatusDao serviceStatusDao;
     private final String baseUrl;
+    private final AnnouncementDao announcementDao;
 
 
     public MailQueueServiceImpl(MailSubscriptionDao mailSubscriptionDao,
@@ -33,7 +31,8 @@ public class MailQueueServiceImpl implements MailQueueService {
                                 ServiceConfigurationDao serviceConfigurationDao,
                                 GroupConfigurationDao groupConfigurationDao,
                                 ServiceStatusDao serviceStatusDao,
-                                String baseUrl) {
+                                String baseUrl,
+                                AnnouncementDao announcementDao) {
         this.mailSubscriptionDao = mailSubscriptionDao;
         this.mailSenderService = mailSenderService;
         this.templateSubject = templateSubject;
@@ -42,6 +41,7 @@ public class MailQueueServiceImpl implements MailQueueService {
         this.groupConfigurationDao = groupConfigurationDao;
         this.serviceStatusDao = serviceStatusDao;
         this.baseUrl = baseUrl;
+        this.announcementDao = announcementDao;
     }
 
     @Override
@@ -61,6 +61,24 @@ public class MailQueueServiceImpl implements MailQueueService {
                 .map(x -> new MessageModel(x.email(),
                                       substitute(templateSubject, serviceConfiguration, groupName, serviceStatus, x.uuid()),
                                       substitute(templateBody, serviceConfiguration, groupName, serviceStatus, x.uuid())))
+                .forEach(this::processMail);
+    }
+
+    @Override
+    @Transactional
+    public void queueAnnouncementMail(long announcementId) {
+        var mails = mailSubscriptionDao.findAnnouncementSubscriptions();
+
+        if(mails.isEmpty()) {
+            return;
+        }
+
+        var announcement =announcementDao.getById(announcementId);
+
+        mails.stream()
+                .map(x -> new MessageModel(x.email(),
+                        "Stakit Announcement",
+                        announcement.get().message() + "\n\n" + baseUrl + "/unsubscribe/" + x.uuid()))
                 .forEach(this::processMail);
     }
 

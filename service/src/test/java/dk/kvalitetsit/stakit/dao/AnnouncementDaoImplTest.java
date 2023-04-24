@@ -116,4 +116,20 @@ public class AnnouncementDaoImplTest extends AbstractDaoTest {
         assertEquals(announcementOne.toDatetime(), result.get(0).toDatetime());
         assertEquals(announcementOne.fromDatetime(), result.get(0).fromDatetime());
     }
+
+    @Test
+    public void testAnnouncementNotFound() {
+        var result = announcementDao.getById(Long.MAX_VALUE);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testAnnouncementFound() {
+        var announcementOne = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now().plusDays(1), "subject one", "message one");
+
+        var idOne = announcementDao.insert(announcementOne);
+
+        var result = announcementDao.getById(idOne);
+        assertTrue(result.isPresent());
+    }
 }

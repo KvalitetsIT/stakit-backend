@@ -12,9 +12,11 @@ import java.util.UUID;
 
 public class AnnouncementServiceImpl implements AnnouncementService {
     private final AnnouncementDao announcementDao;
+    private final MailQueueService mailQueueService;
 
-    public AnnouncementServiceImpl(AnnouncementDao announcementDao) {
+    public AnnouncementServiceImpl(AnnouncementDao announcementDao, MailQueueService mailQueueService) {
         this.announcementDao = announcementDao;
+        this.mailQueueService = mailQueueService;
     }
 
     @Override
@@ -27,7 +29,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Transactional
     public UUID createAnnouncement(AnnouncementModel announcementModel) {
         var uuid = UUID.randomUUID();
-        announcementDao.insert(AnnouncementMapper.mapModel(uuid, announcementModel));
+        var id = announcementDao.insert(AnnouncementMapper.mapModel(uuid, announcementModel));
+        mailQueueService.queueAnnouncementMail(id);
 
         return uuid;
     }
