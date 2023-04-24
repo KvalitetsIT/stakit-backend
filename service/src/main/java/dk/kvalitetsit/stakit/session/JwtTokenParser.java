@@ -40,7 +40,7 @@ public class JwtTokenParser {
         logger.debug("Parsing token: {}", token);
 
         try {
-            Jws<Claims> claims = parseToken(token); /// <-- midlertidigt udkommenteret
+            Jws<Claims> claims = parseToken(token);
 
             var tokenResult = new Token();
             // Set stuff on token if needed.
