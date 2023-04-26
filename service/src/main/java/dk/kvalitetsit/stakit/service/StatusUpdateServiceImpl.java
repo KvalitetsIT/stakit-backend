@@ -9,8 +9,10 @@ import dk.kvalitetsit.stakit.service.model.UpdateServiceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class StatusUpdateServiceImpl implements StatusUpdateService {
@@ -36,7 +38,18 @@ public class StatusUpdateServiceImpl implements StatusUpdateService {
         Long statusConfigurationId;
         try {
             var groupId = groupConfigurationDao.findDefaultGroupId();
-            statusConfigurationId = serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), UUID.randomUUID(), input.serviceName(), false, groupId, String.valueOf(input.status()), null));
+            if (groupId.isEmpty()) {
+                try {
+                    statusConfigurationId = serviceConfigurationDao.findByService(input.service()).id();
+                }
+                catch(EmptyResultDataAccessException e) {
+                    groupId = Optional.of(groupConfigurationDao.createDefaultGroup());
+                    statusConfigurationId = serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), UUID.randomUUID(), input.serviceName(), false, groupId.get(), String.valueOf(input.status()), null));
+                }
+            }
+            else {
+                statusConfigurationId = serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(input.service(), UUID.randomUUID(), input.serviceName(), false, groupId.get(), String.valueOf(input.status()), null));
+            }
         }
         catch(DuplicateKeyException e) {
             statusConfigurationId = serviceConfigurationDao.findByService(input.service()).id();

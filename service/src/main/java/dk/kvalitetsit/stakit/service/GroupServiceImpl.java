@@ -70,7 +70,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public boolean deleteGroup(UUID uuid) {
         var servicesInGroup = serviceConfigurationDao.findByGroupUuid(uuid);
-        var defaultGroup = groupConfigurationDao.findDefaultGroupId();
+        var defaultGroup = groupConfigurationDao.findDefaultGroupId().orElseGet(groupConfigurationDao::createDefaultGroup);
         servicesInGroup.forEach(x -> {
             serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(x.id(), x.uuid(), x.service(), x.name(), x.ignoreServiceName(), defaultGroup, null, x.description()));
         });
@@ -100,7 +100,7 @@ public class GroupServiceImpl implements GroupService {
         //removing services not in serviceList
         for (ServiceConfigurationEntity serviceEntity : oldServices) {
             if (!serviceList.contains(serviceEntity.uuid())) {
-                var updateSuccess = serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(serviceEntity.id(), serviceEntity.uuid(), serviceEntity.service(), serviceEntity.name(), serviceEntity.ignoreServiceName(), groupConfigurationDao.findDefaultGroupId(), serviceEntity.status(), serviceEntity.description()));
+                var updateSuccess = serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(serviceEntity.id(), serviceEntity.uuid(), serviceEntity.service(), serviceEntity.name(), serviceEntity.ignoreServiceName(), groupConfigurationDao.findDefaultGroupId().orElseGet(groupConfigurationDao::createDefaultGroup), serviceEntity.status(), serviceEntity.description()));
                 if (!updateSuccess) {
                     throw new InvalidDataException("Service not found: %s".formatted(serviceEntity.uuid()));
                 }

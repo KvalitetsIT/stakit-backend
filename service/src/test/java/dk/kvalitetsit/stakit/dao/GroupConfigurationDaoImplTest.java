@@ -61,6 +61,16 @@ public class GroupConfigurationDaoImplTest extends AbstractDaoTest {
     }
 
     @Test
+    public void testInsertDefault() {
+
+        var id = groupConfigurationDao.createDefaultGroup();
+
+        var result = groupConfigurationDao.findById(id);
+        assertTrue(result.isPresent());
+        assertEquals("Default", result.get().name());
+    }
+
+    @Test
     public void testUpdate() {
         var group = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "name", 10, "description", true);
 

@@ -98,9 +98,16 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
     }
 
     @Override
-    public long findDefaultGroupId() {
+    public Optional<Long> findDefaultGroupId() {
         var sql = "select min(id) as id from group_configuration where name = 'Default'";
 
-        return template.queryForObject(sql, Collections.emptyMap(), Long.class);
+        return Optional.ofNullable(template.queryForObject(sql, Collections.emptyMap(), Long.class));
+    }
+
+    @Override
+    public Long createDefaultGroup() {
+        GroupConfigurationEntity groupConfigurationEntity = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "Default", 0, "Default group", true);
+
+        return insert(groupConfigurationEntity);
     }
 }

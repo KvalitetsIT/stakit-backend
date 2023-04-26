@@ -19,5 +19,7 @@ public interface GroupConfigurationDao {
 
     boolean delete(UUID input);
 
-    long findDefaultGroupId();
+    Optional<Long> findDefaultGroupId();
+
+    Long createDefaultGroup();
 }

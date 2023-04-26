@@ -109,7 +109,7 @@ public class ServiceManagementServiceImplTest {
     public void testCreateServiceNoGroup() {
         var groupId = 10L;
 
-        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
+        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(Optional.of(groupId));
 
         var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, "OK", UUID.randomUUID().toString());
 
@@ -139,7 +139,7 @@ public class ServiceManagementServiceImplTest {
         var serviceUpdate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, null, null, "OK", UUID.randomUUID().toString());
 
         Mockito.when(serviceConfigurationDao.updateByUuid(Mockito.any())).thenReturn(false);
-        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
+        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(Optional.of(groupId));
 
         var result = serviceManagementService.updateService(serviceUuid, serviceUpdate);
         assertFalse(result);
@@ -208,7 +208,7 @@ public class ServiceManagementServiceImplTest {
         var groupId = 10L;
 
         Mockito.when(serviceConfigurationDao.updateByUuid(Mockito.any())).thenReturn(true);
-        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
+        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(Optional.of(groupId));
 
         var result = serviceManagementService.updateService(serviceUuid, serviceCreate);
         assertTrue(result);
