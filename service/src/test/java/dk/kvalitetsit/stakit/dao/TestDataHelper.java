@@ -60,7 +60,7 @@ public class TestDataHelper {
     }
 
     public long findDefaultGroupId() {
-        return groupConfigurationDao.findDefaultGroupId();
+        return groupConfigurationDao.findDefaultGroupId().get();
     }
 
     public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier, UUID uuid, boolean announcements, String email) {

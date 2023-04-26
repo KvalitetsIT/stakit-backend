@@ -42,7 +42,7 @@ public class StatusUpdateServiceImplTest {
 
         Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenReturn(10L);
         Mockito.when(serviceStatusDao.findLatest(Mockito.any())).thenReturn(Optional.empty());
-        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
+        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(Optional.of(groupId));
 
         statusUpdateService.updateStatus(input);
 
@@ -72,7 +72,7 @@ public class StatusUpdateServiceImplTest {
         Mockito.when(serviceConfigurationDao.insert(Mockito.any())).thenThrow(DuplicateKeyException.class);
         Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null, "OK", "description"));
         Mockito.when(serviceStatusDao.findLatest(Mockito.any())).thenReturn(Optional.of(serviceStatus));
-        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
+        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(Optional.of(groupId));
 
 
         statusUpdateService.updateStatus(input);
@@ -106,7 +106,7 @@ public class StatusUpdateServiceImplTest {
         Mockito.when(serviceConfigurationDao.findByService(input.service())).thenReturn(new ServiceConfigurationEntity(10L, UUID.randomUUID(), "service-name", "service", true, null, "OK", "description"));
         Mockito.when(serviceStatusDao.findLatest(Mockito.any())).thenReturn(Optional.of(serviceStatus));
         Mockito.when(serviceStatusDao.insert(Mockito.any())).thenReturn(11L);
-        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(groupId);
+        Mockito.when(groupConfigurationDao.findDefaultGroupId()).thenReturn(Optional.of(groupId));
 
         statusUpdateService.updateStatus(input);
 
