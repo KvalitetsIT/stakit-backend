@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 
 public class GroupMapper {
     public static GroupModel mapCreateGroup(GroupInput from) {
-        return GroupModel.createInstance(from.getName(), from.getDisplayOrder(), from.getDescription(), from.getServices(), from.getDisplay());
+        return GroupModel.createInstance(from.getName(), from.getDisplayOrder(), from.getDescription(), from.getServices(), from.getDisplay(), from.getExpanded());
     }
 
     public static GroupModel mapUpdateGroup(UUID uuid, GroupInput from) {
-        return new GroupModel(uuid, from.getName(), from.getDisplayOrder(), from.getDescription(), from.getServices(), from.getDisplay());
+        return new GroupModel(uuid, from.getName(), from.getDisplayOrder(), from.getDescription(), from.getServices(), from.getDisplay(), from.getExpanded());
     }
 
     public static List<org.openapitools.model.Group> mapGetGroups(List<GroupGetModel> from) {
@@ -30,7 +30,8 @@ public class GroupMapper {
                 .name(groupModel.name())
                 .services(groupModel.services())
                 .description(groupModel.description())
-                .display(groupModel.display());
+                .display(groupModel.display())
+                .expanded(groupModel.expanded());
     }
 
     public static List<UUID> mapPatchGroup(GroupPatch patch){

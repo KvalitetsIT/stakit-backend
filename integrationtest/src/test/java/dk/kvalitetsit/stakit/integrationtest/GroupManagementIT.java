@@ -37,6 +37,7 @@ public class GroupManagementIT extends AbstractIntegrationTest {
         groupUpdate.setDisplayOrder(20);
         groupUpdate.setDescription("description");
         groupUpdate.setDisplay(true);
+        groupUpdate.setExpanded(true);
         var response = groupManagementApi.v1GroupsPostWithHttpInfo(groupUpdate);
         assertEquals(201, response.getStatusCode());
 
@@ -68,6 +69,7 @@ public class GroupManagementIT extends AbstractIntegrationTest {
         groupUpdate.setDisplayOrder(20);
         groupUpdate.setDescription("description");
 
+        groupUpdate.expanded(true);
         groupUpdate.display(true);
         var response = groupManagementApi.v1GroupsPostWithHttpInfo(groupUpdate);
         assertEquals(201, response.getStatusCode());
@@ -104,6 +106,7 @@ public class GroupManagementIT extends AbstractIntegrationTest {
         groupUpdate.setDescription("description");
         groupUpdate.addServicesItem(service.getUuid());
         groupUpdate.setDisplay(true);
+        groupUpdate.setExpanded(true);
         var response = groupManagementApi.v1GroupsPostWithHttpInfo(groupUpdate);
         assertEquals(201, response.getStatusCode());
 
@@ -123,6 +126,7 @@ public class GroupManagementIT extends AbstractIntegrationTest {
         groupUpdate.setDescription("description");
         groupUpdate.display(true);
 
+        groupUpdate.setExpanded(true);
         var response = groupManagementApi.v1GroupsPost(groupUpdate);
 
         var result = groupManagementApi.v1GroupsUuidGet(response.getUuid());
@@ -140,6 +144,7 @@ public class GroupManagementIT extends AbstractIntegrationTest {
         groupUpdate.setDisplayOrder(20);
         groupUpdate.setDescription("description");
         groupUpdate.display(true);
+        groupUpdate.expanded(true);
         var createResponse = groupManagementApi.v1GroupsPostWithHttpInfo(groupUpdate);
         var uuid = createResponse.getData().getUuid();
 
@@ -165,6 +170,7 @@ public class GroupManagementIT extends AbstractIntegrationTest {
         group.setDescription("group patch description");
         group.display(true);
 
+        group.setExpanded(true);
         var groupToPatch = groupManagementApi.v1GroupsPost(group);
 
         var groupUuid = groupToPatch.getUuid();
@@ -222,6 +228,7 @@ public class GroupManagementIT extends AbstractIntegrationTest {
         group.setDescription("group with services description");
         group.display(true);
 
+        group.setExpanded(true);
         var createResponse = groupManagementApi.v1GroupsPost(group);
 
         var uuid = createResponse.getUuid();
