@@ -440,7 +440,7 @@ paths:
               $ref: '#/components/schemas/subscribe'
       responses:
         '201':
-          description: The scubscription was created.
+          description: The subscription was created.
           headers:
             Location:
               schema:
@@ -452,6 +452,21 @@ paths:
                 $ref: '#/components/schemas/create-response'
         '400':
           $ref: '#components/responses/400'
+    get:
+      tags:
+        - Subscription-management
+      summary: Returns all subscriptions
+      description: Returns a list of all subscribers and what they are subscribing to
+      responses:
+        '200':
+          description: A list of subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/subscription'
+
 
   /v1/subscriptions/{uuid}:
     delete:
@@ -465,6 +480,21 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/201'
+    get:
+      tags:
+        - Subscription-management
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      summary: Returns a subscription by uuid
+      description: Returns a a specific subscription
+      responses:
+        '200':
+          description: A subscription that corresponds to the specified uuid
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/subscription'
 
   /v1/subscribe-confirm/{uuid}:
     get:
@@ -884,6 +914,33 @@ components:
         message:
           description: Announcement message/body
           type: string
+
+
+
+    subscription:
+      type: object
+      required:
+        - email
+        - announcements
+        - groups
+      properties:
+        uuid:
+          description: The subscriptions uuid
+          type: string
+        email:
+          description: Email to subscribe
+          type: string
+        announcements:
+          description: Subscribe to announcements
+          type: boolean
+        groups:
+          description: Zero or more groups to get updates for.
+          type: array
+          items:
+            type: string
+            description: Group UUID
+            format: uuid
+
 
     subscribe:
       type: object

@@ -79,7 +79,7 @@ public abstract class AbstractIntegrationTest {
         return smtpWebPort;
     }
 
-    String generateSignedToken() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
+    static String generateSignedToken() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var privateKeyBytes = Files.readAllBytes(Paths.get(ClassLoader.getSystemResource("key.pkcs8").toURI()));
 
         var spec = new PKCS8EncodedKeySpec(privateKeyBytes);
@@ -94,6 +94,7 @@ public abstract class AbstractIntegrationTest {
                 .claim("email", "john@example.com")
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
+
     }
 
     int getCurrentMailCount() {

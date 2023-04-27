@@ -1,11 +1,14 @@
 package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionEntity;
+import dk.kvalitetsit.stakit.dao.entity.SubscriptionGroupEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.DataClassRowMapper;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import javax.sql.DataSource;
@@ -76,6 +79,13 @@ public class MailSubscriptionDaoImpl implements MailSubscriptionDao {
 
         return template.update(sql, Collections.singletonMap("uuid", uuid.toString()));
     }
+
+    @Override
+    public MailSubscriptionEntity getSubscriptionByUuid(UUID uuid) {
+        var sql = "select * from mail_subscription where uuid = :uuid";
+        return template.queryForObject(sql, Collections.singletonMap("uuid", uuid.toString()), MailSubscriptionEntity.class);
+    }
+
 
     @Override
     public List<MailSubscriptionEntity> findAnnouncementSubscriptions() {

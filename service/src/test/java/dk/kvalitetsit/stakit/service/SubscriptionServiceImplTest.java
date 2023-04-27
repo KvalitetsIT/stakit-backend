@@ -43,7 +43,7 @@ public class SubscriptionServiceImplTest {
 
     @Test
     public void testSubscribe() {
-        var input = new SubscriptionModel("email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
+        var input = new SubscriptionModel(null,"email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
 
         var groupOne = new GroupConfigurationEntity(1L, input.groups().get(0), "group one", 10, "description one", true);
         var groupTwo = new GroupConfigurationEntity(2L, input.groups().get(1), "group two", 10, "description two", true);
@@ -64,7 +64,7 @@ public class SubscriptionServiceImplTest {
 
     @Test
     public void testSubscribeGroupNotFound() {
-        var input = new SubscriptionModel("email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
+        var input = new SubscriptionModel(null,"email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
 
         var groupOne = new GroupConfigurationEntity(1L, input.groups().get(0), "group one", 10, "description one", true);
 
