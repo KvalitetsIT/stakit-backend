@@ -108,6 +108,12 @@ public class StakitConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
+    public SubscriptionManagementService subscriptionManagementService(MailSubscriptionGroupDao mailSubscriptionGroupDao) {
+        return new SubscriptionManagementServiceImpl(mailSubscriptionGroupDao);
+    }
+
+
+    @Bean
     public MailQueueService mailService(MailSubscriptionDao mailSubscriptionDao,
                                         MailSenderService mailSenderService,
                                         ServiceConfigurationDao serviceConfigurationDao,

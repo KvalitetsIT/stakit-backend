@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class StakitMapper {
 
     public static SubscriptionModel mapSubscription(Subscribe subscribe) {
-        return new SubscriptionModel(subscribe.getEmail(), subscribe.getGroups(), subscribe.getAnnouncements());
+        return new SubscriptionModel(null, subscribe.getEmail(), subscribe.getGroups(), subscribe.getAnnouncements());
     }
 
     public static List<StatusGroup> mappedStatusGroups(List<StatusGroupedModel> groupStatus){
