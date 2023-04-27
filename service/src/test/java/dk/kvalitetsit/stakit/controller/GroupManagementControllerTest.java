@@ -35,8 +35,8 @@ public class GroupManagementControllerTest {
 
     @Test
     public void testGetGroups() {
-        var groupOne = new GroupGetModel(UUID.randomUUID(), "Name 1", 20, new ArrayList<UUID>(), UUID.randomUUID().toString(),true);
-        var groupTwo = new GroupGetModel(UUID.randomUUID(), "Name 2", 30, new ArrayList<UUID>(), UUID.randomUUID().toString(), true);
+        var groupOne = new GroupGetModel(UUID.randomUUID(), "Name 1", 20, new ArrayList<UUID>(), UUID.randomUUID().toString(),true, true);
+        var groupTwo = new GroupGetModel(UUID.randomUUID(), "Name 2", 30, new ArrayList<UUID>(), UUID.randomUUID().toString(), true, true);
 
         Mockito.when(groupService.getGroups()).thenReturn(Arrays.asList(groupOne, groupTwo));
 
@@ -69,10 +69,11 @@ public class GroupManagementControllerTest {
         input.setDescription("description");
         input.setServices(Collections.singletonList(UUID.randomUUID()));
         input.display(true);
+        input.expanded(true);
 
         var expectedUuid = UUID.randomUUID();
 
-        Mockito.when(groupService.createGroup(GroupModel.createInstance(input.getName(), input.getDisplayOrder(), input.getDescription(), input.getServices(), input.getDisplay()))).thenReturn(expectedUuid);
+        Mockito.when(groupService.createGroup(GroupModel.createInstance(input.getName(), input.getDisplayOrder(), input.getDescription(), input.getServices(), input.getDisplay(), input.getExpanded()))).thenReturn(expectedUuid);
 
         var result = groupManagementController.v1GroupsPost(input);
         assertNotNull(result);
@@ -90,8 +91,9 @@ public class GroupManagementControllerTest {
         input.setDescription("description");
         input.setServices(Collections.singletonList(UUID.randomUUID()));
         input.display(true);
+        input.expanded(true);
 
-        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder(), input.getDescription(), input.getServices(), input.getDisplay());
+        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder(), input.getDescription(), input.getServices(), input.getDisplay(), input.getExpanded());
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(true);
 
@@ -110,8 +112,9 @@ public class GroupManagementControllerTest {
         input.setDisplayOrder(10);
         input.setDescription("description");
         input.display(true);
+        input.expanded(true);
 
-        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder(), input.getDescription(), Collections.emptyList(), input.getDisplay());
+        var serviceInput = new GroupModel(uuid, input.getName(), input.getDisplayOrder(), input.getDescription(), Collections.emptyList(), input.getDisplay(), input.getExpanded());
 
         Mockito.when(groupService.updateGroup(serviceInput)).thenReturn(false);
 
@@ -152,7 +155,7 @@ public class GroupManagementControllerTest {
         var uuid = UUID.randomUUID();
         var serviceUuid = UUID.randomUUID();
 
-        Mockito.when(groupService.getGroup(uuid)).thenReturn(Optional.of(new GroupGetModel(uuid, "name", 10, Collections.singletonList(serviceUuid), "description", true)));
+        Mockito.when(groupService.getGroup(uuid)).thenReturn(Optional.of(new GroupGetModel(uuid, "name", 10, Collections.singletonList(serviceUuid), "description", true, true)));
 
         var result = groupManagementController.v1GroupsUuidGet(uuid);
         assertNotNull(result);

@@ -72,7 +72,7 @@ public class ServiceManagementServiceImplTest {
         var groupId = 10L;
         var serviceCreate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null, "OK", UUID.randomUUID().toString());
 
-        var groupConfigurationEntity = new GroupConfigurationEntity(groupId, UUID.randomUUID(), "group name", 10, "group description", true);
+        var groupConfigurationEntity = new GroupConfigurationEntity(groupId, UUID.randomUUID(), "group name", 10, "group description", true, true);
         Mockito.when(groupConfigurationDao.findByUuid(serviceCreate.group())).thenReturn(Optional.of(groupConfigurationEntity));
 
         var result = serviceManagementService.createService(serviceCreate);
@@ -165,7 +165,7 @@ public class ServiceManagementServiceImplTest {
         var serviceUuid = UUID.randomUUID();
         var serviceUpdate = new ServiceModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), true, UUID.randomUUID(), null, "OK", UUID.randomUUID().toString());
 
-        var groupConfigurationEntity = new GroupConfigurationEntity(groupId, UUID.randomUUID(), "group name", 10, "group description", true);
+        var groupConfigurationEntity = new GroupConfigurationEntity(groupId, UUID.randomUUID(), "group name", 10, "group description", true, true);
         Mockito.when(groupConfigurationDao.findByUuid(serviceUpdate.group())).thenReturn(Optional.of(groupConfigurationEntity));
 
         Mockito.when(serviceConfigurationDao.updateByUuid(Mockito.any())).thenReturn(true);

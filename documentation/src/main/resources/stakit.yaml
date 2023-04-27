@@ -606,6 +606,10 @@ components:
           description: A flag that determines whether or not the group is supposed to be shown on the dashboard
           type: boolean
           example: true
+        expanded:
+          description: A flag that determines whether or not the group is expanded on the dashboard
+          type: boolean
+          example: true
 
     group:
       type: object
@@ -642,7 +646,10 @@ components:
           description: A flag that determines whether or not the group is supposed to be shown on the dashboard
           type: boolean
           example: true
-
+        expanded:
+          description: A flag that determines whether or not the group is expanded on the dashboard
+          type: boolean
+          example: true
 
     group-patch:
       type: object
@@ -685,6 +692,10 @@ components:
             description: Service UUID.
         display:
           description: A flag that determines whether or not the group is supposed to be shown on the dashboard
+          type: boolean
+          example: true
+        expanded:
+          description: A flag that determines whether or not the group is expanded on the dashboard
           type: boolean
           example: true
 

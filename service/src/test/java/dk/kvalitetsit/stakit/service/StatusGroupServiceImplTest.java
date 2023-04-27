@@ -27,7 +27,7 @@ public class StatusGroupServiceImplTest {
 
     @Test
     public void testGetNoServices() {
-        var daoResult = new GroupedStatus("Default", null, null, null, null, UUID.randomUUID(), null, true);
+        var daoResult = new GroupedStatus("Default", null, null, null, null, UUID.randomUUID(), null, true, true);
         Mockito.when(groupStatusDao.getGroupedStatus()).thenReturn(Collections.singletonList(daoResult));
 
         var result = statusGroupServiceImpl.getStatusGrouped();
@@ -47,9 +47,9 @@ public class StatusGroupServiceImplTest {
     public void testGetServices() {
         var groupUuidDefault = UUID.randomUUID();
         var groupUuidOne = UUID.randomUUID();
-        var groupOne = new GroupedStatus("Default", "OK", "Service One", "Group Description One", "Service Description One", groupUuidDefault, UUID.randomUUID(), true);
-        var groupTwo = new GroupedStatus("Group One", "NOT_OK", "Service Two", "Group Description Two", "Service Description Two", groupUuidOne, UUID.randomUUID(), true);
-        var groupThree = new GroupedStatus("Group One", "OK", "Service Three", "Group Description Two", "Service Description Three", groupUuidOne, UUID.randomUUID(), true);
+        var groupOne = new GroupedStatus("Default", "OK", "Service One", "Group Description One", "Service Description One", groupUuidDefault, UUID.randomUUID(), true, true);
+        var groupTwo = new GroupedStatus("Group One", "NOT_OK", "Service Two", "Group Description Two", "Service Description Two", groupUuidOne, UUID.randomUUID(), true, true);
+        var groupThree = new GroupedStatus("Group One", "OK", "Service Three", "Group Description Two", "Service Description Three", groupUuidOne, UUID.randomUUID(), true, true);
 
         var dbResult = Arrays.asList(groupOne, groupTwo, groupThree);
         Mockito.when(groupStatusDao.getGroupedStatus()).thenReturn(dbResult);

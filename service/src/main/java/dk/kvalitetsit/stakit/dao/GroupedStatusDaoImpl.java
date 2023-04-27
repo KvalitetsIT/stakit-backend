@@ -21,6 +21,7 @@ public class GroupedStatusDaoImpl implements GroupedStatusDao {
                 "         sc.description as service_description, " +
                 "         gc.description as group_description, " +
                 "         gc.display as group_display, " +
+                "         gc.expanded as group_expanded, " +
                 "         gc.uuid as group_uuid, " +
                 "         sc.uuid as service_uuid, " +
                 "         status " +

@@ -27,6 +27,8 @@ public class StakitMapper {
         statusGroup.setDescription(statusGroupedModel.description());
         statusGroup.setUuid(statusGroupedModel.groupUuid());
         statusGroup.setDisplay(statusGroupedModel.display());
+        statusGroup.setExpanded(statusGroupedModel.expanded());
+
         statusGroupedModel.status().forEach(x -> {
             var s = new org.openapitools.model.ServiceStatus();
             s.setName(x.statusName());
