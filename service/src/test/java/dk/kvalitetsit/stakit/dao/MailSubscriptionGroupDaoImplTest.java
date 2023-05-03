@@ -2,18 +2,12 @@ package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionGroupsEntity;
 import dk.kvalitetsit.stakit.dao.entity.SubscriptionGroupEntity;
-import dk.kvalitetsit.stakit.service.MailQueueService;
-import dk.kvalitetsit.stakit.service.StatusUpdateServiceImpl;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,8 +55,6 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
         mailSubscriptionGroupDao.deleteByUuid(uuid);
     }
 
-
-
     @Test
     public void testGetAllSubscriptions(){
 
@@ -83,7 +75,6 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
         assertEquals(expected, response);
     }
 
-
     @Test
     public void testGetSubscriptionByUuid(){
 
@@ -102,7 +93,6 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
         assertEquals(expectedResponse, response, "Expected the same response as were initially added");
     }
 
-
     @Test
     public void testGetSubscriptionByUuidReturnsMaxSingleEntry(){
         var uuid = UUID.randomUUID();
@@ -117,12 +107,9 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
             return SubscriptionGroupEntity.createInstance(uuid, email, true, groupUuid);
         }).toList();
 
-        SubscriptionGroupEntity response =  mailSubscriptionGroupDao.getSubscriptionByUuid(uuid);
+        List<SubscriptionGroupEntity> response =  mailSubscriptionGroupDao.getSubscriptionByUuid(uuid);
 
-        assertEquals(expected.get(0), response, "Expected the same response as were initially added");
+        assertEquals(expected, response, "Expected the same response as were initially added");
     }
-
-
-
 }
 

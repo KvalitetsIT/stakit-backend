@@ -30,12 +30,9 @@ public class SubscriptionManagementServiceImpl implements SubscriptionManagement
         return subs.values().stream().toList();
     }
 
-
-
     @Override
     public Optional<SubscriptionModel> getSubscription(UUID uuid) {
         return Optional.of( map( mailSubscriptionGroupDao.getSubscriptionByUuid(uuid)));
-
     }
 
     private static SubscriptionModel merge(SubscriptionModel sub1, SubscriptionModel sub2) {
