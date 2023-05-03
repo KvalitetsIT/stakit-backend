@@ -1,11 +1,10 @@
 package dk.kvalitetsit.stakit.controller;
 
 
-import dk.kvalitetsit.stakit.dao.MailSubscriptionGroupDao;
 import dk.kvalitetsit.stakit.service.SubscriptionManagementService;
 import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
 import org.openapitools.api.SubscriptionManagementApi;
-import org.openapitools.model.Subscribe;
+
 import org.openapitools.model.Subscription;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,11 +13,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+
 @RestController
 public class SubscriptionManagementController  implements SubscriptionManagementApi {
-
-
-
 
     private final SubscriptionManagementService service;
 

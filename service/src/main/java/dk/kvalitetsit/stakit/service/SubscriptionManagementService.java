@@ -1,6 +1,5 @@
 package dk.kvalitetsit.stakit.service;
 
-import dk.kvalitetsit.stakit.service.model.ServiceModel;
 import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
 
 import java.util.List;
