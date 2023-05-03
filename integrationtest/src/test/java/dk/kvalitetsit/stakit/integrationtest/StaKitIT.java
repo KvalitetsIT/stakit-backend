@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.AdapterApi;
-import org.openapitools.client.api.AnnouncementsApi;
+import org.openapitools.client.api.AnnouncementManagementApi;
 import org.openapitools.client.api.GroupManagementApi;
 import org.openapitools.client.api.StaKitApi;
 import org.openapitools.client.model.*;
@@ -23,7 +23,7 @@ public class StaKitIT extends AbstractIntegrationTest {
 
     private final StaKitApi staKitApi;
     private final AdapterApi adapterApi;
-    private final AnnouncementsApi announcementApi;
+    private final AnnouncementManagementApi announcementApi;
     private final GroupManagementApi groupApi;
 
     public StaKitIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
@@ -40,7 +40,7 @@ public class StaKitIT extends AbstractIntegrationTest {
 
         staKitApi = new StaKitApi(apiClient);
         adapterApi = new AdapterApi(adapterClient);
-        announcementApi = new AnnouncementsApi(authenticatedApi);
+        announcementApi = new AnnouncementManagementApi(authenticatedApi);
         groupApi = new GroupManagementApi(authenticatedApi);
     }
 

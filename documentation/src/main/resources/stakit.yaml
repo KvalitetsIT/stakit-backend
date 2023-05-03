@@ -304,9 +304,26 @@ paths:
           $ref: '#/components/responses/401'
 
   /v1/announcements:
+    get:
+      tags:
+        - announcement-management
+      summary: Announcements GET API
+      description: API to get all announcements.
+      responses:
+        '200':
+          description: List of all announcements.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/announcement'
+        '401':
+          $ref: '#/components/responses/401'
+
     post:
       tags:
-        - announcements
+        - announcement-management
       summary: Announcements PUT API
       description: API to create an announcement.
       requestBody:
@@ -336,7 +353,7 @@ paths:
   /v1/announcements/{uuid}:
     get:
       tags:
-        - announcements
+        - announcement-management
       summary: Announcements GET API.
       description: API to get a single announcement.
       parameters:
@@ -355,7 +372,7 @@ paths:
 
     delete:
       tags:
-        - announcements
+        - announcement-management
       summary: Announcements DELETE API.
       description: API to delete a single announcement.
       parameters:
@@ -370,7 +387,7 @@ paths:
 
     put:
       tags:
-        - announcements
+        - announcement-management
       summary: Announcements PUT API
       description: API to update an announcement.
       parameters:
@@ -454,7 +471,7 @@ paths:
           $ref: '#components/responses/400'
     get:
       tags:
-        - Subscription-management
+        - subscription-management
       summary: Returns all subscriptions
       description: Returns a list of all subscribers and what they are subscribing to
       responses:
@@ -482,7 +499,7 @@ paths:
           $ref: '#/components/responses/201'
     get:
       tags:
-        - Subscription-management
+        - subscription-management
       parameters:
         - $ref: '#/components/parameters/uuid'
       summary: Returns a subscription by uuid

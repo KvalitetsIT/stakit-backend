@@ -2,6 +2,7 @@ package dk.kvalitetsit.stakit.service.mapper;
 
 import dk.kvalitetsit.stakit.dao.entity.AnnouncementEntity;
 import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
+import org.openapitools.model.Announcement;
 
 import java.util.UUID;
 
@@ -17,5 +18,7 @@ public class AnnouncementMapper {
     public static AnnouncementEntity mapModel(UUID uuid, AnnouncementModel announcementModel) {
         return AnnouncementEntity.createInstance(uuid, announcementModel.fromDatetime(), announcementModel.toDatetime(), announcementModel.subject(), announcementModel.message());
     }
+
+
 
 }

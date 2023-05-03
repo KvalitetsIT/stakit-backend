@@ -2,12 +2,15 @@ package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.AnnouncementEntity;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
+import dk.kvalitetsit.stakit.service.mapper.AnnouncementMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -132,4 +135,30 @@ public class AnnouncementDaoImplTest extends AbstractDaoTest {
         var result = announcementDao.getById(idOne);
         assertTrue(result.isPresent());
     }
+
+
+    @Test
+    public void testGetAllAnnouncements() {
+        var announcementOne = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now().plusDays(1), "subject one", "message one");
+        var announcementTwo = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now().plusDays(1), "subject one", "message one");
+
+        announcementDao.insert(announcementOne);
+        announcementDao.insert(announcementTwo);
+
+        var result = announcementDao.getAnnouncements();
+        assertEquals(2, result.size());
+
+        assertEquals(
+                List.of(announcementOne, announcementTwo),
+                result.stream().map(x -> AnnouncementEntity.createInstance(
+                        x.uuid(),
+                        x.fromDatetime(),
+                        x.toDatetime(),
+                        x.subject(),
+                        x.message()
+                )).collect(Collectors.toList()));
+
+
+    }
+
 }

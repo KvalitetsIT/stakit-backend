@@ -3,13 +3,10 @@ package dk.kvalitetsit.stakit.dao;
 import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionGroupsEntity;
 import dk.kvalitetsit.stakit.dao.entity.SubscriptionGroupEntity;
 import org.springframework.jdbc.core.DataClassRowMapper;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -57,15 +54,14 @@ public class MailSubscriptionGroupDaoImpl implements MailSubscriptionGroupDao {
     }
 
     @Override
-    public SubscriptionGroupEntity getSubscriptionByUuid(UUID uuid) {
+    public List<SubscriptionGroupEntity> getSubscriptionByUuid(UUID uuid) {
         String sql = "SELECT ms.uuid as sub_uuid, ms.email, ms.announcements, gc.uuid as group_uuid " +
                 "FROM mail_subscription ms " +
                 "JOIN mail_subscription_group msg ON ms.id = msg.mail_subscription_id " +
                 "JOIN group_configuration gc ON msg.group_configuration_id = gc.id " +
-                "WHERE ms.uuid = :uuid " +
-                "LIMIT 1";
+                "WHERE ms.uuid = :uuid ";
 
-        return template.queryForObject(sql, Collections.singletonMap("uuid", uuid.toString()), DataClassRowMapper.newInstance(SubscriptionGroupEntity.class));
+        return template.query(sql, Collections.singletonMap("uuid", uuid.toString()), DataClassRowMapper.newInstance(SubscriptionGroupEntity.class));
     }
 
 

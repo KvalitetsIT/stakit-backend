@@ -16,6 +16,6 @@ public interface MailSubscriptionGroupDao {
 
     List<SubscriptionGroupEntity> getSubscriptions();
 
-    SubscriptionGroupEntity getSubscriptionByUuid(UUID uuid);
+    List<SubscriptionGroupEntity> getSubscriptionByUuid(UUID uuid);
 
 }

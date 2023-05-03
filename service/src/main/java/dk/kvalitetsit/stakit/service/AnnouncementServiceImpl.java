@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class AnnouncementServiceImpl implements AnnouncementService {
     private final AnnouncementDao announcementDao;
@@ -54,4 +55,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
         return announcements.stream().map(AnnouncementMapper::mapEntity).toList();
     }
+
+    @Override
+    public List<AnnouncementModel> getAllAnnouncements() {
+        return announcementDao.getAnnouncements().stream().map(AnnouncementMapper::mapEntity).collect(Collectors.toList());
+    }
+
+
 }

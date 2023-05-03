@@ -71,7 +71,7 @@ class SubscriptionManagementServiceImplTest {
 
         SubscriptionGroupEntity response = SubscriptionGroupEntity.createInstance(uuid, email, true, groupUuid);
 
-        Mockito.when(mailSubscriptionGroupDao.getSubscriptionByUuid(uuid)).thenReturn(response);
+        Mockito.when(mailSubscriptionGroupDao.getSubscriptionByUuid(uuid)).thenReturn(List.of(response));
 
         assertEquals(Optional.of(expected), subject.getSubscription(uuid));
     }
@@ -83,7 +83,7 @@ class SubscriptionManagementServiceImplTest {
 
         SubscriptionGroupEntity databaseSubscriptionGroupEntity = SubscriptionGroupEntity.createInstance(uuid, email, true, null);
 
-        Mockito.when(mailSubscriptionGroupDao.getSubscriptionByUuid(uuid)).thenReturn(databaseSubscriptionGroupEntity);
+        Mockito.when(mailSubscriptionGroupDao.getSubscriptionByUuid(uuid)).thenReturn(List.of(databaseSubscriptionGroupEntity));
 
         var result = subject.getSubscription(uuid);
 

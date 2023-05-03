@@ -12,4 +12,7 @@ public interface AnnouncementService {
     boolean deleteAnnouncement(UUID uuid);
     boolean updateAnnouncement(AnnouncementModel announcementModel);
     List<AnnouncementModel> getAnnouncements();
+    List<AnnouncementModel> getAllAnnouncements();
+
+
 }

@@ -85,9 +85,9 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
 
         testDataHelper.createMailSubscriptionGroup(mailSubscriptionId, groupId);
 
-        var expectedResponse = SubscriptionGroupEntity.createInstance(uuid, email, true, groupUuid);
+        var expectedResponse = List.of(SubscriptionGroupEntity.createInstance(uuid, email, true, groupUuid));
 
-        SubscriptionGroupEntity response =  mailSubscriptionGroupDao.getSubscriptionByUuid(uuid);
+        List<SubscriptionGroupEntity> response =  mailSubscriptionGroupDao.getSubscriptionByUuid(uuid);
 
         assertEquals(expectedResponse, response, "Expected the same response as were initially added");
     }
