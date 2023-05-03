@@ -43,10 +43,10 @@ public class SubscriptionServiceImplTest {
 
     @Test
     public void testSubscribe() {
-        var input = new SubscriptionModel("email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
+        var input = new SubscriptionModel(null,"email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
 
-        var groupOne = new GroupConfigurationEntity(1L, input.groups().get(0), "group one", 10, "description one", true);
-        var groupTwo = new GroupConfigurationEntity(2L, input.groups().get(1), "group two", 10, "description two", true);
+        var groupOne = new GroupConfigurationEntity(1L, input.groups().get(0), "group one", 10, "description one", true, true);
+        var groupTwo = new GroupConfigurationEntity(2L, input.groups().get(1), "group two", 10, "description two", true, true);
 
         Mockito.when(subscriptionDao.insert(Mockito.any())).thenReturn(10L);
         Mockito.when(groupConfigurationDao.findByUuid(input.groups().get(0))).thenReturn(Optional.of(groupOne));
@@ -64,9 +64,9 @@ public class SubscriptionServiceImplTest {
 
     @Test
     public void testSubscribeGroupNotFound() {
-        var input = new SubscriptionModel("email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
+        var input = new SubscriptionModel(null,"email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
 
-        var groupOne = new GroupConfigurationEntity(1L, input.groups().get(0), "group one", 10, "description one", true);
+        var groupOne = new GroupConfigurationEntity(1L, input.groups().get(0), "group one", 10, "description one", true, true);
 
         Mockito.when(subscriptionDao.insert(Mockito.any())).thenReturn(10L);
         Mockito.when(groupConfigurationDao.findByUuid(input.groups().get(0))).thenReturn(Optional.of(groupOne));
@@ -119,4 +119,9 @@ public class SubscriptionServiceImplTest {
         Mockito.verify(subscriptionDao, times(1)).deleteByUuid(input);
         Mockito.verify(mailSubscriptionGroupDao, times(1)).deleteByUuid(input);
     }
+
+
+
+
+
 }

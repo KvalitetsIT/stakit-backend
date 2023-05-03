@@ -91,6 +91,12 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
+    public List<AnnouncementEntity> getAnnouncements() {
+        var sql = "select * from announcement";
+        return template.query(sql, DataClassRowMapper.newInstance(AnnouncementEntity.class));
+    }
+
+    @Override
     public Optional<AnnouncementEntity> getById(long announcementId) {
         var sql = "select * from announcement where id = :id";
 

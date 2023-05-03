@@ -24,14 +24,15 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
     public long insert(GroupConfigurationEntity groupConfigurationEntity) {
         logger.debug("Inserting new group.");
 
-        var sql = "insert group_configuration(uuid, name, display_order, description, display) values(:uuid, :group_name, :display_order, :description, :display)";
+        var sql = "insert group_configuration(uuid, name, display_order, description, display, expanded) values(:uuid, :group_name, :display_order, :description, :display, :expanded)";
 
         var parameters = new MapSqlParameterSource()
                 .addValue("uuid", groupConfigurationEntity.uuid().toString())
                 .addValue("group_name", groupConfigurationEntity.name())
                 .addValue("display_order", groupConfigurationEntity.displayOrder())
                 .addValue("description", groupConfigurationEntity.description())
-                .addValue("display", groupConfigurationEntity.display());
+                .addValue("display", groupConfigurationEntity.display())
+                .addValue("expanded", groupConfigurationEntity.expanded());
 
 
         var keyHolder = new GeneratedKeyHolder();
@@ -50,7 +51,7 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
 
     @Override
     public boolean update(GroupConfigurationEntity groupConfigurationEntity) {
-        var sql = "update group_configuration set name = :group_name, display_order = :display_order, description = :description, display = :display where uuid = :uuid";
+        var sql = "update group_configuration set name = :group_name, display_order = :display_order, description = :description, display = :display, expanded = :expanded where uuid = :uuid";
 
         var parameterMap = new HashMap<String, Object>();
         parameterMap.put("group_name", groupConfigurationEntity.name());
@@ -58,6 +59,7 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
         parameterMap.put("uuid", groupConfigurationEntity.uuid().toString());
         parameterMap.put("description", groupConfigurationEntity.description());
         parameterMap.put("display", groupConfigurationEntity.display());
+        parameterMap.put("expanded", groupConfigurationEntity.expanded());
 
 
         return template.update(sql, parameterMap) != 0;
@@ -106,7 +108,7 @@ public class GroupConfigurationDaoImpl implements GroupConfigurationDao {
 
     @Override
     public Long createDefaultGroup() {
-        GroupConfigurationEntity groupConfigurationEntity = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "Default", 0, "Default group", true);
+        GroupConfigurationEntity groupConfigurationEntity = GroupConfigurationEntity.createInstance(UUID.randomUUID(), "Default", 0, "Default group", true, true);
 
         return insert(groupConfigurationEntity);
     }

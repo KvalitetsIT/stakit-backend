@@ -2,9 +2,9 @@ package dk.kvalitetsit.stakit.integrationtest;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openapitools.client.api.AnnouncementManagementApi;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
-import org.openapitools.client.api.AnnouncementsApi;
 import org.openapitools.client.model.AnnouncementCreate;
 import org.openapitools.client.model.AnnouncementUpdate;
 
@@ -19,7 +19,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AnnouncementIT extends AbstractIntegrationTest {
-    private final AnnouncementsApi announcementsApi;
+    private final AnnouncementManagementApi announcementsApi;
     private UUID uuid;
     private AnnouncementCreate announcement;
 
@@ -28,7 +28,7 @@ public class AnnouncementIT extends AbstractIntegrationTest {
         apiClient.setBasePath(getApiBasePath());
         apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());
 
-        announcementsApi = new AnnouncementsApi(apiClient);
+        announcementsApi = new AnnouncementManagementApi(apiClient);
     }
 
     @Before

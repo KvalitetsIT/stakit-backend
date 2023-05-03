@@ -304,9 +304,26 @@ paths:
           $ref: '#/components/responses/401'
 
   /v1/announcements:
+    get:
+      tags:
+        - announcement-management
+      summary: Announcements GET API
+      description: API to get all announcements.
+      responses:
+        '200':
+          description: List of all announcements.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/announcement'
+        '401':
+          $ref: '#/components/responses/401'
+
     post:
       tags:
-        - announcements
+        - announcement-management
       summary: Announcements PUT API
       description: API to create an announcement.
       requestBody:
@@ -336,7 +353,7 @@ paths:
   /v1/announcements/{uuid}:
     get:
       tags:
-        - announcements
+        - announcement-management
       summary: Announcements GET API.
       description: API to get a single announcement.
       parameters:
@@ -355,7 +372,7 @@ paths:
 
     delete:
       tags:
-        - announcements
+        - announcement-management
       summary: Announcements DELETE API.
       description: API to delete a single announcement.
       parameters:
@@ -370,7 +387,7 @@ paths:
 
     put:
       tags:
-        - announcements
+        - announcement-management
       summary: Announcements PUT API
       description: API to update an announcement.
       parameters:
@@ -440,7 +457,7 @@ paths:
               $ref: '#/components/schemas/subscribe'
       responses:
         '201':
-          description: The scubscription was created.
+          description: The subscription was created.
           headers:
             Location:
               schema:
@@ -452,6 +469,21 @@ paths:
                 $ref: '#/components/schemas/create-response'
         '400':
           $ref: '#components/responses/400'
+    get:
+      tags:
+        - subscription-management
+      summary: Returns all subscriptions
+      description: Returns a list of all subscribers and what they are subscribing to
+      responses:
+        '200':
+          description: A list of subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/subscription'
+
 
   /v1/subscriptions/{uuid}:
     delete:
@@ -465,6 +497,21 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/201'
+    get:
+      tags:
+        - subscription-management
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      summary: Returns a subscription by uuid
+      description: Returns a a specific subscription
+      responses:
+        '200':
+          description: A subscription that corresponds to the specified uuid
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/subscription'
 
   /v1/subscribe-confirm/{uuid}:
     get:
@@ -576,6 +623,10 @@ components:
           description: A flag that determines whether or not the group is supposed to be shown on the dashboard
           type: boolean
           example: true
+        expanded:
+          description: A flag that determines whether or not the group is expanded on the dashboard
+          type: boolean
+          example: true
 
     group:
       type: object
@@ -612,7 +663,10 @@ components:
           description: A flag that determines whether or not the group is supposed to be shown on the dashboard
           type: boolean
           example: true
-
+        expanded:
+          description: A flag that determines whether or not the group is expanded on the dashboard
+          type: boolean
+          example: true
 
     group-patch:
       type: object
@@ -655,6 +709,10 @@ components:
             description: Service UUID.
         display:
           description: A flag that determines whether or not the group is supposed to be shown on the dashboard
+          type: boolean
+          example: true
+        expanded:
+          description: A flag that determines whether or not the group is expanded on the dashboard
           type: boolean
           example: true
 
@@ -884,6 +942,33 @@ components:
         message:
           description: Announcement message/body
           type: string
+
+
+
+    subscription:
+      type: object
+      required:
+        - email
+        - announcements
+        - groups
+      properties:
+        uuid:
+          description: The subscriptions uuid
+          type: string
+        email:
+          description: Email to subscribe
+          type: string
+        announcements:
+          description: Subscribe to announcements
+          type: boolean
+        groups:
+          description: Zero or more groups to get updates for.
+          type: array
+          items:
+            type: string
+            description: Group UUID
+            format: uuid
+
 
     subscribe:
       type: object

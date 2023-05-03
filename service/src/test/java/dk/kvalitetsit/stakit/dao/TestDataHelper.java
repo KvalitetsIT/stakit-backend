@@ -39,7 +39,7 @@ public class TestDataHelper {
     }
 
     long createGroup(String groupName, UUID groupUuid, String description) {
-        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupUuid, groupName, 100, description, true));
+        return groupConfigurationDao.insert(GroupConfigurationEntity.createInstance(groupUuid, groupName, 100, description, true, true));
     }
 
     public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier, UUID uuid) {
@@ -55,8 +55,8 @@ public class TestDataHelper {
         return createMailSubscription(confirmed, confirmationIdentifier, UUID.randomUUID());
     }
 
-    public void createMailSubscriptionGroup(long mailSubscriptionId, long groupCOnfigurationId) {
-        mailSubscriptionGroupDao.insert(MailSubscriptionGroupsEntity.createInstance(mailSubscriptionId, groupCOnfigurationId));
+    public void createMailSubscriptionGroup(long mailSubscriptionId, long groupConfigurationId) {
+        mailSubscriptionGroupDao.insert(MailSubscriptionGroupsEntity.createInstance(mailSubscriptionId, groupConfigurationId));
     }
 
     public long findDefaultGroupId() {

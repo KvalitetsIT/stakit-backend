@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class StakitMapper {
 
     public static SubscriptionModel mapSubscription(Subscribe subscribe) {
-        return new SubscriptionModel(subscribe.getEmail(), subscribe.getGroups(), subscribe.getAnnouncements());
+        return new SubscriptionModel(null, subscribe.getEmail(), subscribe.getGroups(), subscribe.getAnnouncements());
     }
 
     public static List<StatusGroup> mappedStatusGroups(List<StatusGroupedModel> groupStatus){
@@ -27,6 +27,8 @@ public class StakitMapper {
         statusGroup.setDescription(statusGroupedModel.description());
         statusGroup.setUuid(statusGroupedModel.groupUuid());
         statusGroup.setDisplay(statusGroupedModel.display());
+        statusGroup.setExpanded(statusGroupedModel.expanded());
+
         statusGroupedModel.status().forEach(x -> {
             var s = new org.openapitools.model.ServiceStatus();
             s.setName(x.statusName());

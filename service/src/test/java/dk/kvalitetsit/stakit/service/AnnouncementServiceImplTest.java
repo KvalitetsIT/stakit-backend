@@ -2,6 +2,7 @@ package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.AnnouncementDao;
 import dk.kvalitetsit.stakit.dao.entity.AnnouncementEntity;
+import dk.kvalitetsit.stakit.service.mapper.AnnouncementMapper;
 import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -172,4 +173,23 @@ public class AnnouncementServiceImplTest {
         assertEquals(announcementTwo.fromDatetime(), result.get(1).fromDatetime());
         assertEquals(announcementTwo.uuid(), result.get(1).uuid());
     }
+
+
+    @Test
+    public void testGetAllAnnouncements() {
+        var announcementOne = new AnnouncementEntity(10L, UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject one", "message one");
+        var announcementTwo = new AnnouncementEntity(11L, UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject two", "message two");
+
+        Mockito.when(announcementDao.getAnnouncements()).thenReturn(Arrays.asList(announcementOne, announcementTwo));
+
+        var result = announcementService.getAllAnnouncements();
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+        assertEquals(AnnouncementMapper.mapEntity(announcementOne), result.get(0));
+        assertEquals(AnnouncementMapper.mapEntity(announcementTwo), result.get(1));
+    }
+
+
+
 }
