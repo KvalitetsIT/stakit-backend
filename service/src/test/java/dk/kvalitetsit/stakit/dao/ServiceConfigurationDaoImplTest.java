@@ -13,7 +13,7 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ServiceConfigurationDaoImplTest extends AbstractDaoTest {
+public class    ServiceConfigurationDaoImplTest extends AbstractDaoTest {
     @Autowired
     private ServiceConfigurationDao serviceConfigurationDao;
     @Autowired

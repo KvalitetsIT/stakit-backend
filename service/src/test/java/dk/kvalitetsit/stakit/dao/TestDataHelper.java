@@ -55,8 +55,8 @@ public class TestDataHelper {
         return createMailSubscription(confirmed, confirmationIdentifier, UUID.randomUUID());
     }
 
-    public void createMailSubscriptionGroup(long mailSubscriptionId, long groupCOnfigurationId) {
-        mailSubscriptionGroupDao.insert(MailSubscriptionGroupsEntity.createInstance(mailSubscriptionId, groupCOnfigurationId));
+    public void createMailSubscriptionGroup(long mailSubscriptionId, long groupConfigurationId) {
+        mailSubscriptionGroupDao.insert(MailSubscriptionGroupsEntity.createInstance(mailSubscriptionId, groupConfigurationId));
     }
 
     public long findDefaultGroupId() {

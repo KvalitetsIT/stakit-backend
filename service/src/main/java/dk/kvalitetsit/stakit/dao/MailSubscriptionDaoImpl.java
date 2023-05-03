@@ -81,13 +81,6 @@ public class MailSubscriptionDaoImpl implements MailSubscriptionDao {
     }
 
     @Override
-    public MailSubscriptionEntity getSubscriptionByUuid(UUID uuid) {
-        var sql = "select * from mail_subscription where uuid = :uuid";
-        return template.queryForObject(sql, Collections.singletonMap("uuid", uuid.toString()), MailSubscriptionEntity.class);
-    }
-
-
-    @Override
     public List<MailSubscriptionEntity> findAnnouncementSubscriptions() {
         var sql = "select * from mail_subscription where confirmed = 1 and announcements = 1";
 

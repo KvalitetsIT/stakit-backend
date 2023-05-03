@@ -119,4 +119,9 @@ public class SubscriptionServiceImplTest {
         Mockito.verify(subscriptionDao, times(1)).deleteByUuid(input);
         Mockito.verify(mailSubscriptionGroupDao, times(1)).deleteByUuid(input);
     }
+
+
+
+
+
 }

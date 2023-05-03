@@ -19,7 +19,4 @@ public interface MailSubscriptionDao {
 
     List<MailSubscriptionEntity> findAnnouncementSubscriptions();
 
-
-    MailSubscriptionEntity getSubscriptionByUuid(UUID uuid);
-
 }

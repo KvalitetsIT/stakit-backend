@@ -9,4 +9,6 @@ public record SubscriptionGroupEntity(UUID subUuid, String email, boolean announ
         return new SubscriptionGroupEntity(uuid, email, announcements, group);
     }
 
+
+
 }
