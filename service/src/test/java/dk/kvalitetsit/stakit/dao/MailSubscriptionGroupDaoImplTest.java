@@ -56,8 +56,7 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
     }
 
     @Test
-    public void testGetAllSubscriptions(){
-
+    public void testGetAllSubscriptions() {
         ArrayList<SubscriptionGroupEntity> expected = new ArrayList<>();
 
         IntStream.range(1, 10).forEach(i -> {
@@ -76,7 +75,7 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
     }
 
     @Test
-    public void testGetSubscriptionByUuid(){
+    public void testGetSubscriptionByUuid() {
 
         var uuid = UUID.randomUUID();
         var groupUuid = UUID.randomUUID();
@@ -94,7 +93,7 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
     }
 
     @Test
-    public void testGetSubscriptionByUuidReturnsMaxSingleEntry(){
+    public void testGetSubscriptionByUuidReturnsAllGroups(){
         var uuid = UUID.randomUUID();
         var groupUuid = UUID.randomUUID();
         var email = "email";
