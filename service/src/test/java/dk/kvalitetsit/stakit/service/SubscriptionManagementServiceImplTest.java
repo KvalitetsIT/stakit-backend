@@ -32,21 +32,40 @@ class SubscriptionManagementServiceImplTest {
     void getSubscriptions() {
 
         List<SubscriptionModel> expected = new LinkedList<>();
+        List<SubscriptionGroupEntity> response = new LinkedList<>();
 
-        List<SubscriptionGroupEntity> response = IntStream.range(1, 3).mapToObj(i -> {
+        for ( int i = 0 ; i < 10; i++){
             var uuid = UUID.randomUUID();
             var email = String.format("email%s", i);
             var groupUuid = UUID.randomUUID();
 
             expected.add(new SubscriptionModel(uuid, email, List.of(groupUuid), true));
-
-            return SubscriptionGroupEntity.createInstance(uuid, email, true, groupUuid);
-        }).collect(Collectors.toList());
+            response.add(SubscriptionGroupEntity.createInstance(uuid, email, true, groupUuid));
+        }
 
         Mockito.when(mock.getSubscriptions()).thenReturn(response);
-
         assertEquals(expected, subject.getSubscriptions());
     }
+
+    @Test
+    void givenSubsThatSharesUuidWhenGetSubscriptionsThenMerge() {
+
+        List<SubscriptionModel> expected = new LinkedList<>();
+        List<SubscriptionGroupEntity> response = new LinkedList<>();
+
+        var uuid = UUID.randomUUID();
+
+        for ( int i = 0 ; i < 10; i++){
+            var email = String.format("email%s", i);
+            var groupUuid = UUID.randomUUID();
+
+            expected.add(new SubscriptionModel(uuid, email, List.of(groupUuid), true));
+            response.add(SubscriptionGroupEntity.createInstance(uuid, email, true, groupUuid));
+        }
+        Mockito.when(mock.getSubscriptions()).thenReturn(response);
+        assertEquals(1, subject.getSubscriptions().size(), "Expected only a single response as every response by the dao shares the same uuid");
+    }
+
 
     @Test
     void getSubscription() {

@@ -62,10 +62,10 @@ public class MailSubscriptionGroupDaoImpl implements MailSubscriptionGroupDao {
                 "FROM mail_subscription ms " +
                 "JOIN mail_subscription_group msg ON ms.id = msg.mail_subscription_id " +
                 "JOIN group_configuration gc ON msg.group_configuration_id = gc.id " +
-                "WHERE ms.uuid = :uuid ";
+                "WHERE ms.uuid = :uuid " +
+                "LIMIT 1";
 
-        var response = template.queryForObject(sql, Collections.singletonMap("uuid", uuid.toString()), DataClassRowMapper.newInstance(SubscriptionGroupEntity.class));
-        return response;
+        return template.queryForObject(sql, Collections.singletonMap("uuid", uuid.toString()), DataClassRowMapper.newInstance(SubscriptionGroupEntity.class));
     }
 
 
