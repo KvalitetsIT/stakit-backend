@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class GroupMapper {
     public static GroupModel mapCreateGroup(GroupInput from) {
-        return GroupModel.createInstance(from.getName(), from.getDisplayOrder(), from.getDescription(), from.getServices(), from.getDisplay());
+        return GroupModel.createInstance(from.getName(), from.getDisplayOrder(), from.getDescription(), from.getServices(), from.getDisplay() == null || from.getDisplay());
     }
 
     public static GroupModel mapUpdateGroup(UUID uuid, GroupInput from) {

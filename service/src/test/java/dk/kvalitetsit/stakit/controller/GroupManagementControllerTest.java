@@ -288,6 +288,25 @@ public class GroupManagementControllerTest {
         assertNotNull(expectedException);
         assertEquals("Group with uuid %s not found".formatted(input), expectedException.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, expectedException.getHttpStatus());
+    }
 
+    @Test
+    public void testCreateGroupNullValue() {
+        var input = new GroupInput();
+        input.setName("name");
+        input.setDisplayOrder(10);
+        input.setDescription("description");
+        input.setServices(Collections.singletonList(UUID.randomUUID()));
+        input.display(null);
+
+        var expectedUuid = UUID.randomUUID();
+
+        Mockito.when(groupService.createGroup(GroupModel.createInstance(input.getName(), input.getDisplayOrder(), input.getDescription(), input.getServices(), true))).thenReturn(expectedUuid);
+
+        var result = groupManagementController.v1GroupsPost(input);
+        assertNotNull(result);
+        assertEquals(201, result.getStatusCode().value());
+        assertEquals(expectedUuid.toString(), result.getHeaders().get("location").stream().findFirst().get());
+        assertEquals(expectedUuid, result.getBody().getUuid());
     }
 }
