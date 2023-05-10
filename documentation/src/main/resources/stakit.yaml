@@ -585,7 +585,7 @@ components:
         status:
           description: Status of service
           type: string
-          enum: [OK, NOT_OK]
+          enum: [OK, PARTIAL_NOT_OK, NOT_OK]
         status-time:
           description: Date/time for the status
           type: string

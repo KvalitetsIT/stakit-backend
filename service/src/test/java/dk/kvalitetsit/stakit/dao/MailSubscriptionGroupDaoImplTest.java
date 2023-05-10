@@ -110,5 +110,24 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
 
         assertEquals(expected, response, "Expected the same response as were initially added");
     }
+
+    @Test
+    public void testGetAllSubscriptionsNoGroup() {
+        testDataHelper.createMailSubscription(true, UUID.randomUUID(), UUID.randomUUID());
+        List<SubscriptionGroupEntity> response = mailSubscriptionGroupDao.getSubscriptions();
+        assertEquals(1L, response.size());
+    }
+
+    @Test
+    public void testGetSubscriptionWithNoGroup() {
+
+        var uuid = UUID.randomUUID();
+
+        testDataHelper.createMailSubscription(true, UUID.randomUUID(),uuid);
+        List<SubscriptionGroupEntity> response = mailSubscriptionGroupDao.getSubscriptionByUuid(uuid);
+        assertEquals(1L, response.size());
+    }
+
+
 }
 
