@@ -57,7 +57,7 @@ public class AdapterIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Ignore("Implement when subscribe API is implemented")
+    //@Ignore("Implement when subscribe API is implemented")
     public void testCallUpdateMailSendOnStatusChange() throws ApiException {
         var input = new StatusUpdate();
 
