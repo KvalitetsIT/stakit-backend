@@ -47,8 +47,8 @@ public class MailSubscriptionGroupDaoImpl implements MailSubscriptionGroupDao {
     public List<SubscriptionGroupEntity> getSubscriptions() {
         String sql = "SELECT ms.uuid as sub_uuid, ms.email, ms.announcements, gc.uuid as group_uuid " +
                 "FROM mail_subscription ms " +
-                "JOIN mail_subscription_group msg ON ms.id = msg.mail_subscription_id " +
-                "JOIN group_configuration gc ON msg.group_configuration_id = gc.id";
+                "LEFT JOIN mail_subscription_group msg ON ms.id = msg.mail_subscription_id " +
+                "LEFT JOIN group_configuration gc ON msg.group_configuration_id = gc.id";
 
         return  template.query(sql, DataClassRowMapper.newInstance(SubscriptionGroupEntity.class));
     }
@@ -57,8 +57,8 @@ public class MailSubscriptionGroupDaoImpl implements MailSubscriptionGroupDao {
     public List<SubscriptionGroupEntity> getSubscriptionByUuid(UUID uuid) {
         String sql = "SELECT ms.uuid as sub_uuid, ms.email, ms.announcements, gc.uuid as group_uuid " +
                 "FROM mail_subscription ms " +
-                "JOIN mail_subscription_group msg ON ms.id = msg.mail_subscription_id " +
-                "JOIN group_configuration gc ON msg.group_configuration_id = gc.id " +
+                "LEFT JOIN mail_subscription_group msg ON ms.id = msg.mail_subscription_id " +
+                "LEFT JOIN group_configuration gc ON msg.group_configuration_id = gc.id " +
                 "WHERE ms.uuid = :uuid ";
 
         return template.query(sql, Collections.singletonMap("uuid", uuid.toString()), DataClassRowMapper.newInstance(SubscriptionGroupEntity.class));
