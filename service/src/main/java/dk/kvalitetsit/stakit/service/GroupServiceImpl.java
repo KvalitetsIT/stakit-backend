@@ -71,9 +71,7 @@ public class GroupServiceImpl implements GroupService {
     public boolean deleteGroup(UUID uuid) {
         var servicesInGroup = serviceConfigurationDao.findByGroupUuid(uuid);
         var defaultGroup = groupConfigurationDao.findDefaultGroupId().orElseGet(groupConfigurationDao::createDefaultGroup);
-        servicesInGroup.forEach(x -> {
-            serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(x.id(), x.uuid(), x.service(), x.name(), x.ignoreServiceName(), defaultGroup, null, x.description()));
-        });
+        servicesInGroup.forEach(x -> serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(x.id(), x.uuid(), x.service(), x.name(), x.ignoreServiceName(), defaultGroup, null, x.description())));
 
         return groupConfigurationDao.delete(uuid);
     }
