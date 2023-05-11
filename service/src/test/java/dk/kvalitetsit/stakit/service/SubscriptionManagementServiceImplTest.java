@@ -42,6 +42,20 @@ class SubscriptionManagementServiceImplTest {
     }
 
     @Test
+    public void testGetSubscriptionsNoGroups() {
+        var subscription = new SubscriptionGroupEntity(UUID.randomUUID(), "email", true, null);
+        Mockito.when(mailSubscriptionGroupDao.getSubscriptions()).thenReturn(Collections.singletonList(subscription));
+
+        var result = subject.getSubscriptions();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertTrue(result.get(0).groups().isEmpty());
+        assertEquals(subscription.subUuid(), result.get(0).uuid());
+        assertEquals(subscription.email(), result.get(0).email());
+        assertTrue(result.get(0).announcements());
+    }
+
+    @Test
     void givenSubsThatSharesUuidWhenGetSubscriptionsThenMerge() {
 
         List<SubscriptionModel> expected = new LinkedList<>();
