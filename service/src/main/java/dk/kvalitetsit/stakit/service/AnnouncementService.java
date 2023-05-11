@@ -13,6 +13,4 @@ public interface AnnouncementService {
     boolean updateAnnouncement(AnnouncementModel announcementModel);
     List<AnnouncementModel> getAnnouncements();
     List<AnnouncementModel> getAllAnnouncements();
-
-
 }

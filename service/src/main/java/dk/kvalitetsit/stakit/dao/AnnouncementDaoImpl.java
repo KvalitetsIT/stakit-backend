@@ -85,7 +85,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
 
     @Override
     public List<AnnouncementEntity> getAnnouncements(OffsetDateTime toDatetime) {
-        var sql = "select * from announcement where to_datetime > :to_datetime order by to_datetime desc";
+        var sql = "select * from announcement where :to_datetime between from_datetime and to_datetime  order by to_datetime desc";
 
         return template.query(sql, Collections.singletonMap("to_datetime", toDatetime), DataClassRowMapper.newInstance(AnnouncementEntity.class));
     }
