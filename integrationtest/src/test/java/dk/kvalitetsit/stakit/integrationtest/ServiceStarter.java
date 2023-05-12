@@ -24,6 +24,8 @@ public class ServiceStarter {
 
     private Network dockerNetwork;
     private String jdbcUrl;
+    public static final String DB_USER = "hellouser";
+    public static final String DB_PASSWORD = "secret1234";
     private GenericContainer<?> mockSmtp;
     private String smtpHost;
     private int smtpWebPort;
@@ -46,8 +48,8 @@ public class ServiceStarter {
         setupMockSmtp();
 
         System.setProperty("JDBC.URL", jdbcUrl);
-        System.setProperty("JDBC.USER", "hellouser");
-        System.setProperty("JDBC.PASS", "secret1234");
+        System.setProperty("JDBC.USER", DB_USER);
+        System.setProperty("JDBC.PASS", DB_PASSWORD);
 
         System.setProperty("MAIL_HOST", "localhost");
         System.setProperty("MAIL_PORT", "" + smtpPort);
@@ -117,8 +119,8 @@ public class ServiceStarter {
                 .withEnv("LOG_LEVEL", "INFO")
 
                 .withEnv("JDBC_URL", "jdbc:mariadb://mariadb:3306/hellodb")
-                .withEnv("JDBC_USER", "hellouser")
-                .withEnv("JDBC_PASS", "secret1234")
+                .withEnv("JDBC_USER", DB_USER)
+                .withEnv("JDBC_PASS", DB_PASSWORD)
 
                 .withEnv("MAIL_HOST", "smtp")
                 .withEnv("MAIL_PORT", "" + 1025)
@@ -171,5 +173,9 @@ public class ServiceStarter {
         ServiceStarter.logger.info("Attaching logger to container: " + container.getContainerInfo().getName());
         Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(logger);
         container.followOutput(logConsumer);
+    }
+
+    public String getJdbcUrl() {
+        return jdbcUrl;
     }
 }

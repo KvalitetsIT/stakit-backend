@@ -1,7 +1,6 @@
 package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
-import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.controller.mapper.AnnouncementMapper;
 import dk.kvalitetsit.stakit.controller.mapper.StakitMapper;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
@@ -17,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,11 +73,14 @@ public class StakitController implements StaKitApi {
         try {
             var result = subscriptionService.subscribe(StakitMapper.mapSubscription(subscribe));
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(new CreateResponse().uuid(result));
+            return ResponseEntity.status(HttpStatus.CREATED).body(new CreateResponse(result));
         } catch(InvalidDataException e) {
             logger.info("Invalid data. Returning error.", e);
 
             throw new BadRequestException(e.getMessage());
+        } catch (MessagingException e) {
+            logger.error("An exception was caught when creating email. ", e);
+            throw new RuntimeException(e);
         }
     }
 
