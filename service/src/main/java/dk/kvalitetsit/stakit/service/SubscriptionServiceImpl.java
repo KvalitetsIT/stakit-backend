@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.util.UUID;
 
 public class SubscriptionServiceImpl implements SubscriptionService {
@@ -31,7 +32,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     @Transactional
-    public UUID subscribe(SubscriptionModel mapSubscriptionModel) {
+    public UUID subscribe(SubscriptionModel mapSubscriptionModel) throws MessagingException {
         var subscriptionEntity = SubscriptionMapper.mapSubscription(mapSubscriptionModel);
         mailSubscriptionGroupDao.deleteByEmail(mapSubscriptionModel.email());
         subscriptionDao.deleteByEmail(mapSubscriptionModel.email());

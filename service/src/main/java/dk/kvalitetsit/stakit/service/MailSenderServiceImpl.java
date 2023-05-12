@@ -3,9 +3,12 @@ package dk.kvalitetsit.stakit.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 public class MailSenderServiceImpl implements MailSenderService {
     private static final Logger logger = LoggerFactory.getLogger(MailSenderServiceImpl.class);
@@ -23,21 +26,23 @@ public class MailSenderServiceImpl implements MailSenderService {
         try {
             sendMail(to, subject, text);
         }
-        catch(MailException e) {
+        catch(MailException | MessagingException e) {
             // Empty
         }
     }
 
-    public void sendMail(String to, String subject, String text) {
-        var mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom(from);;
-        mailMessage.setTo(to);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(text);
-
+    public void sendMail(String to, String subject, String text) throws MessagingException {
         try {
+            MimeMessage mailMessage = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mailMessage, "utf-8");
+
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(text, true);
+
             emailSender.send(mailMessage);
-        } catch(MailException e) {
+        } catch(MailException | MessagingException e) {
             logger.warn("Could not send mail.", e);
             throw e;
         }
