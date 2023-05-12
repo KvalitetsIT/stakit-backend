@@ -102,7 +102,7 @@ public class AnnouncementIT extends AbstractIntegrationTest {
                 .fromDatetime(OffsetDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS))
                 .toDatetime(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .subject(UUID.randomUUID().toString())
-                .message("<b>This is the announcement</b>");
+                .message("<b>This is the announcement</b>\n <i>This is a new line!</i>");
 
         executeSql(("insert into mail_subscription(uuid, " +
                 "                                 announcements, " +

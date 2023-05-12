@@ -32,6 +32,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     public void sendMail(String to, String subject, String text) throws MessagingException {
+        String htmlText = text.replace("\n", "<br>");
         try {
             MimeMessage mailMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mailMessage, "utf-8");
@@ -39,7 +40,7 @@ public class MailSenderServiceImpl implements MailSenderService {
             helper.setFrom(from);
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(text, true);
+            helper.setText(htmlText, true);
 
             emailSender.send(mailMessage);
         } catch(MailException | MessagingException e) {
