@@ -13,11 +13,9 @@ import java.util.stream.Collectors;
 
 public class AnnouncementServiceImpl implements AnnouncementService {
     private final AnnouncementDao announcementDao;
-    private final MailQueueService mailQueueService;
 
-    public AnnouncementServiceImpl(AnnouncementDao announcementDao, MailQueueService mailQueueService) {
+    public AnnouncementServiceImpl(AnnouncementDao announcementDao) {
         this.announcementDao = announcementDao;
-        this.mailQueueService = mailQueueService;
     }
 
     @Override
@@ -30,8 +28,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Transactional
     public UUID createAnnouncement(AnnouncementModel announcementModel) {
         var uuid = UUID.randomUUID();
-        var id = announcementDao.insert(AnnouncementMapper.mapModel(uuid, announcementModel));
-        mailQueueService.queueAnnouncementMail(id);
+        announcementDao.insert(AnnouncementMapper.mapModel(uuid, announcementModel));
 
         return uuid;
     }

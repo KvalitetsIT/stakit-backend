@@ -28,7 +28,7 @@ public class AnnouncementController implements AnnouncementManagementApi {
     public ResponseEntity<CreateResponse> v1AnnouncementsPost(AnnouncementCreate announcementCreate) {
         var result = announcementService.createAnnouncement(AnnouncementMapper.mapToService(announcementCreate));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CreateResponse().uuid(result));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CreateResponse(result));
     }
 
     @Override

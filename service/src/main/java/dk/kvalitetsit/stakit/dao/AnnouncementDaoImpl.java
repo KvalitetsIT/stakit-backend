@@ -26,7 +26,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
 
     @Override
     public long insert(AnnouncementEntity announcementEntity) {
-        var sql = "insert into announcement(uuid, from_datetime, to_datetime, subject, message) values(:uuid, :fromDatetime, :toDatetime, :subject, :message)";
+        var sql = "insert into announcement(uuid, from_datetime, to_datetime, subject, message, is_sent) values(:uuid, :fromDatetime, :toDatetime, :subject, :message, :isSent)";
 
         var parameters = new MapSqlParameterSource()
                 .addValue("uuid", announcementEntity.uuid().toString())
@@ -34,6 +34,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
                 .addValue("toDatetime", announcementEntity.toDatetime())
                 .addValue("subject", announcementEntity.subject())
                 .addValue("message", announcementEntity.message())
+                .addValue("isSent", false)
                 ;
 
         var keyHolder = new GeneratedKeyHolder();
@@ -107,5 +108,26 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
             logger.info("Announcement not found {}.", announcementId);
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<AnnouncementEntity> getAnnouncementsToSend() {
+        var sql = "select * from announcement where is_sent = 0 and :from_datetime >= from_datetime";
+
+        return template.query(sql, Collections.singletonMap("from_datetime", OffsetDateTime.now()), DataClassRowMapper.newInstance(AnnouncementEntity.class));
+    }
+
+    @Override
+    public boolean updateAnnouncementToSent(AnnouncementEntity announcementEntity) {
+        var sql = "update announcement " +
+                "     set is_sent = :isSent " +
+                "    where uuid =:uuid";
+
+        var parameters = new MapSqlParameterSource()
+                .addValue("uuid", announcementEntity.uuid().toString())
+                .addValue("isSent", true)
+                ;
+
+        return template.update(sql, parameters) > 0;
     }
 }

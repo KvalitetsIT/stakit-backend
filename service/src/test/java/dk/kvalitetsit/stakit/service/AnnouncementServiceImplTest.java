@@ -20,14 +20,12 @@ import static org.mockito.Mockito.times;
 public class AnnouncementServiceImplTest {
     private AnnouncementDao announcementDao;
     private AnnouncementServiceImpl announcementService;
-    private MailQueueService mailQueueService;
 
     @Before
     public void setup() {
         announcementDao = Mockito.mock(AnnouncementDao.class);
 
-        mailQueueService = Mockito.mock(MailQueueService.class);
-        announcementService = new AnnouncementServiceImpl(announcementDao, mailQueueService);
+        announcementService = new AnnouncementServiceImpl(announcementDao);
     }
 
     @Test
@@ -48,8 +46,6 @@ public class AnnouncementServiceImplTest {
 
             return true;
         }));
-
-        Mockito.verify(mailQueueService, times(1)).queueAnnouncementMail(10L);
     }
 
     @Test

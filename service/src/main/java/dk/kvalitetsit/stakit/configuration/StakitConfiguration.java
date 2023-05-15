@@ -88,8 +88,8 @@ public class StakitConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public AnnouncementService announcementService(AnnouncementDao announcementDao, MailQueueService mailQueueService) {
-        return new AnnouncementServiceImpl(announcementDao, mailQueueService);
+    public AnnouncementService announcementService(AnnouncementDao announcementDao) {
+        return new AnnouncementServiceImpl(announcementDao);
     }
 
     @Bean

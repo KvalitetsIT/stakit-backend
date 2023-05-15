@@ -1,6 +1,7 @@
 package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.*;
+import dk.kvalitetsit.stakit.dao.entity.AnnouncementEntity;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
@@ -66,20 +67,22 @@ public class MailQueueServiceImpl implements MailQueueService {
 
     @Override
     @Transactional
-    public void queueAnnouncementMail(long announcementId) {
+    public void queueAnnouncementMail() {
         var mails = mailSubscriptionDao.findAnnouncementSubscriptions();
 
         if(mails.isEmpty()) {
             return;
         }
 
-        var announcement =announcementDao.getById(announcementId);
+        var announcements = announcementDao.getAnnouncementsToSend();
 
-        mails.stream()
-                .map(x -> new MessageModel(x.email(),
-                        "Stakit Announcement",
-                        announcement.get().message() + "\n\n" + baseUrl + "/unsubscribe/" + x.uuid()))
-                .forEach(this::processMail);
+        for (AnnouncementEntity announcement: announcements) {mails.stream()
+                    .map(x -> new MessageModel(x.email(),
+                            "Stakit Announcement",
+                            announcement.message() + "\n\n" + baseUrl + "/unsubscribe/" + x.uuid()))
+                    .forEach(this::processMail);
+            announcementDao.updateAnnouncementToSent(announcement);
+        }
     }
 
     private void processMail(MessageModel messageModel) {
