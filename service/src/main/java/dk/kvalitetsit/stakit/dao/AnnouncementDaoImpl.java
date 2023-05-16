@@ -112,7 +112,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
 
     @Override
     public List<AnnouncementEntity> getAnnouncementsToSend() {
-        var sql = "select * from announcement where is_sent = 0 and :from_datetime >= from_datetime";
+        var sql = "select * from announcement where is_sent = 0 and :from_datetime >= from_datetime for update";
 
         return template.query(sql, Collections.singletonMap("from_datetime", OffsetDateTime.now()), DataClassRowMapper.newInstance(AnnouncementEntity.class));
     }

@@ -66,7 +66,6 @@ public class MailQueueServiceImpl implements MailQueueService {
     }
 
     @Override
-    @Transactional
     public void queueAnnouncementMail() {
         var mails = mailSubscriptionDao.findAnnouncementSubscriptions();
 
@@ -76,7 +75,8 @@ public class MailQueueServiceImpl implements MailQueueService {
 
         var announcements = announcementDao.getAnnouncementsToSend();
 
-        for (AnnouncementEntity announcement: announcements) {mails.stream()
+        for (AnnouncementEntity announcement: announcements) {
+            mails.stream()
                     .map(x -> new MessageModel(x.email(),
                             "Stakit Announcement",
                             announcement.message() + "\n\n" + baseUrl + "/unsubscribe/" + x.uuid()))
