@@ -103,7 +103,7 @@ public class MailQueueServiceImplTest {
 
     @Test
     public void testAnnouncementNoSubscriptions() {
-        mailQueue.queueAnnouncementMail(1L);
+        mailQueue.queueAnnouncementMail();
 
         Mockito.verify(mailSubscriptionDao, times(1)).findAnnouncementSubscriptions();
         Mockito.verifyNoInteractions(mailSenderService);
@@ -115,11 +115,12 @@ public class MailQueueServiceImplTest {
         var subscriptionTwo = new MailSubscriptionEntity(2L, UUID.randomUUID(), "mailTwo", true, true, UUID.randomUUID());
         Mockito.when(mailSubscriptionDao.findAnnouncementSubscriptions()).thenReturn(List.of(subscriptionOne, subscriptionTwo));
 
-        var announcementId = 10L;
-        var announcement = new AnnouncementEntity(announcementId, UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject", "message");
-        Mockito.when(announcementDao.getById(announcementId)).thenReturn(Optional.of(announcement));
+        var announcement = new AnnouncementEntity(10L, UUID.randomUUID(), OffsetDateTime.now(), OffsetDateTime.now(), "subject", "message");
+        List<AnnouncementEntity> announcementList = new ArrayList<>();
+        announcementList.add(announcement);
+        Mockito.when(announcementDao.getAnnouncementsToSend()).thenReturn(announcementList);
 
-        mailQueue.queueAnnouncementMail(announcementId);
+        mailQueue.queueAnnouncementMail();
 
         Mockito.verify(mailSenderService, times(1)).sendMailAsync(Mockito.eq(subscriptionOne.email()), Mockito.eq("Stakit Announcement"), Mockito.eq("message\n" +
                 "\n" +
@@ -127,8 +128,9 @@ public class MailQueueServiceImplTest {
         Mockito.verify(mailSenderService, times(1)).sendMailAsync(Mockito.eq(subscriptionTwo.email()), Mockito.eq("Stakit Announcement"), Mockito.eq("message\n" +
                 "\n" +
                 "base_url/unsubscribe/%s".formatted(subscriptionTwo.uuid())));
-        Mockito.verify(announcementDao, times(1)).getById(announcementId);
+        Mockito.verify(announcementDao, times(1)).getAnnouncementsToSend();
         Mockito.verify(mailSubscriptionDao, times(1)).findAnnouncementSubscriptions();
+        Mockito.verify(announcementDao, times(1)).updateAnnouncementToSent(announcement);
 
         Mockito.verifyNoMoreInteractions(mailSenderService, serviceConfigurationDao, serviceStatusDao, groupConfigurationDao);
     }

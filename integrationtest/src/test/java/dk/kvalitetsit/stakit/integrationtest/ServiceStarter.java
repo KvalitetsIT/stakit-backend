@@ -62,6 +62,7 @@ public class ServiceStarter {
         System.setProperty("JWT_SIGNING_KEY", jwtSigningKey );
         System.setProperty("ALLOWED_ORIGINS", "*");
         System.setProperty("BASE_URL", "http://baseUrl:8080");
+        System.setProperty("CHECK_MESSAGES_FREQUENCY", "PT5S");
 
         SpringApplication.run((Application.class));
     }
@@ -133,6 +134,7 @@ public class ServiceStarter {
                 .withEnv("ALLOWED_ORIGINS", "*")
                 .withEnv("JWT_SIGNING_KEY", jwtSigningKey )
                 .withEnv("BASE_URL", "http://base_url:8080")
+                .withEnv("CHECK_MESSAGES_FREQUENCY", "PT5S")
 
                 .withEnv("spring.flyway.locations", "classpath:db/migration,filesystem:/app/sql")
                 .withClasspathResourceMapping("db/migration/V901__extra_data_for_integration_test.sql", "/app/sql/V901__extra_data_for_integration_test.sql", BindMode.READ_ONLY)
