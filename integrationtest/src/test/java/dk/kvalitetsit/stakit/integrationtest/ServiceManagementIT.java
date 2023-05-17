@@ -3,6 +3,7 @@ package dk.kvalitetsit.stakit.integrationtest;
 import org.junit.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
+import org.openapitools.client.ApiResponse;
 import org.openapitools.client.JSON;
 import org.openapitools.client.api.AdapterApi;
 import org.openapitools.client.api.GroupManagementApi;
@@ -185,9 +186,51 @@ public class ServiceManagementIT extends AbstractIntegrationTest {
         var serviceResult = serviceManagementApi.v1ServicesPostWithHttpInfo(input);
         var serviceUuid = serviceResult.getData().getUuid();
         adapterApi.v1StatusPost(statusUpdate);
-
         var result = serviceManagementApi.v1ServicesUuidDeleteWithHttpInfo(serviceUuid);
         assertNotNull(result);
         assertEquals(204, result.getStatusCode());
     }
+
+    @Test
+    public void testChangeStatus() throws ApiException {
+        var input = new ServiceCreate();
+        input.setServiceIdentifier(UUID.randomUUID().toString());
+        input.setName("name");
+        input.setIgnoreServiceName(true);
+        input.setDescription("description");
+
+        var statusUpdate = new StatusUpdate();
+        statusUpdate.setService(input.getServiceIdentifier());
+        statusUpdate.setServiceName(input.getName());
+
+        var serviceResult = serviceManagementApi.v1ServicesPostWithHttpInfo(input);
+        var serviceUuid = serviceResult.getData().getUuid();
+
+        ApiResponse<Service> result;
+
+        // OK
+        statusUpdate.setStatus(StatusUpdate.StatusEnum.OK);
+        statusUpdate.setStatusTime(OffsetDateTime.now());
+        adapterApi.v1StatusPost(statusUpdate);
+        result = serviceManagementApi.v1ServicesUuidGetWithHttpInfo(serviceUuid);
+        assertEquals(Service.StatusEnum.OK, result.getData().getStatus());
+
+        // PARTIAL_NOT_OK
+        statusUpdate.setStatus(StatusUpdate.StatusEnum.PARTIAL_NOT_OK);
+        statusUpdate.setStatusTime(OffsetDateTime.now());
+        adapterApi.v1StatusPost(statusUpdate);
+        result = serviceManagementApi.v1ServicesUuidGetWithHttpInfo(serviceUuid);
+        assertEquals(Service.StatusEnum.PARTIAL_NOT_OK, result.getData().getStatus());
+
+        // NOT_OK
+        statusUpdate.setStatus(StatusUpdate.StatusEnum.NOT_OK);
+        statusUpdate.setStatusTime(OffsetDateTime.now());
+        adapterApi.v1StatusPost(statusUpdate);
+        result = serviceManagementApi.v1ServicesUuidGetWithHttpInfo(serviceUuid);
+        assertEquals(Service.StatusEnum.NOT_OK, result.getData().getStatus());
+    }
+
+
+
+
 }
