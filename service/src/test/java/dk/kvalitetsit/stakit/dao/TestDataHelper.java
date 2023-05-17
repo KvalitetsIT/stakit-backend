@@ -22,6 +22,9 @@ public class TestDataHelper {
     @Autowired
     private GroupConfigurationDao groupConfigurationDao;
 
+    @Autowired
+    private AnnouncementDao announcementDao;
+
     long createServiceConfiguration(UUID serviceUuid, String service, String serviceName, boolean ignoreServiceName, long groupConfigurationId, String status, String description) {
         return serviceConfigurationDao.insert(ServiceConfigurationEntity.createInstance(service, serviceUuid, serviceName, ignoreServiceName, groupConfigurationId, status, description));
     }
@@ -65,5 +68,9 @@ public class TestDataHelper {
 
     public long createMailSubscription(boolean confirmed, UUID confirmationIdentifier, UUID uuid, boolean announcements, String email) {
         return mailSubscriptionDao.insert(MailSubscriptionEntity.createInstance(uuid, email, announcements, true, confirmationIdentifier));
+    }
+
+    public long createAnnouncement(UUID uuid, OffsetDateTime fromDate, OffsetDateTime toDate, String subject, String message ) {
+        return announcementDao.insert(AnnouncementEntity.createInstance(uuid, fromDate, toDate, subject, message));
     }
 }

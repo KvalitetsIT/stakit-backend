@@ -24,6 +24,8 @@ public class ServiceStarter {
 
     private Network dockerNetwork;
     private String jdbcUrl;
+    public static final String DB_USER = "hellouser";
+    public static final String DB_PASSWORD = "secret1234";
     private GenericContainer<?> mockSmtp;
     private String smtpHost;
     private int smtpWebPort;
@@ -46,8 +48,8 @@ public class ServiceStarter {
         setupMockSmtp();
 
         System.setProperty("JDBC.URL", jdbcUrl);
-        System.setProperty("JDBC.USER", "hellouser");
-        System.setProperty("JDBC.PASS", "secret1234");
+        System.setProperty("JDBC.USER", DB_USER);
+        System.setProperty("JDBC.PASS", DB_PASSWORD);
 
         System.setProperty("MAIL_HOST", "localhost");
         System.setProperty("MAIL_PORT", "" + smtpPort);
@@ -60,6 +62,7 @@ public class ServiceStarter {
         System.setProperty("JWT_SIGNING_KEY", jwtSigningKey );
         System.setProperty("ALLOWED_ORIGINS", "*");
         System.setProperty("BASE_URL", "http://baseUrl:8080");
+        System.setProperty("CHECK_MESSAGES_FREQUENCY", "PT5S");
 
         SpringApplication.run((Application.class));
     }
@@ -117,8 +120,8 @@ public class ServiceStarter {
                 .withEnv("LOG_LEVEL", "INFO")
 
                 .withEnv("JDBC_URL", "jdbc:mariadb://mariadb:3306/hellodb")
-                .withEnv("JDBC_USER", "hellouser")
-                .withEnv("JDBC_PASS", "secret1234")
+                .withEnv("JDBC_USER", DB_USER)
+                .withEnv("JDBC_PASS", DB_PASSWORD)
 
                 .withEnv("MAIL_HOST", "smtp")
                 .withEnv("MAIL_PORT", "" + 1025)
@@ -131,6 +134,7 @@ public class ServiceStarter {
                 .withEnv("ALLOWED_ORIGINS", "*")
                 .withEnv("JWT_SIGNING_KEY", jwtSigningKey )
                 .withEnv("BASE_URL", "http://base_url:8080")
+                .withEnv("CHECK_MESSAGES_FREQUENCY", "PT5S")
 
                 .withEnv("spring.flyway.locations", "classpath:db/migration,filesystem:/app/sql")
                 .withClasspathResourceMapping("db/migration/V901__extra_data_for_integration_test.sql", "/app/sql/V901__extra_data_for_integration_test.sql", BindMode.READ_ONLY)
@@ -171,5 +175,9 @@ public class ServiceStarter {
         ServiceStarter.logger.info("Attaching logger to container: " + container.getContainerInfo().getName());
         Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(logger);
         container.followOutput(logConsumer);
+    }
+
+    public String getJdbcUrl() {
+        return jdbcUrl;
     }
 }

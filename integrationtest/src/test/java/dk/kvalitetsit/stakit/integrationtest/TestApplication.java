@@ -13,8 +13,6 @@ import static dk.kvalitetsit.stakit.integrationtest.AbstractIntegrationTest.gene
 @SpringBootApplication
 public class TestApplication extends SpringBootServletInitializer {
     public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
-
-
         System.out.printf("Token %s\n", TokenGenerator.generateSignedToken());
 
         new ServiceStarter().startServices();

@@ -1,7 +1,5 @@
 package dk.kvalitetsit.stakit.integrationtest;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.restassured.RestAssured;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,15 +7,8 @@ import org.testcontainers.containers.GenericContainer;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Date;
 
 import static io.restassured.RestAssured.given;
 
@@ -28,6 +19,7 @@ public abstract class AbstractIntegrationTest {
     private static String apiBasePath;
     private static String smtpHost;
     private static int smtpWebPort;
+    private static String jdbcUrl;
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread()
@@ -65,6 +57,7 @@ public abstract class AbstractIntegrationTest {
 
         smtpHost = serviceStarter.getSmtpHost();
         smtpWebPort = serviceStarter.getSmtpWebPort();
+        jdbcUrl = serviceStarter.getJdbcUrl();
     }
 
     String getApiBasePath() {
@@ -94,5 +87,9 @@ public abstract class AbstractIntegrationTest {
                 .then()
                 .extract()
                 .path("total");
+    }
+
+    String getJdbcUrl() {
+        return jdbcUrl;
     }
 }

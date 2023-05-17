@@ -54,6 +54,7 @@ public class SubscriptionIT extends AbstractIntegrationTest {
         assertTrue(body, matcher.matches());
         var uuid = matcher.group(1);
 
+        uuid = uuid.replace("=\\r\\n", "");
         var confirmResult = staKitApi.v1SubscribeConfirmUuidGetWithHttpInfo(UUID.fromString(uuid));
         assertEquals(201, confirmResult.getStatusCode());
 

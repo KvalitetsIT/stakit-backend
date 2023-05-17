@@ -2,7 +2,6 @@ package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.AnnouncementEntity;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
-import dk.kvalitetsit.stakit.service.mapper.AnnouncementMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,16 +40,19 @@ public class AnnouncementDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testUpdateAndGet() {
-        var createInput = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now(), "subject", "string message");
+        var uuid = UUID.randomUUID();
+        var fromDate = OffsetDateTime.now().minusDays(1);
+        var toDate = OffsetDateTime.now();
+        var subject = "subject";
+        var message = "message";
+        var id = testDataHelper.createAnnouncement(uuid, fromDate, toDate, subject, message);
 
-        var id = announcementDao.insert(createInput);
-
-        var updateInput = new AnnouncementEntity(20L, createInput.uuid(), OffsetDateTime.now().minusDays(2).truncatedTo(ChronoUnit.SECONDS), OffsetDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS), "updated subject", "update message");
+        var updateInput = new AnnouncementEntity(20L, uuid, OffsetDateTime.now().minusDays(2).truncatedTo(ChronoUnit.SECONDS), OffsetDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS), "updated subject", "update message");
 
         var updateResult = announcementDao.updateByUuid(updateInput);
         assertTrue(updateResult);
 
-        var result = announcementDao.getByUuid(createInput.uuid());
+        var result = announcementDao.getByUuid(uuid);
         assertNotNull(result);
         assertTrue(result.isPresent());
 
@@ -83,7 +85,7 @@ public class AnnouncementDaoImplTest extends AbstractDaoTest {
     public void testDelete() {
         var input = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now(), "subject", "string message");
 
-        var id = announcementDao.insert(input);
+        announcementDao.insert(input);
 
         var getResult = announcementDao.getByUuid(input.uuid());
         assertNotNull(getResult);
@@ -105,19 +107,24 @@ public class AnnouncementDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testGetAnnouncements() {
-        var announcementOne = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now().plusDays(1), "subject one", "message one");
-        var announcementTwo = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now().minusMinutes(10), "subject two", "message two");
+        var subject = "subject";
+        var message = "message";
+        var fromDate = OffsetDateTime.now().minusMinutes(10).truncatedTo(ChronoUnit.SECONDS);
+        var toDate = OffsetDateTime.now().plusMinutes(10).truncatedTo(ChronoUnit.SECONDS);
+        var uuid = UUID.randomUUID();
 
-        var idOne = announcementDao.insert(announcementOne);
-        var idTwo = announcementDao.insert(announcementTwo);
+        testDataHelper.createAnnouncement(UUID.randomUUID(), OffsetDateTime.now().minusDays(2), OffsetDateTime.now().minusDays(1), "subject one", "message one");
+        testDataHelper.createAnnouncement(uuid, fromDate, toDate, subject, message);
+        testDataHelper.createAnnouncement(UUID.randomUUID(), OffsetDateTime.now().plusMinutes(11), OffsetDateTime.now().plusMinutes(20), "subject three", "message three");
 
         var result = announcementDao.getAnnouncements(OffsetDateTime.now());
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(announcementOne.message(), result.get(0).message());
-        assertEquals(announcementOne.subject(), result.get(0).subject());
-        assertEquals(announcementOne.toDatetime(), result.get(0).toDatetime());
-        assertEquals(announcementOne.fromDatetime(), result.get(0).fromDatetime());
+        assertEquals(message, result.get(0).message());
+        assertEquals(subject, result.get(0).subject());
+        assertEquals(toDate, result.get(0).toDatetime());
+        assertEquals(fromDate, result.get(0).fromDatetime());
+        assertEquals(uuid, result.get(0).uuid());
     }
 
     @Test
@@ -135,7 +142,6 @@ public class AnnouncementDaoImplTest extends AbstractDaoTest {
         var result = announcementDao.getById(idOne);
         assertTrue(result.isPresent());
     }
-
 
     @Test
     public void testGetAllAnnouncements() {
@@ -157,8 +163,34 @@ public class AnnouncementDaoImplTest extends AbstractDaoTest {
                         x.subject(),
                         x.message()
                 )).collect(Collectors.toList()));
-
-
     }
 
+    @Test
+    public void testUpdateAndGetAnnouncementsToSend() {
+        var message = "message";
+        var subject = "subject";
+        var fromDate = OffsetDateTime.now().minusDays(1).truncatedTo(ChronoUnit.SECONDS);
+        var toDate = OffsetDateTime.now().plusDays(1).truncatedTo(ChronoUnit.SECONDS);
+        var uuid = UUID.randomUUID();
+
+        var announcementOne = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(2), "subject one", "message one");
+        var announcementTwo = AnnouncementEntity.createInstance(uuid, fromDate, toDate, subject, message);
+        var announcementThree = AnnouncementEntity.createInstance(UUID.randomUUID(), OffsetDateTime.now().minusDays(1), OffsetDateTime.now().plusDays(1), "subject three", "message three");
+
+        announcementDao.insert(announcementOne);
+        announcementDao.insert(announcementTwo);
+        announcementDao.insert(announcementThree);
+
+        var updateToSent = announcementDao.updateAnnouncementToSent(announcementThree);
+        assertTrue(updateToSent);
+
+        var result = announcementDao.getAnnouncementsToSend();
+        assertEquals(1, result.size());
+
+        assertEquals(message, result.get(0).message());
+        assertEquals(subject, result.get(0).subject());
+        assertEquals(toDate, result.get(0).toDatetime());
+        assertEquals(fromDate, result.get(0).fromDatetime());
+        assertEquals(uuid, result.get(0).uuid());
+    }
 }

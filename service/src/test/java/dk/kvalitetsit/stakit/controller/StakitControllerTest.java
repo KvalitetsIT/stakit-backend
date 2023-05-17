@@ -1,7 +1,6 @@
 package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
-import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
 import dk.kvalitetsit.stakit.service.StatusGroupService;
 import dk.kvalitetsit.stakit.service.SubscriptionService;
@@ -16,6 +15,7 @@ import org.mockito.Mockito;
 import org.openapitools.model.Subscribe;
 import org.springframework.http.HttpStatus;
 
+import javax.mail.MessagingException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,7 +121,7 @@ public class StakitControllerTest {
     }
 
     @Test
-    public void testSubscribe() {
+    public void testSubscribe() throws MessagingException {
         var input = new Subscribe();
         input.setEmail("email");
         input.setAnnouncements(true);
@@ -146,7 +146,7 @@ public class StakitControllerTest {
     }
 
     @Test
-    public void testSubscribeGroupNotFound() {
+    public void testSubscribeGroupNotFound() throws MessagingException {
         var input = new Subscribe();
         input.setEmail("email");
         input.setAnnouncements(true);

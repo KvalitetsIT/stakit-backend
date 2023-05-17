@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import javax.mail.MessagingException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class SubscriptionServiceImplTest {
     }
 
     @Test
-    public void testSubscribe() {
+    public void testSubscribe() throws MessagingException {
         var input = new SubscriptionModel(null,"email", Arrays.asList(UUID.randomUUID(), UUID.randomUUID()), true);
 
         var groupOne = new GroupConfigurationEntity(1L, input.groups().get(0), "group one", 10, "description one", true, true);

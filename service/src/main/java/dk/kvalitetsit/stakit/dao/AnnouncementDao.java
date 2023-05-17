@@ -17,4 +17,8 @@ public interface AnnouncementDao {
     List<AnnouncementEntity> getAnnouncements();
 
     Optional<AnnouncementEntity> getById(long announcementId);
+
+    List<AnnouncementEntity> getAnnouncementsToSend();
+
+    boolean updateAnnouncementToSent(AnnouncementEntity announcementEntity);
 }
