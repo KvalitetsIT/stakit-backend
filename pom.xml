@@ -41,7 +41,7 @@
 		<java.version>17</java.version>
 		<testcontainers.version>1.18.3</testcontainers.version>
 		<shed-lock-version>5.3.0</shed-lock-version>
-		<spring-prometheus-app-info-version>1.2.0</spring-prometheus-app-info-version>
+		<spring-prometheus-app-info-version>2.0.2</spring-prometheus-app-info-version>
 		<spring-request-id-logger-version>1.2.1</spring-request-id-logger-version>
 		<jacoco-version>0.8.10</jacoco-version>
 		<jsonwebtoken-version>0.11.5</jsonwebtoken-version>
