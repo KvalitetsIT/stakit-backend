@@ -9,13 +9,13 @@ import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
 import dk.kvalitetsit.stakit.service.model.Status;
 import dk.kvalitetsit.stakit.service.model.StatusElementModel;
 import dk.kvalitetsit.stakit.service.model.StatusGroupedModel;
+import jakarta.mail.MessagingException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.Subscribe;
 import org.springframework.http.HttpStatus;
 
-import javax.mail.MessagingException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;

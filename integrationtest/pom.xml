@@ -28,6 +28,12 @@
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-client-java</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>mailapi</artifactId>
+                    <groupId>com.sun.mail</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Jacoco agent to include in test docker image must not be in scope test even if only used by test. -->

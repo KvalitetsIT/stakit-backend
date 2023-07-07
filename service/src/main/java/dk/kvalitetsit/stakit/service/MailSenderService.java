@@ -1,6 +1,7 @@
 package dk.kvalitetsit.stakit.service;
 
-import javax.mail.MessagingException;
+
+import jakarta.mail.MessagingException;
 
 public interface MailSenderService {
     void sendMailAsync(String to, String subject, String text);

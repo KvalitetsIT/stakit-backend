@@ -8,6 +8,7 @@ import dk.kvalitetsit.stakit.service.StatusGroupService;
 import dk.kvalitetsit.stakit.service.SubscriptionService;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.session.PublicApi;
+import jakarta.mail.MessagingException;
 import org.openapitools.api.StaKitApi;
 import org.openapitools.model.*;
 import org.slf4j.Logger;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.mail.MessagingException;
 import java.util.List;
 import java.util.UUID;
 
