@@ -26,7 +26,14 @@ public class AdapterController implements AdapterApi {
     public ResponseEntity<Void> v1StatusPost(StatusUpdate statusUpdate) {
         logger.debug("Updating or creating status");
 
-        statusUpdateService.updateStatus(new UpdateServiceModel(statusUpdate.getService(), statusUpdate.getServiceName(), Status.valueOf(Status.class, statusUpdate.getStatus().toString()), statusUpdate.getStatusTime(), statusUpdate.getMessage()));
+        var upd = new UpdateServiceModel(
+                statusUpdate.getService(),
+                statusUpdate.getServiceName(),
+                Status.valueOf(Status.class, statusUpdate.getStatus().toString()),
+                statusUpdate.getStatusTime(),
+                statusUpdate.getMessage());
+
+        statusUpdateService.updateStatus(upd);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
