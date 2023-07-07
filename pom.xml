@@ -9,14 +9,6 @@
 			<id>Central</id>
 			<url>https://repo1.maven.org/maven2</url>
 		</repository>
-		<repository>
-			<id>github-public</id>
-			<url>https://public:&#103;hp_Y6nRFazi9yNo0IMpxwTFIagW352c1539nyfn@maven.pkg.github.com/kvalitetsit/*</url>
-		</repository>
-		<repository>
-			<id>github-public1</id>
-			<url>https://public:&#103;hp_Y6nRFazi9yNo0IMpxwTFIagW352c1539nyfn@maven.pkg.github.com/kvalitetsit/*</url>
-		</repository>
 	</repositories>
 
 	<modules>
@@ -41,8 +33,8 @@
 		<java.version>17</java.version>
 		<testcontainers.version>1.18.3</testcontainers.version>
 		<shed-lock-version>5.5.0</shed-lock-version>
-		<spring-prometheus-app-info-version>1.2.0</spring-prometheus-app-info-version>
-		<spring-request-id-logger-version>1.2.1</spring-request-id-logger-version>
+		<spring-prometheus-app-info-version>2.0.2</spring-prometheus-app-info-version>
+		<spring-request-id-logger-version>2.0.0</spring-request-id-logger-version>
 		<jacoco-version>0.8.10</jacoco-version>
 		<jsonwebtoken-version>0.11.5</jsonwebtoken-version>
 	</properties>
@@ -242,10 +234,15 @@
 				<version>1.8.5</version>
 				<scope>test</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>javax.annotation-api</artifactId>
+				<version>1.3.2</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-
 
 	<build>
 		<finalName>${project.artifactId}</finalName>

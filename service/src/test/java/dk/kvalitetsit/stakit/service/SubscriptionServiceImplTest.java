@@ -8,11 +8,11 @@ import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionEntity;
 import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionGroupsEntity;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
+import jakarta.mail.MessagingException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import javax.mail.MessagingException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;

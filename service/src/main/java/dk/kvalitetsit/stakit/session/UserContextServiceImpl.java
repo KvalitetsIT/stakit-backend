@@ -2,10 +2,10 @@ package dk.kvalitetsit.stakit.session;
 
 import dk.kvalitetsit.stakit.session.exception.InvalidTokenException;
 import dk.kvalitetsit.stakit.session.model.Token;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 public class UserContextServiceImpl implements UserContextService {

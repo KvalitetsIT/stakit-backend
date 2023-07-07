@@ -7,11 +7,11 @@ import dk.kvalitetsit.stakit.dao.entity.MailSubscriptionGroupsEntity;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.mapper.SubscriptionMapper;
 import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
+import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
 import java.util.UUID;
 
 public class SubscriptionServiceImpl implements SubscriptionService {

@@ -6,6 +6,7 @@ import dk.kvalitetsit.stakit.service.*;
 import dk.kvalitetsit.stakit.session.JwtTokenParser;
 import dk.kvalitetsit.stakit.session.UserContextService;
 import dk.kvalitetsit.stakit.session.UserContextServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,6 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
@@ -138,7 +138,7 @@ public class StakitConfiguration implements WebMvcConfigurer {
 
         mailSender.setUsername(username);
         mailSender.setPassword(password);
-
+        
         var props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");

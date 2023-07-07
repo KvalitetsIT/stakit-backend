@@ -5,13 +5,13 @@ import dk.kvalitetsit.stakit.controller.interceptor.ApiAccessInterceptor;
 import dk.kvalitetsit.stakit.session.ApiKey;
 import dk.kvalitetsit.stakit.session.PublicApi;
 import dk.kvalitetsit.stakit.session.UserContextService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.web.method.HandlerMethod;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
