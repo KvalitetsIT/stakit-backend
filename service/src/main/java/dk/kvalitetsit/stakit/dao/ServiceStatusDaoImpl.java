@@ -48,7 +48,13 @@ public class ServiceStatusDaoImpl implements ServiceStatusDao {
 
     @Override
     public Optional<ServiceStatusEntity> findLatest(String service) {
-        var sql = "select s.* from service_status s, service_configuration sc where s.service_configuration_id = sc.id order by status_time desc limit 1";
+        var sql = "select s.* " +
+                "    from service_status s, " +
+                "         service_configuration sc " +
+                "   where s.service_configuration_id = sc.id " +
+                "     and sc.service = :service" +
+                "   order by status_time desc" +
+                "   limit 1";
 
         try {
             return Optional.ofNullable(template.queryForObject(sql, Collections.singletonMap("service", service), DataClassRowMapper.newInstance(ServiceStatusEntity.class)));

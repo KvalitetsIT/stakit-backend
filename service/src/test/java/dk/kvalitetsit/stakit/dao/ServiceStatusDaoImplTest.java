@@ -65,12 +65,15 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testGetLatest() {
-        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false, defaultGroupId, "OK", "description");
-
         var now = OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS);
 
-        testDataHelper.createServiceStatus(statusConfiguration, "OK", now);
-        testDataHelper.createServiceStatus(statusConfiguration, "NOT_OK", now.minus(1, ChronoUnit.MICROS));
+        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false, defaultGroupId, "OK", "description");
+        testDataHelper.createServiceStatus(statusConfiguration, "OK", now.minus(1, ChronoUnit.MICROS));
+        testDataHelper.createServiceStatus(statusConfiguration, "NOT_OK", now.minus(2, ChronoUnit.MICROS));
+
+        var anotherStatusConfiguration = testDataHelper.createServiceConfiguration("another-service", "another-name", false, defaultGroupId, "OK", "description");
+        testDataHelper.createServiceStatus(anotherStatusConfiguration, "OK", now);
+        testDataHelper.createServiceStatus(anotherStatusConfiguration, "NOT_OK", now.minus(1, ChronoUnit.MICROS));
 
         var latest = serviceStatusDao.findLatest("service");
         assertNotNull(latest);
@@ -78,7 +81,7 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
 
         assertEquals(statusConfiguration, latest.get().serviceConfigurationId().longValue());
         assertEquals("OK", latest.get().status());
-        assertEquals(now, latest.get().statusTime());
+        assertEquals(now.minus(1, ChronoUnit.MICROS), latest.get().statusTime());
         assertNull(latest.get().message());
     }
 
