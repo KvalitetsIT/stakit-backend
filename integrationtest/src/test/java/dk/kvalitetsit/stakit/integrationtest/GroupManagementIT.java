@@ -30,7 +30,7 @@ public class GroupManagementIT extends AbstractIntegrationTest {
         apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());
 
         var stakitApiClient = new ApiClient();
-        apiClient.setBasePath(getApiBasePath());
+        stakitApiClient.setBasePath(getApiBasePath());
 
         groupManagementApi = new GroupManagementApi(apiClient);
         serviceManagementApi = new ServiceManagementApi(apiClient);
