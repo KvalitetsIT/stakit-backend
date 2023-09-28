@@ -64,5 +64,10 @@ public class MailSubscriptionGroupDaoImpl implements MailSubscriptionGroupDao {
         return template.query(sql, Collections.singletonMap("uuid", uuid.toString()), DataClassRowMapper.newInstance(SubscriptionGroupEntity.class));
     }
 
+    @Override
+    public void deleteByGroupUuid(UUID uuid) {
+        var sql = "delete from mail_subscription_group where group_configuration_id = (select id from group_configuration g where g.uuid = :uuid)";
 
+        template.update(sql, Collections.singletonMap("uuid", uuid.toString()));
+    }
 }
