@@ -18,4 +18,5 @@ public interface MailSubscriptionGroupDao {
 
     List<SubscriptionGroupEntity> getSubscriptionByUuid(UUID uuid);
 
+    void deleteByGroupUuid(UUID input);
 }

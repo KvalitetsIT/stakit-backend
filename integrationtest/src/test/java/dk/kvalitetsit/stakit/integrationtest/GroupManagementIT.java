@@ -5,9 +5,11 @@ import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.GroupManagementApi;
 import org.openapitools.client.api.ServiceManagementApi;
+import org.openapitools.client.api.StaKitApi;
 import org.openapitools.client.model.GroupInput;
 import org.openapitools.client.model.GroupPatch;
 import org.openapitools.client.model.ServiceCreate;
+import org.openapitools.client.model.Subscribe;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -20,14 +22,19 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GroupManagementIT extends AbstractIntegrationTest {
     private final GroupManagementApi groupManagementApi;
     private final ServiceManagementApi serviceManagementApi;
+    private final StaKitApi stakitApi;
 
     public GroupManagementIT() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
         var apiClient = new ApiClient();
         apiClient.setBasePath(getApiBasePath());
         apiClient.addDefaultHeader("Authorization", "Bearer " + generateSignedToken());
 
+        var stakitApiClient = new ApiClient();
+        apiClient.setBasePath(getApiBasePath());
+
         groupManagementApi = new GroupManagementApi(apiClient);
         serviceManagementApi = new ServiceManagementApi(apiClient);
+        stakitApi = new StaKitApi(stakitApiClient);
     }
 
     @Test
@@ -266,6 +273,29 @@ public class GroupManagementIT extends AbstractIntegrationTest {
         assertEquals(input2.getServiceIdentifier(), serv2.getServiceIdentifier());
         assertEquals(input2.getGroup(), serv2.getGroup());
         assertEquals(input2.getDescription(), serv2.getDescription());
+    }
+
+    @Test
+    public void testCanDeleteGroupWithSubscriptions() throws ApiException {
+        var groupInput = new GroupInput();
+        groupInput.setName(UUID.randomUUID().toString());
+        groupInput.setDisplayOrder(10);
+        groupInput.setDescription(UUID.randomUUID().toString());
+        groupInput.setDisplay(true);
+        groupInput.setExpanded(false);
+
+        var groupResponse = groupManagementApi.v1GroupsPost(groupInput);
+
+        var subscribeInput = new Subscribe();
+        subscribeInput.setEmail("email");
+        subscribeInput.setAnnouncements(true);
+        subscribeInput.addGroupsItem(groupResponse.getUuid());
+
+        stakitApi.v1SubscriptionsPost(subscribeInput);
+
+        var deleteResult =  groupManagementApi.v1GroupsUuidDeleteWithHttpInfo(groupResponse.getUuid());
+        assertNotNull(deleteResult);
+        assertEquals(204, deleteResult.getStatusCode());
     }
 
     @Test

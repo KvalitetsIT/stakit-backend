@@ -1,6 +1,7 @@
 package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
+import dk.kvalitetsit.stakit.dao.MailSubscriptionGroupDao;
 import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
@@ -21,12 +22,15 @@ public class GroupServiceImplTest {
     private GroupConfigurationDao groupDao;
     private GroupService groupService;
     private ServiceConfigurationDao serviceConfigurationDao;
+    private MailSubscriptionGroupDao mailSubscriptionGroupDao;
 
     @Before
     public void setup() {
         groupDao = Mockito.mock(GroupConfigurationDao.class);
         serviceConfigurationDao = Mockito.mock(ServiceConfigurationDao.class);
-        groupService = new GroupServiceImpl(groupDao, serviceConfigurationDao);
+        mailSubscriptionGroupDao = Mockito.mock(MailSubscriptionGroupDao.class);
+
+        groupService = new GroupServiceImpl(groupDao, serviceConfigurationDao, mailSubscriptionGroupDao);
     }
 
     @Test
@@ -200,6 +204,7 @@ public class GroupServiceImplTest {
 
         Mockito.verify(groupDao, times(1)).delete(input);
         Mockito.verify(groupDao, times(1)).findDefaultGroupId();
+        Mockito.verify(mailSubscriptionGroupDao).deleteByGroupUuid(input);
         Mockito.verify(serviceConfigurationDao, times(1)).findByGroupUuid(input);
 
         Mockito.verifyNoMoreInteractions(groupDao, serviceConfigurationDao);

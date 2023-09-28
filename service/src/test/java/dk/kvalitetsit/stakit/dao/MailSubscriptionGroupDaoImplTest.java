@@ -19,7 +19,6 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
     @Autowired
     private TestDataHelper testDataHelper;
 
-
     @Test
     public void testInsert() {
         var mailSubscriptionId = testDataHelper.createMailSubscription(true, UUID.randomUUID());
@@ -120,7 +119,6 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
 
     @Test
     public void testGetSubscriptionWithNoGroup() {
-
         var uuid = UUID.randomUUID();
 
         testDataHelper.createMailSubscription(true, UUID.randomUUID(),uuid);
@@ -128,6 +126,19 @@ public class MailSubscriptionGroupDaoImplTest extends AbstractDaoTest {
         assertEquals(1L, response.size());
     }
 
+    @Test
+    public void testDeleteByGroupUuid() {
+        var uuid = UUID.randomUUID();
+        var groupUuid = UUID.randomUUID();
 
+        var mailSubscriptionId = testDataHelper.createMailSubscription(true, uuid);
+        var groupId = testDataHelper.createGroup("group name", groupUuid, "group description");
+
+        var input = MailSubscriptionGroupsEntity.createInstance(mailSubscriptionId, groupId);
+
+        mailSubscriptionGroupDao.insert(input);
+
+        mailSubscriptionGroupDao.deleteByGroupUuid(groupUuid);
+    }
 }
 

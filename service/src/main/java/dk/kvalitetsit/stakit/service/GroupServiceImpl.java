@@ -1,6 +1,7 @@
 package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.GroupConfigurationDao;
+import dk.kvalitetsit.stakit.dao.MailSubscriptionGroupDao;
 import dk.kvalitetsit.stakit.dao.ServiceConfigurationDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
@@ -18,10 +19,14 @@ import java.util.stream.Collectors;
 public class GroupServiceImpl implements GroupService {
     private final GroupConfigurationDao groupConfigurationDao;
     private final ServiceConfigurationDao serviceConfigurationDao;
+    private final MailSubscriptionGroupDao mailSubscriptionGroupDao;
 
-    public GroupServiceImpl(GroupConfigurationDao groupConfigurationDao, ServiceConfigurationDao serviceConfigurationDao) {
+    public GroupServiceImpl(GroupConfigurationDao groupConfigurationDao,
+                            ServiceConfigurationDao serviceConfigurationDao,
+                            MailSubscriptionGroupDao mailSubscriptionGroupDao) {
         this.groupConfigurationDao = groupConfigurationDao;
         this.serviceConfigurationDao = serviceConfigurationDao;
+        this.mailSubscriptionGroupDao = mailSubscriptionGroupDao;
     }
 
     @Override
@@ -72,6 +77,8 @@ public class GroupServiceImpl implements GroupService {
         var servicesInGroup = serviceConfigurationDao.findByGroupUuid(uuid);
         var defaultGroup = groupConfigurationDao.findDefaultGroupId().orElseGet(groupConfigurationDao::createDefaultGroup);
         servicesInGroup.forEach(x -> serviceConfigurationDao.updateByUuid(new ServiceConfigurationEntity(x.id(), x.uuid(), x.service(), x.name(), x.ignoreServiceName(), defaultGroup, null, x.description())));
+
+        mailSubscriptionGroupDao.deleteByGroupUuid(uuid);
 
         return groupConfigurationDao.delete(uuid);
     }
