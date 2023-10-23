@@ -35,7 +35,7 @@
 		<shed-lock-version>5.9.1</shed-lock-version>
 		<spring-prometheus-app-info-version>2.0.2</spring-prometheus-app-info-version>
 		<spring-request-id-logger-version>2.0.0</spring-request-id-logger-version>
-		<jacoco-version>0.8.10</jacoco-version>
+		<jacoco-version>0.8.11</jacoco-version>
 		<jsonwebtoken-version>0.11.5</jsonwebtoken-version>
 	</properties>
 
