@@ -32,7 +32,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<testcontainers.version>1.19.1</testcontainers.version>
-		<shed-lock-version>5.9.0</shed-lock-version>
+		<shed-lock-version>5.9.1</shed-lock-version>
 		<spring-prometheus-app-info-version>2.0.2</spring-prometheus-app-info-version>
 		<spring-request-id-logger-version>2.0.0</spring-request-id-logger-version>
 		<jacoco-version>0.8.10</jacoco-version>
