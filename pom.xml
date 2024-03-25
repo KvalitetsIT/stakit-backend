@@ -36,7 +36,7 @@
 		<spring-prometheus-app-info-version>2.0.3</spring-prometheus-app-info-version>
 		<spring-request-id-logger-version>2.0.0</spring-request-id-logger-version>
 		<jacoco-version>0.8.11</jacoco-version>
-		<jsonwebtoken-version>0.11.5</jsonwebtoken-version>
+		<jsonwebtoken-version>0.12.5</jsonwebtoken-version>
 	</properties>
 
 	<dependencies>
