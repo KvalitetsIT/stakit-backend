@@ -35,8 +35,8 @@ public class GroupManagementControllerTest {
 
     @Test
     public void testGetGroups() {
-        var groupOne = new GroupGetModel(UUID.randomUUID(), "Name 1", 20, new ArrayList<UUID>(), UUID.randomUUID().toString(),true, true);
-        var groupTwo = new GroupGetModel(UUID.randomUUID(), "Name 2", 30, new ArrayList<UUID>(), UUID.randomUUID().toString(), true, true);
+        var groupOne = new GroupGetModel(UUID.randomUUID(), "Name 1", 20, new ArrayList<>(), UUID.randomUUID().toString(),true, true);
+        var groupTwo = new GroupGetModel(UUID.randomUUID(), "Name 2", 30, new ArrayList<>(), UUID.randomUUID().toString(), true, true);
 
         Mockito.when(groupService.getGroups()).thenReturn(Arrays.asList(groupOne, groupTwo));
 
@@ -48,11 +48,11 @@ public class GroupManagementControllerTest {
         assertNotNull(body);
         assertEquals(2, body.size());
 
-        assertEquals(groupOne.uuid(), body.get(0).getUuid());
-        assertEquals(groupOne.name(), body.get(0).getName());
-        assertEquals(groupOne.displayOrder(), body.get(0).getDisplayOrder());
-        assertEquals(groupOne.services(), body.get(0).getServices());
-        assertEquals(groupOne.description(), body.get(0).getDescription());
+        assertEquals(groupOne.uuid(), body.getFirst().getUuid());
+        assertEquals(groupOne.name(), body.getFirst().getName());
+        assertEquals(groupOne.displayOrder(), body.getFirst().getDisplayOrder());
+        assertEquals(groupOne.services(), body.getFirst().getServices());
+        assertEquals(groupOne.description(), body.getFirst().getDescription());
 
         assertEquals(groupTwo.uuid(), body.get(1).getUuid());
         assertEquals(groupTwo.name(), body.get(1).getName());
@@ -99,7 +99,7 @@ public class GroupManagementControllerTest {
 
         var result = groupManagementController.v1GroupsUuidPut(uuid, input);
         assertNotNull(result);
-        assertEquals(200, result.getStatusCodeValue());
+        assertEquals(200, result.getStatusCode().value());
 
         Mockito.verify(groupService, times(1)).updateGroup(serviceInput);
     }
@@ -165,7 +165,7 @@ public class GroupManagementControllerTest {
         assertEquals("name", result.getBody().getName());
         assertEquals(10, result.getBody().getDisplayOrder());
         assertEquals(1, result.getBody().getServices().size());
-        assertEquals(serviceUuid, result.getBody().getServices().get(0));
+        assertEquals(serviceUuid, result.getBody().getServices().getFirst());
         assertEquals("description", result.getBody().getDescription());
     }
 
@@ -195,7 +195,7 @@ public class GroupManagementControllerTest {
 
         var result = groupManagementController.v1GroupsUuidPatch(uuidGroup, input);
         assertNotNull(result);
-        assertEquals(204, result.getStatusCodeValue());
+        assertEquals(204, result.getStatusCode().value());
 
         Mockito.verify(groupService, times(1)).patchGroup(uuidGroup, input.getServices());
     }
@@ -255,16 +255,16 @@ public class GroupManagementControllerTest {
 
         var result = groupManagementController.v1GroupsUuidServicesGet(input);
         assertNotNull(result);
-        assertEquals(200, result.getStatusCodeValue());
+        assertEquals(200, result.getStatusCode().value());
         assertEquals(1, result.getBody().size());
 
-        assertEquals(service.name(), result.getBody().get(0).getName());
-        assertEquals(service.serviceIdentifier(), result.getBody().get(0).getServiceIdentifier());
-        assertEquals(service.ignoreServiceName(), result.getBody().get(0).getIgnoreServiceName());
-        assertEquals(service.group(), result.getBody().get(0).getGroup());
-        assertEquals(service.uuid(), result.getBody().get(0).getUuid());
-        assertEquals(Service.StatusEnum.valueOf(service.status()), result.getBody().get(0).getStatus());
-        assertEquals(service.description(), result.getBody().get(0).getDescription());
+        assertEquals(service.name(), result.getBody().getFirst().getName());
+        assertEquals(service.serviceIdentifier(), result.getBody().getFirst().getServiceIdentifier());
+        assertEquals(service.ignoreServiceName(), result.getBody().getFirst().getIgnoreServiceName());
+        assertEquals(service.group(), result.getBody().getFirst().getGroup());
+        assertEquals(service.uuid(), result.getBody().getFirst().getUuid());
+        assertEquals(Service.StatusEnum.valueOf(service.status()), result.getBody().getFirst().getStatus());
+        assertEquals(service.description(), result.getBody().getFirst().getDescription());
 
     }
 
@@ -277,7 +277,7 @@ public class GroupManagementControllerTest {
 
         var result = groupManagementController.v1GroupsUuidServicesGet(input);
         assertNotNull(result);
-        assertEquals(200, result.getStatusCodeValue());
+        assertEquals(200, result.getStatusCode().value());
         assertEquals(0, result.getBody().size());
     }
 

@@ -30,13 +30,14 @@
 	<description>StaKit Backend Service</description>
 
 	<properties>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
 		<testcontainers.version>1.19.8</testcontainers.version>
 		<shed-lock-version>5.13.0</shed-lock-version>
 		<spring-prometheus-app-info-version>2.0.3</spring-prometheus-app-info-version>
 		<spring-request-id-logger-version>2.0.0</spring-request-id-logger-version>
 		<jacoco-version>0.8.12</jacoco-version>
 		<jsonwebtoken-version>0.11.5</jsonwebtoken-version>
+		<okhttp-version>4.12.0</okhttp-version>
 	</properties>
 
 	<dependencies>
@@ -95,7 +96,7 @@
 				<version>${spring-request-id-logger-version}</version>
 			</dependency>
 
-			<!-- Easy string haandling -->
+			<!-- Easy string handling -->
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-text</artifactId>
@@ -114,32 +115,6 @@
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-annotations</artifactId>
 				<version>2.2.22</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.swagger</groupId>
-				<artifactId>swagger-annotations</artifactId>
-				<version>1.6.14</version>
-			</dependency>
-
-			<!-- javax ws rs -->
-			<dependency>
-				<groupId>javax.ws.rs</groupId>
-				<artifactId>javax.ws.rs-api</artifactId>
-				<version>2.1.1</version>
-			</dependency>
-
-			<!-- Work around for failed to access class com.sun.activation.registries.LogSupport error.-->
-			<dependency>
-				<groupId>com.sun.xml.bind</groupId>
-				<artifactId>jaxb-core</artifactId>
-				<version>4.0.4</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.eclipse.angus</groupId>
-						<artifactId>angus-activation</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 
 			<!-- JSON Web Token stuff -->
@@ -199,11 +174,17 @@
 				<version>${shed-lock-version}</version>
 			</dependency>
 
-			<!-- Pin flyway to 6.0.8 -->
+			<!-- Flyway -->
 			<dependency>
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-core</artifactId>
-				<version>6.0.8</version>
+				<version>10.15.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-mysql</artifactId>
+				<version>10.15.0</version>
 			</dependency>
 
 			<!-- Code coverage -->
@@ -215,16 +196,16 @@
 
 			<!-- Integration test client dependencies -->
 			<dependency>
-				<groupId>com.google.code.findbugs</groupId>
-				<artifactId>jsr305</artifactId>
-				<version>3.0.2</version>
+				<groupId>com.squareup.okhttp3</groupId>
+				<artifactId>okhttp</artifactId>
+				<version>${okhttp-version}</version>
 				<scope>test</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>com.squareup.okhttp3</groupId>
-				<artifactId>okhttp</artifactId>
-				<version>4.12.0</version>
+				<artifactId>logging-interceptor</artifactId>
+				<version>${okhttp-version}</version>
 				<scope>test</scope>
 			</dependency>
 
@@ -232,13 +213,6 @@
 				<groupId>io.gsonfire</groupId>
 				<artifactId>gson-fire</artifactId>
 				<version>1.9.0</version>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>javax.annotation</groupId>
-				<artifactId>javax.annotation-api</artifactId>
-				<version>1.3.2</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
