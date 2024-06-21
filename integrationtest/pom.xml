@@ -100,13 +100,6 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>logging-interceptor</artifactId>
-            <version>4.12.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -190,12 +183,6 @@
                         </goals>
                         <configuration>
                             <fileSets>
-                                <fileSet implementation='org.apache.maven.shared.model.fileset.FileSet'>
-                                    <directory>/jacoco-report</directory>
-                                    <includes>
-                                        <include>**/*.exec</include>
-                                    </includes>
-                                </fileSet>
                                 <fileSet implementation='org.apache.maven.shared.model.fileset.FileSet'>
                                     <directory>/tmp</directory>
                                     <includes>
