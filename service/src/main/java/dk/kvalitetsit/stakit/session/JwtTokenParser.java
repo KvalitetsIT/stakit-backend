@@ -1,15 +1,6 @@
 package dk.kvalitetsit.stakit.session;
 
 
-import dk.kvalitetsit.stakit.session.exception.InvalidTokenException;
-import dk.kvalitetsit.stakit.session.model.Token;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -17,6 +8,16 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import dk.kvalitetsit.stakit.session.exception.InvalidTokenException;
+import dk.kvalitetsit.stakit.session.model.Token;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 
 public class JwtTokenParser {
     private final Logger logger = LoggerFactory.getLogger(JwtTokenParser.class);
@@ -54,9 +55,9 @@ public class JwtTokenParser {
     }
 
     private Jws<Claims> parseToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(privateKey)
+        return Jwts.parser()
+                .verifyWith(privateKey)
                 .build()
-                .parseClaimsJws(token);
+                .parseSignedClaims(token);
     }
 }
