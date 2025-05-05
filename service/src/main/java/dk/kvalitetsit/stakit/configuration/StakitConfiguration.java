@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.security.NoSuchAlgorithmException;
@@ -157,5 +158,10 @@ public class StakitConfiguration implements WebMvcConfigurer {
     @RequestScope
     public UserContextService userContextService(HttpServletRequest request, JwtTokenParser tokenParser) {
         return new UserContextServiceImpl(request, tokenParser);
+    }
+
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        configurer.setUseTrailingSlashMatch(true);
     }
 }
