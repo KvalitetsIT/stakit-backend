@@ -1,13 +1,5 @@
 package dk.kvalitetsit.stakit.session;
 
-import dk.kvalitetsit.stakit.session.exception.InvalidTokenException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -23,8 +15,15 @@ import java.util.Arrays;
 import java.util.Date;
 
 import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import dk.kvalitetsit.stakit.session.exception.InvalidTokenException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 
 public class JwtTokenParserTest {
     private JwtTokenParser tokenParser;
@@ -65,12 +64,9 @@ public class JwtTokenParserTest {
 
     @Test
     public void testUnsigned() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
-        var token = generateSignedToken(trustedKey);
+        var token = generateUnsignedToken();
 
-        int i = token.lastIndexOf('.');
-        String tokenWithoutSignature = token.substring(0, i+1);
-
-        var result = assertThrows(InvalidTokenException.class, () -> tokenParser.parse( tokenWithoutSignature));
+        var result = assertThrows(InvalidTokenException.class, () -> tokenParser.parse( token));
         assertNotNull(result);
         assertTrue(result.getCause() instanceof UnsupportedJwtException);
     }
@@ -90,16 +86,31 @@ public class JwtTokenParserTest {
         var privateKey = kf.generatePrivate(spec);
 
         return Jwts.builder()
-                .setNotBefore(new Date())
-                .setExpiration(Date.from(LocalDateTime.now().plusHours(1L).toInstant(ZoneOffset.UTC)))
-                .setAudience("audience")
-                .setIssuer("issuer")
+                .notBefore(new Date())
+                .expiration(Date.from(LocalDateTime.now().plusHours(1L).toInstant(ZoneOffset.UTC)))
+                .audience().add("audience").and()
+                .issuer("issuer")
                 .claim("email", "john@example.com")
                 .claim("preferred_username", "some_username")
                 .claim("org", "some org")
                 .claim("sub", "f90f3684-6f0d-420b-a794-85ed2588a4cd")
                 .claim("roles", Arrays.asList("r1", "r2"))
-                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .signWith(privateKey, Jwts.SIG.RS256)
+                .compact();
+    }
+
+    private String generateUnsignedToken() {        
+        return Jwts.builder()
+                .notBefore(new Date())
+                .expiration(Date.from(LocalDateTime.now().plusHours(1L).toInstant(ZoneOffset.UTC)))
+                .audience().add("audience").and()
+                .issuer("issuer")
+                .claim("email", "john@example.com")
+                .claim("preferred_username", "some_username")
+                .claim("org", "some org")
+                .claim("sub", "f90f3684-6f0d-420b-a794-85ed2588a4cd")
+                .claim("roles", Arrays.asList("r1", "r2"))
+                .header().add("alg", "none").and()
                 .compact();
     }
 }
