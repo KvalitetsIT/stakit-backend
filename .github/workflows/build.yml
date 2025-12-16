@@ -18,7 +18,7 @@ jobs:
         echo "DOCKER_DOCUMENTATION=kvalitetsit/stakit-backend-documentation" >> $GITHUB_ENV
 
 # Checkout source code
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
 # Fail if DOCKER_SERVICE is stakit-backend and repo is not stakit-backend. This step can be deleted once
     - name: Initial build
