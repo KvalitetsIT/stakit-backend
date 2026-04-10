@@ -13,4 +13,5 @@ updates:
     open-pull-requests-limit: 25
     ignore:
       - dependency-name: "org.springframework.boot:spring-boot-starter-parent"
-        versions: [ "4.x" ]
+        update-types: ["version-update:semver-major"]
+
