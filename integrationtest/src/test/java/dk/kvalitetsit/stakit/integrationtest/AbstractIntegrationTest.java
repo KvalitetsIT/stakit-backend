@@ -1,8 +1,8 @@
 package dk.kvalitetsit.stakit.integrationtest;
 
 import io.restassured.RestAssured;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -23,7 +23,7 @@ public abstract class AbstractIntegrationTest {
     private static int smtpWebPort;
     private static String jdbcUrl;
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         if(helloService != null) {
             logger.info("Stopping stakit service container: {}", helloService.getContainerId());
@@ -31,7 +31,7 @@ public abstract class AbstractIntegrationTest {
         }
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         setup();
     }

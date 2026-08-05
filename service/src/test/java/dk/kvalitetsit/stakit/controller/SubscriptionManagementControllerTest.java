@@ -2,8 +2,8 @@ package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.service.SubscriptionManagementService;
 import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Collections;
@@ -11,14 +11,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SubscriptionManagementControllerTest {
     private SubscriptionManagementController subscriptionController;
     private SubscriptionManagementService subscriptionManagementService;
 
-    @Before
+    @BeforeEach
     public void setup() {
         subscriptionManagementService = Mockito.mock(SubscriptionManagementService.class);
         subscriptionController = new SubscriptionManagementController(subscriptionManagementService);

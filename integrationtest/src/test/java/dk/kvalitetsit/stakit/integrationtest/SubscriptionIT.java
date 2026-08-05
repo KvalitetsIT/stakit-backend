@@ -2,7 +2,7 @@ package dk.kvalitetsit.stakit.integrationtest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.StaKitApi;
@@ -13,9 +13,7 @@ import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SubscriptionIT extends AbstractIntegrationTest {
     private final StaKitApi staKitApi;
@@ -51,7 +49,7 @@ public class SubscriptionIT extends AbstractIntegrationTest {
         var body = validatableResponse.extract().body().asString();
         Pattern pattern = Pattern.compile(".*http:\\/\\/.+:\\d+\\/subscribe\\/(.*?)\".*", Pattern.DOTALL);
         var matcher = pattern.matcher(body);
-        assertTrue(body, matcher.matches());
+        assertTrue(matcher.matches(), body);
         var uuid = matcher.group(1);
 
         uuid = uuid.replace("=\\r\\n", "");

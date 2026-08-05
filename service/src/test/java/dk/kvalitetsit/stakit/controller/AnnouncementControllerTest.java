@@ -3,8 +3,8 @@ package dk.kvalitetsit.stakit.controller;
 import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
 import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.AnnouncementCreate;
 import org.openapitools.model.AnnouncementUpdate;
@@ -14,9 +14,6 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
@@ -24,7 +21,7 @@ public class AnnouncementControllerTest {
     private AnnouncementService announcementService;
     private AnnouncementController announcementController;
 
-    @Before
+    @BeforeEach
     public void setup() {
         announcementService = Mockito.mock(AnnouncementService.class);
         announcementController = new AnnouncementController(announcementService);

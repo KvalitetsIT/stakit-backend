@@ -3,8 +3,8 @@ package dk.kvalitetsit.stakit.session;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
@@ -19,8 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserContextServiceTestModel {
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -28,7 +27,7 @@ public class UserContextServiceTestModel {
     private String username;
     private JwtTokenParser tokenParser;
 
-    @Before
+    @BeforeEach
     public void setup() throws URISyntaxException, IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         request = Mockito.mock(HttpServletRequest.class);
 

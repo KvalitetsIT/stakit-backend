@@ -8,8 +8,8 @@ import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntityWithGroupUuid;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.*;
@@ -24,7 +24,7 @@ public class GroupServiceImplTest {
     private ServiceConfigurationDao serviceConfigurationDao;
     private MailSubscriptionGroupDao mailSubscriptionGroupDao;
 
-    @Before
+    @BeforeEach
     public void setup() {
         groupDao = Mockito.mock(GroupConfigurationDao.class);
         serviceConfigurationDao = Mockito.mock(ServiceConfigurationDao.class);

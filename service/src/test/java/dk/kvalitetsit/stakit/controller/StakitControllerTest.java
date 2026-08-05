@@ -10,8 +10,8 @@ import dk.kvalitetsit.stakit.service.model.Status;
 import dk.kvalitetsit.stakit.service.model.StatusElementModel;
 import dk.kvalitetsit.stakit.service.model.StatusGroupedModel;
 import jakarta.mail.MessagingException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.Subscribe;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static junit.framework.TestCase.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
@@ -31,7 +30,7 @@ public class StakitControllerTest {
     private AnnouncementService announcementService;
     private SubscriptionService subscriptionService;
 
-    @Before
+    @BeforeEach
     public void setup() {
         statusGroupService = Mockito.mock(StatusGroupService.class);
         announcementService = Mockito.mock(AnnouncementService.class);

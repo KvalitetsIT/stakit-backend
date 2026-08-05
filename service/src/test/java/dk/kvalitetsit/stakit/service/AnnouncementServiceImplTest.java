@@ -4,8 +4,8 @@ import dk.kvalitetsit.stakit.dao.AnnouncementDao;
 import dk.kvalitetsit.stakit.dao.entity.AnnouncementEntity;
 import dk.kvalitetsit.stakit.service.mapper.AnnouncementMapper;
 import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.OffsetDateTime;
@@ -14,14 +14,14 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
 public class AnnouncementServiceImplTest {
     private AnnouncementDao announcementDao;
     private AnnouncementServiceImpl announcementService;
 
-    @Before
+    @BeforeEach
     public void setup() {
         announcementDao = Mockito.mock(AnnouncementDao.class);
 

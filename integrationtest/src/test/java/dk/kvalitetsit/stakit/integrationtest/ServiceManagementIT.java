@@ -1,6 +1,6 @@
 package dk.kvalitetsit.stakit.integrationtest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.ApiResponse;
