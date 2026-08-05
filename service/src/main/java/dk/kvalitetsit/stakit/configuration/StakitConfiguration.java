@@ -159,9 +159,4 @@ public class StakitConfiguration implements WebMvcConfigurer {
     public UserContextService userContextService(HttpServletRequest request, JwtTokenParser tokenParser) {
         return new UserContextServiceImpl(request, tokenParser);
     }
-
-    @Override
-    public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.setUseTrailingSlashMatch(true);
-    }
 }
