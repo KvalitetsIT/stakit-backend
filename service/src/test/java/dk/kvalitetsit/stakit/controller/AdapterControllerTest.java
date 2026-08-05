@@ -2,22 +2,21 @@ package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.service.StatusUpdateService;
 import dk.kvalitetsit.stakit.service.model.Status;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.StatusUpdate;
 
 import java.time.OffsetDateTime;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
 public class AdapterControllerTest {
     private AdapterController adapterController;
     private StatusUpdateService statusUpdateService;
 
-    @Before
+    @BeforeEach
     public void setup() {
         statusUpdateService = Mockito.mock(StatusUpdateService.class);
 

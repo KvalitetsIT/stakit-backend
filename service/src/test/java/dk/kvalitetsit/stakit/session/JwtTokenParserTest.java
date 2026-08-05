@@ -13,12 +13,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Date;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import dk.kvalitetsit.stakit.session.exception.InvalidTokenException;
 import io.jsonwebtoken.Jwts;
@@ -40,7 +38,7 @@ public class JwtTokenParserTest {
             "-----END PUBLIC KEY-----\n";
     private final String untrustedKey = "untrusted.pkcs8";
 
-    @Before
+    @BeforeEach
     public void setup() throws URISyntaxException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, CertificateException {
         tokenParser = new JwtTokenParser(trustedPublicCertificate);
     }
@@ -59,23 +57,25 @@ public class JwtTokenParserTest {
 
         var result = assertThrows(InvalidTokenException.class, () -> tokenParser.parse(token));
         assertNotNull(result);
-        assertTrue(result.getCause() instanceof SignatureException);
+        assertInstanceOf(SignatureException.class, result.getCause());
     }
 
     @Test
-    public void testUnsigned() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
+    public void testUnsigned() {
         var token = generateUnsignedToken();
 
         var result = assertThrows(InvalidTokenException.class, () -> tokenParser.parse( token));
         assertNotNull(result);
-        assertTrue(result.getCause() instanceof UnsupportedJwtException);
+        assertInstanceOf(UnsupportedJwtException.class, result.getCause());
     }
 
-    @Test(expected = InvalidTokenException.class)
-    public void testInvalidToken() throws InvalidKeySpecException, IOException, NoSuchAlgorithmException, URISyntaxException {
-        var token = generateSignedToken(trustedKey);
+    @Test
+    public void testInvalidToken() {
+        assertThrows(InvalidTokenException.class, () -> {
+            var token = generateSignedToken(trustedKey);
 
-        tokenParser.parse( "invalid" + token);
+            tokenParser.parse( "invalid" + token);
+        });
     }
 
     private String generateSignedToken(String key) throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {

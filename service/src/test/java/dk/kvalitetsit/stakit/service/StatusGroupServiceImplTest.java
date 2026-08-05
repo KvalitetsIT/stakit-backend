@@ -3,8 +3,8 @@ package dk.kvalitetsit.stakit.service;
 import dk.kvalitetsit.stakit.dao.GroupedStatusDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupedStatus;
 import dk.kvalitetsit.stakit.service.model.Status;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Arrays;
@@ -18,7 +18,7 @@ public class StatusGroupServiceImplTest {
     private StatusGroupServiceImpl statusGroupServiceImpl;
     private GroupedStatusDao groupStatusDao;
 
-    @Before
+    @BeforeEach
     public void setup() {
         groupStatusDao = Mockito.mock(GroupedStatusDao.class);
 

@@ -7,8 +7,8 @@ import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.model.GroupGetModel;
 import dk.kvalitetsit.stakit.service.model.GroupModel;
 import dk.kvalitetsit.stakit.service.model.ServiceModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.GroupInput;
 import org.openapitools.model.GroupPatch;
@@ -17,16 +17,14 @@ import org.springframework.http.HttpStatus;
 
 import java.util.*;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
 public class GroupManagementControllerTest {
     private GroupManagementController groupManagementController;
     private GroupService groupService;
 
-    @Before
+    @BeforeEach
     public void setup() {
         groupService = Mockito.mock(GroupService.class);
 

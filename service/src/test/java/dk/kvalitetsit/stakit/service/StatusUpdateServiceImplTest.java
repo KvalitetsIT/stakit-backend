@@ -7,8 +7,8 @@ import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
 import dk.kvalitetsit.stakit.service.model.Status;
 import dk.kvalitetsit.stakit.service.model.UpdateServiceModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -26,7 +26,7 @@ public class StatusUpdateServiceImplTest {
     private MailQueueService mailQueueService;
     private GroupConfigurationDao groupConfigurationDao;
 
-    @Before
+    @BeforeEach
     public void setup() {
         serviceConfigurationDao = Mockito.mock(ServiceConfigurationDao.class);
         serviceStatusDao = Mockito.mock(ServiceStatusDao.class);

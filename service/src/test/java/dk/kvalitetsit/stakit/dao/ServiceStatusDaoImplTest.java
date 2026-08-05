@@ -1,16 +1,15 @@
 package dk.kvalitetsit.stakit.dao;
 
 import dk.kvalitetsit.stakit.dao.entity.ServiceStatusEntity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceStatusDaoImplTest extends AbstractDaoTest {
     @Autowired
@@ -20,7 +19,7 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
     private TestDataHelper testDataHelper;
     private long defaultGroupId;
 
-    @Before
+    @BeforeEach
     public void setup() {
         defaultGroupId = testDataHelper.findDefaultGroupId();
     }

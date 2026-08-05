@@ -3,8 +3,8 @@ package dk.kvalitetsit.stakit.controller;
 import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.ServiceManagementService;
 import dk.kvalitetsit.stakit.service.model.ServiceModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openapitools.model.Service;
 import org.openapitools.model.ServiceCreate;
@@ -16,8 +16,6 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
@@ -25,7 +23,7 @@ public class ServiceModelManagementControllerTest {
     private ServiceManagementService serviceManagementService;
     private ServiceManagementController serviceManagementController;
 
-    @Before
+    @BeforeEach
     public void setup() {
         serviceManagementService = Mockito.mock(ServiceManagementService.class);
         serviceManagementController = new ServiceManagementController(serviceManagementService);

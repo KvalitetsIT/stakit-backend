@@ -2,8 +2,8 @@ package dk.kvalitetsit.stakit.service;
 
 import dk.kvalitetsit.stakit.dao.*;
 import dk.kvalitetsit.stakit.dao.entity.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.OffsetDateTime;
@@ -23,7 +23,7 @@ public class MailQueueServiceImplTest {
     private String baseUrl;
     private AnnouncementDao announcementDao;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mailSubscriptionDao = Mockito.mock(MailSubscriptionDao.class);
         mailSenderService = Mockito.mock(MailSenderService.class);

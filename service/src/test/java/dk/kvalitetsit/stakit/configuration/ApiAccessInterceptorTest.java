@@ -7,14 +7,13 @@ import dk.kvalitetsit.stakit.session.PublicApi;
 import dk.kvalitetsit.stakit.session.UserContextService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.method.HandlerMethod;
 
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ApiAccessInterceptorTest {
     private UserContextService userContextService;
@@ -24,7 +23,7 @@ public class ApiAccessInterceptorTest {
     private HandlerMethod handlerMethod;
     private String apiKey;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         apiKey = "API_KEY";
         userContextService = Mockito.mock(UserContextService.class);

@@ -1,8 +1,7 @@
 package dk.kvalitetsit.stakit.integrationtest;
 
 import io.restassured.RestAssured;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.api.AdapterApi;

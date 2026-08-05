@@ -1,7 +1,7 @@
 package dk.kvalitetsit.stakit.dao;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.OffsetDateTime;
@@ -17,7 +17,7 @@ public class GroupedServiceStatusDaoImplTest extends AbstractDaoTest {
     private TestDataHelper testDataHelper;
     private long defaultGroupId;
 
-    @Before
+    @BeforeEach
     public void setup() {
         defaultGroupId = testDataHelper.findDefaultGroupId();
     }

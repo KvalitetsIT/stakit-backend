@@ -6,8 +6,8 @@ import dk.kvalitetsit.stakit.dao.ServiceStatusDao;
 import dk.kvalitetsit.stakit.dao.entity.GroupConfigurationEntity;
 import dk.kvalitetsit.stakit.dao.entity.ServiceConfigurationEntityWithGroupUuid;
 import dk.kvalitetsit.stakit.service.model.ServiceModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 
@@ -15,8 +15,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 
@@ -26,7 +24,7 @@ public class ServiceManagementServiceImplTest {
     private GroupConfigurationDao groupConfigurationDao;
     private ServiceStatusDao serviceStatusDao;
 
-    @Before
+    @BeforeEach
     public void setup() {
         serviceConfigurationDao = Mockito.mock(ServiceConfigurationDao.class);
         groupConfigurationDao = Mockito.mock(GroupConfigurationDao.class);
