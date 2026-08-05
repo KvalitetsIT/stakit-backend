@@ -148,6 +148,7 @@
 								<sourceFolder>src/test/java</sourceFolder>
 								<dateLibrary>java8</dateLibrary>
 								<useJakartaEe>true</useJakartaEe>
+								<useJsonNullable>false</useJsonNullable>
 							</configOptions>
 							<output>${project.build.directory}/generated-test-sources/openapi/test</output>
 							<generateApiTests>false</generateApiTests>
@@ -170,7 +171,8 @@
 								<interfaceOnly>true</interfaceOnly>
 								<performBeanValidation>true</performBeanValidation>
 								<library>spring-cloud</library>
-								<useSpringBoot3>true</useSpringBoot3>
+								<useSpringBoot4>true</useSpringBoot4>
+								<useJsonNullable>false</useJsonNullable>
 								<useJakartaEe>true</useJakartaEe>
 								<useTags>true</useTags>
 							</configOptions>
