@@ -37,7 +37,7 @@
 		<spring-request-id-logger-version>3.0.0</spring-request-id-logger-version>
 		<jacoco-version>0.8.15</jacoco-version>
 		<jsonwebtoken-version>0.13.0</jsonwebtoken-version>
-		<okhttp-version>5.4.0</okhttp-version>
+		<okhttp-version>5.5.0</okhttp-version>
 	</properties>
 
 	<dependencyManagement>
