@@ -198,7 +198,7 @@
 			<dependency>
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-mysql</artifactId>
-				<version>12.11.0</version>
+				<version>13.6.0</version>
 			</dependency>
 
 			<!-- Code coverage -->
