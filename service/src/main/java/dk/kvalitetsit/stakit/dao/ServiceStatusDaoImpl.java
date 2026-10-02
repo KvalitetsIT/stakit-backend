@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 public class ServiceStatusDaoImpl implements ServiceStatusDao {
@@ -85,5 +86,47 @@ public class ServiceStatusDaoImpl implements ServiceStatusDao {
         var sql = "delete from service_status where service_configuration_id = (select sc.id from service_configuration sc where sc.uuid = :uuid)";
 
         return template.update(sql, Collections.singletonMap("uuid", uuid.toString())) > 0;
+    }
+
+    @Override
+    public Optional<ServiceStatusEntity> findLatestBefore(UUID serviceUuid, OffsetDateTime time) {
+        var sql = "select s.* " +
+                "    from service_status s, " +
+                "         service_configuration sc " +
+                "   where s.service_configuration_id = sc.id " +
+                "     and sc.uuid = :uuid " +
+                "     and s.status_time < :time " +
+                "   order by s.status_time desc, s.id desc " +
+                "   limit 1";
+
+        var parameters = new MapSqlParameterSource()
+                .addValue("uuid", serviceUuid.toString())
+                .addValue("time", Timestamp.from(time.toInstant()));
+
+        try {
+            return Optional.ofNullable(template.queryForObject(sql, parameters, DataClassRowMapper.newInstance(ServiceStatusEntity.class)));
+        }
+        catch(EmptyResultDataAccessException e) {
+            logger.debug("No service status found for service {} before {}", serviceUuid, time);
+
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<ServiceStatusEntity> findFrom(UUID serviceUuid, OffsetDateTime from) {
+        var sql = "select s.* " +
+                "    from service_status s, " +
+                "         service_configuration sc " +
+                "   where s.service_configuration_id = sc.id " +
+                "     and sc.uuid = :uuid " +
+                "     and s.status_time >= :from " +
+                "   order by s.status_time, s.id";
+
+        var parameters = new MapSqlParameterSource()
+                .addValue("uuid", serviceUuid.toString())
+                .addValue("from", Timestamp.from(from.toInstant()));
+
+        return template.query(sql, parameters, DataClassRowMapper.newInstance(ServiceStatusEntity.class));
     }
 }

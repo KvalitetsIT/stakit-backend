@@ -1,14 +1,17 @@
 package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
 import dk.kvalitetsit.stakit.service.StatusGroupService;
+import dk.kvalitetsit.stakit.service.StatusHistoryService;
 import dk.kvalitetsit.stakit.service.SubscriptionService;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.service.model.AnnouncementModel;
 import dk.kvalitetsit.stakit.service.model.Status;
 import dk.kvalitetsit.stakit.service.model.StatusElementModel;
 import dk.kvalitetsit.stakit.service.model.StatusGroupedModel;
+import dk.kvalitetsit.stakit.service.model.StatusPeriodModel;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,14 +34,67 @@ public class StakitControllerTest {
     private StatusGroupService statusGroupService;
     private AnnouncementService announcementService;
     private SubscriptionService subscriptionService;
+    private StatusHistoryService statusHistoryService;
 
     @BeforeEach
     public void setup() {
         statusGroupService = Mockito.mock(StatusGroupService.class);
         announcementService = Mockito.mock(AnnouncementService.class);
         subscriptionService = Mockito.mock(SubscriptionService.class);
+        statusHistoryService = Mockito.mock(StatusHistoryService.class);
 
-        stakitController = new StakitController(statusGroupService, announcementService, subscriptionService);
+        stakitController = new StakitController(statusGroupService, announcementService, subscriptionService, statusHistoryService);
+    }
+
+    @Test
+    public void testStatusHistory() {
+        var uuid = UUID.randomUUID();
+        var from = OffsetDateTime.now().minusDays(7);
+        var changed = OffsetDateTime.now().minusDays(1);
+        var periods = List.of(
+                new StatusPeriodModel(Status.NOT_OK, from, changed, "Database down"),
+                new StatusPeriodModel(Status.OK, changed, null, null));
+
+        Mockito.when(statusHistoryService.getStatusHistory(uuid, from)).thenReturn(Optional.of(periods));
+
+        var result = stakitController.v1ServiceStatusHistoryUuidGet(uuid, from);
+
+        assertNotNull(result);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertNotNull(result.getBody());
+        assertEquals(2, result.getBody().size());
+
+        var first = result.getBody().get(0);
+        assertEquals(org.openapitools.model.StatusPeriod.StatusEnum.NOT_OK, first.getStatus());
+        assertEquals(from, first.getFrom());
+        assertEquals(changed, first.getTo());
+        assertEquals("Database down", first.getMessage());
+
+        var second = result.getBody().get(1);
+        assertEquals(org.openapitools.model.StatusPeriod.StatusEnum.OK, second.getStatus());
+        assertEquals(changed, second.getFrom());
+        assertNull(second.getTo());
+        assertNull(second.getMessage());
+    }
+
+    @Test
+    public void testStatusHistoryServiceNotFound() {
+        var uuid = UUID.randomUUID();
+        var from = OffsetDateTime.now().minusDays(7);
+
+        Mockito.when(statusHistoryService.getStatusHistory(uuid, from)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> stakitController.v1ServiceStatusHistoryUuidGet(uuid, from));
+    }
+
+    @Test
+    public void testStatusHistoryInvalidFrom() {
+        var uuid = UUID.randomUUID();
+        var from = OffsetDateTime.now().minusDays(365);
+
+        Mockito.when(statusHistoryService.getStatusHistory(uuid, from)).thenThrow(new InvalidDataException("too old"));
+
+        assertThrows(BadRequestException.class, () -> stakitController.v1ServiceStatusHistoryUuidGet(uuid, from));
     }
 
     @Test

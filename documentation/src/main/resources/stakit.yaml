@@ -424,6 +424,37 @@ paths:
                 items:
                   $ref: '#/components/schemas/status-group'
 
+  /v1/service-status-history/{uuid}:
+    get:
+      tags:
+        - StaKit
+      security: []
+      summary: Get status history for a service
+      description: Used to get the status history for a single service. Consecutive status updates with the same status are merged into one period. Returned in chronological order.
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+        - name: from
+          in: query
+          description: Start of the history period. The first period is clipped to this time. Can not be more than 90 days ago.
+          required: true
+          schema:
+            type: string
+            format: date-time
+          example: 2026-10-01T00:00:00Z
+      responses:
+        '200':
+          description: Status periods for the service.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/status-period'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+
   /v1/announcements-to-show:
     get:
       tags:
@@ -769,6 +800,28 @@ components:
           type: string
           example: "Very descriptive"
           maxLength: 250
+
+    status-period:
+      type: object
+      required:
+        - status
+        - from
+      properties:
+        status:
+          description: Status of service in the period.
+          type: string
+          enum: [ OK, PARTIAL_NOT_OK, NOT_OK ]
+        from:
+          description: When the period started.
+          type: string
+          format: date-time
+        to:
+          description: When the period ended. Not present if the period is ongoing.
+          type: string
+          format: date-time
+        message:
+          description: Message from the status update that started the period.
+          type: string
 
     service:
       type: object
