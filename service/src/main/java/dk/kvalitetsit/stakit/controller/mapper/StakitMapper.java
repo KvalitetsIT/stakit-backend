@@ -1,8 +1,10 @@
 package dk.kvalitetsit.stakit.controller.mapper;
 
 import dk.kvalitetsit.stakit.service.model.StatusGroupedModel;
+import dk.kvalitetsit.stakit.service.model.StatusPeriodModel;
 import dk.kvalitetsit.stakit.service.model.SubscriptionModel;
 import org.openapitools.model.StatusGroup;
+import org.openapitools.model.StatusPeriod;
 import org.openapitools.model.Subscribe;
 
 import java.util.List;
@@ -20,6 +22,22 @@ public class StakitMapper {
                 .map(StakitMapper::mapGroup)
                 .collect(Collectors.toList());
     }
+    public static List<StatusPeriod> mapStatusPeriods(List<StatusPeriodModel> periods) {
+        return periods.stream()
+                .map(StakitMapper::mapStatusPeriod)
+                .collect(Collectors.toList());
+    }
+
+    private static StatusPeriod mapStatusPeriod(StatusPeriodModel period) {
+        var statusPeriod = new StatusPeriod();
+        statusPeriod.setStatus(StatusPeriod.StatusEnum.fromValue(period.status().toString()));
+        statusPeriod.setFrom(period.from());
+        statusPeriod.setTo(period.to());
+        statusPeriod.setMessage(period.message());
+
+        return statusPeriod;
+    }
+
     private static StatusGroup mapGroup(StatusGroupedModel statusGroupedModel) {
         var statusGroup = new StatusGroup();
         statusGroup.setName(statusGroupedModel.groupName());

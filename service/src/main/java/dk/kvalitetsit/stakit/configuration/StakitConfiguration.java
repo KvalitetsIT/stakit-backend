@@ -77,6 +77,11 @@ public class StakitConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
+    public StatusHistoryService statusHistoryService(ServiceConfigurationDao serviceConfigurationDao, ServiceStatusDao serviceStatusDao) {
+        return new StatusHistoryServiceImpl(serviceConfigurationDao, serviceStatusDao);
+    }
+
+    @Bean
     public GroupService groupService(GroupConfigurationDao groupConfigurationDao, ServiceConfigurationDao serviceConfigurationDao, MailSubscriptionGroupDao mailSubscriptionGroupDao) {
         return new GroupServiceImpl(groupConfigurationDao, serviceConfigurationDao, mailSubscriptionGroupDao);
     }

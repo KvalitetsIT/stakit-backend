@@ -1,10 +1,12 @@
 package dk.kvalitetsit.stakit.controller;
 
 import dk.kvalitetsit.stakit.controller.exception.BadRequestException;
+import dk.kvalitetsit.stakit.controller.exception.ResourceNotFoundException;
 import dk.kvalitetsit.stakit.controller.mapper.AnnouncementMapper;
 import dk.kvalitetsit.stakit.controller.mapper.StakitMapper;
 import dk.kvalitetsit.stakit.service.AnnouncementService;
 import dk.kvalitetsit.stakit.service.StatusGroupService;
+import dk.kvalitetsit.stakit.service.StatusHistoryService;
 import dk.kvalitetsit.stakit.service.SubscriptionService;
 import dk.kvalitetsit.stakit.service.exception.InvalidDataException;
 import dk.kvalitetsit.stakit.session.PublicApi;
@@ -17,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,13 +29,16 @@ public class StakitController implements StaKitApi {
     private final StatusGroupService statusGroupService;
     private final AnnouncementService announcementService;
     private final SubscriptionService subscriptionService;
+    private final StatusHistoryService statusHistoryService;
 
     public StakitController(StatusGroupService statusGroupService,
                             AnnouncementService announcementService,
-                            SubscriptionService subscriptionService) {
+                            SubscriptionService subscriptionService,
+                            StatusHistoryService statusHistoryService) {
         this.statusGroupService = statusGroupService;
         this.announcementService = announcementService;
         this.subscriptionService = subscriptionService;
+        this.statusHistoryService = statusHistoryService;
     }
 
     @Override
@@ -55,6 +61,21 @@ public class StakitController implements StaKitApi {
         var mappedResult = StakitMapper.mappedStatusGroups(groupStatus);
 
         return ResponseEntity.ok(mappedResult);
+    }
+
+    @Override
+    @PublicApi
+    public ResponseEntity<List<StatusPeriod>> v1ServiceStatusHistoryUuidGet(UUID uuid, OffsetDateTime from) {
+        logger.debug("Reading status history for service {}", uuid);
+
+        try {
+            var history = statusHistoryService.getStatusHistory(uuid, from)
+                    .orElseThrow(() -> new ResourceNotFoundException("Service with uuid %s not found".formatted(uuid)));
+
+            return ResponseEntity.ok(StakitMapper.mapStatusPeriods(history));
+        } catch(InvalidDataException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     @Override

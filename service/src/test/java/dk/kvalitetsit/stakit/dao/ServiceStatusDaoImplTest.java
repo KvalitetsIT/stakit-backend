@@ -110,4 +110,46 @@ public class ServiceStatusDaoImplTest extends AbstractDaoTest {
         var result = serviceStatusDao.deleteFromServiceConfigurationUuid(UUID.randomUUID());
         assertFalse(result);
     }
+
+    @Test
+    public void testFindLatestBefore() {
+        var now = OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS);
+        var serviceUuid = UUID.randomUUID();
+
+        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false, defaultGroupId, serviceUuid, "OK", "description");
+        testDataHelper.createServiceStatus(statusConfiguration, "OK", now.minusDays(3));
+        testDataHelper.createServiceStatus(statusConfiguration, "NOT_OK", now.minusDays(2));
+        testDataHelper.createServiceStatus(statusConfiguration, "OK", now.minusDays(1));
+
+        var anotherStatusConfiguration = testDataHelper.createServiceConfiguration("another-service", "another-name", false, defaultGroupId, "OK", "description");
+        testDataHelper.createServiceStatus(anotherStatusConfiguration, "PARTIAL_NOT_OK", now.minusHours(36));
+
+        var result = serviceStatusDao.findLatestBefore(serviceUuid, now.minusHours(36));
+        assertTrue(result.isPresent());
+        assertEquals("NOT_OK", result.get().status());
+        assertEquals(now.minusDays(2), result.get().statusTime());
+
+        assertTrue(serviceStatusDao.findLatestBefore(serviceUuid, now.minusDays(4)).isEmpty());
+    }
+
+    @Test
+    public void testFindFrom() {
+        var now = OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS);
+        var serviceUuid = UUID.randomUUID();
+
+        var statusConfiguration = testDataHelper.createServiceConfiguration("service", "name", false, defaultGroupId, serviceUuid, "OK", "description");
+        testDataHelper.createServiceStatus(statusConfiguration, "OK", now.minusDays(1));
+        testDataHelper.createServiceStatus(statusConfiguration, "NOT_OK", now.minusDays(3));
+        testDataHelper.createServiceStatus(statusConfiguration, "PARTIAL_NOT_OK", now.minusDays(2));
+
+        var anotherStatusConfiguration = testDataHelper.createServiceConfiguration("another-service", "another-name", false, defaultGroupId, "OK", "description");
+        testDataHelper.createServiceStatus(anotherStatusConfiguration, "NOT_OK", now.minusDays(1));
+
+        var result = serviceStatusDao.findFrom(serviceUuid, now.minusDays(2));
+        assertEquals(2, result.size());
+        assertEquals("PARTIAL_NOT_OK", result.get(0).status());
+        assertEquals(now.minusDays(2), result.get(0).statusTime());
+        assertEquals("OK", result.get(1).status());
+        assertEquals(now.minusDays(1), result.get(1).statusTime());
+    }
 }
